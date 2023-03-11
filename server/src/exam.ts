@@ -2,7 +2,6 @@ import * as mongodb from "mongodb";
 
 export interface Exam {
     _id?: mongodb.ObjectId;
-    user: string; // user ID that test belongs to
     number: number; //0 if most recent, else in order
     score: string; // "[correct answers]/[total questions]"
     questions: Array<string>; // list of questions used in test in order (as presented in exam)

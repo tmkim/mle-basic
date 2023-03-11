@@ -2,7 +2,6 @@ import * as dotenv from "dotenv";
 import cors from "cors";
 import express from "express";
 import { connectToDatabase } from "./database";
-import { userRouter } from "./user.routes";
 import { examRouter } from "./exam.routes";
 import { questionRouter } from "./question.routes";
 
@@ -21,7 +20,6 @@ connectToDatabase(ATLAS_URI)
        const app = express();
        app.use(cors());
  
-       app.use("/users", userRouter);
        app.use("/exams", examRouter);
        app.use("/questions", questionRouter);
         
