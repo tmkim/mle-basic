@@ -23,6 +23,7 @@ export async function connectToDatabase(uri: string) {
     const questionsCollection = db.collection<Question>("questions");
     questionColl.questions = questionsCollection;}
 
+async function applySchemaValidation(db: mongodb.Db) {
     const examSchema = {
         $jsonSchema: {
             bsonType: "object",
