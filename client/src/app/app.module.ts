@@ -7,12 +7,14 @@ import { ExamsListComponent } from './exams-list/exams-list.component';
 import { ExamTimeComponent } from './exam-time/exam-time.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { OptionsComponent } from './options/options.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ExamsListComponent,
-    ExamTimeComponent
+    ExamTimeComponent,
+    OptionsComponent
   ],
   imports: [
     BrowserModule,

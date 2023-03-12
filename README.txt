@@ -17,3 +17,18 @@ Basic exam app for tw mle (no users)
         > ng generate component exam-time -m app
     > register copmonent to app.routing.module.ts 
     > TODO: exam-time!!!
+
+03/12/2023
+    > exam-options
+        - number of questions (range input)
+        - show answer details (switch input)
+        - "Begin" button
+            TODO: > starts test - set timer based on questions, pick specified number of questions, start exam-time!
+    TODO: > exam-time form component
+        - shows a single question
+         + radio buttons (answer choices)
+         + "next" + "previous"
+         + list of question numbers (clickable, scrollable)
+         + timer
+        - hidden answer explanation/details 
+    TODO: > exams-list pulls exams out of database, start new test functionality (goto exam-options)
