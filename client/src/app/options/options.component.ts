@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
   <div class="container">
     <div class="row justify-content-center">
       <div class="col"></div>
-      <div class="col-7">
+      <div class="col-8">
         <form>
           <label for="formControlRange">Number of Questions: </label>
           <div>
@@ -20,7 +20,7 @@ import { Component } from '@angular/core';
     </div>
     <div class="row justify-content-center">
       <div class="col"></div>
-      <div class="col-7">
+      <div class="col-8">
         <form>
           <div>
             <div class="form-check form-switch">
@@ -33,11 +33,11 @@ import { Component } from '@angular/core';
     </div>
     <div class="row justify-content-center">
       <div class="col"></div>
-      <div class="col-6">
+      <div class="col-5">
         <form>
           <div>
             <div class="form-check form-switch">
-              <button class="btn btn-primary mt-3" [routerLink]="['new']">Begin</button>
+              <button class="btn btn-primary mt-3" [routerLink]="['examtime']">Begin</button>
             </div>
           </div>
         </form>

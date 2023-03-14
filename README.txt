@@ -25,10 +25,24 @@ Basic exam app for tw mle (no users)
         - "Begin" button
             TODO: > starts test - set timer based on questions, pick specified number of questions, start exam-time!
     TODO: > exam-time form component
-        - shows a single question
+        - shows a single question at a time 
          + radio buttons (answer choices)
          + "next" + "previous"
          + list of question numbers (clickable, scrollable)
          + timer
         - hidden answer explanation/details 
     TODO: > exams-list pulls exams out of database, start new test functionality (goto exam-options)
+
+03/14/2023
+    > exam-time component~
+        - build basic structure
+            * Show question # header
+            * show single question text 
+            * show 4 answer choice radio buttons 
+            * Previous and Next buttons 
+        - TODO: add functionality to next/previous buttons, pull question info from database 
+            > next/prev button should save answer, load next/prev question
+                - load saved answer as well in case already answered 
+        - TODO: add countdown timer, list of question numbers on the side (ngFor)
+
+    > TODO : don't forget to store answers for current exam !!

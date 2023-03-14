@@ -34,11 +34,12 @@ import { ExamService } from '../exam.service';
       </tbody>
   </table>
 
-  <button class="btn btn-primary mt-3" [routerLink]="['new']">Start a New Exam</button>
+  <button class="btn btn-primary mt-3" [routerLink]="['options']">Start a New Exam</button>
 `
 })
 export class ExamsListComponent implements OnInit {
   exams$: Observable<Exam[]> = new Observable();
+  num = 1;
 
   constructor(private examsService: ExamService) { }
 
