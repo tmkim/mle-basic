@@ -7,8 +7,10 @@ import { OptionsComponent } from './options/options.component';
 const routes: Routes = [
  { path: '', redirectTo: 'exams', pathMatch: 'full' },
  { path: 'exams', component: ExamsListComponent },
- { path: 'exams/options', component: OptionsComponent },
- { path: 'exams/examtime', component: ExamTimeComponent },
+ { path: 'exams/options', redirectTo: 'options', pathMatch: 'full' },
+ { path: 'options', component: OptionsComponent },
+ { path: 'options/examtime', redirectTo: 'examtime', pathMatch: 'full' },
+ { path: 'examtime', component: ExamTimeComponent },
 ];
  
 @NgModule({
