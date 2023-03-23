@@ -31,6 +31,23 @@ examRouter.get("/:id", async (req, res) => {
     }
  });
 
+ examRouter.get("/:qCount", async (req, res) => {
+    try {
+        const qCount = req?.params?.qCount;
+        const query = { _qCount: qCount };
+        const exam = await examColl.exams.findOne(query);
+  
+        if (exam) {
+            res.status(200).send(exam);
+        } else {
+            res.status(404).send(`Failed to find an exam with ${qCount} questions`);
+        }
+  
+    } catch (error) {
+        res.status(404).send(`Failed to find an exam with ${req?.params?.qCount} questions`);
+    }
+ });
+
  examRouter.post("/", async (req, res) => {
     try {
         const exam = req.body;

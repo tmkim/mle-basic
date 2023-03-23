@@ -73,3 +73,22 @@ Basic exam app for tw mle (no users)
                     ** Update question list on side with correct/incorrect flag 
                 - If details toggle is off, do not pause timer, do not show correct/incorrect/details until end of exam
                     ** load "review" interface on test submission 
+
+03/23/2023
+    - implement basic countdown timer  
+        > TODO: pass input based on number of questions  
+    - OPTIONS:
+        * on init, I want to create a new exam entry in database
+            ** require exam id #, question count = 0
+            ** check if there is already a "new exam entry" in database, in case exam was not started from last time options was opened
+                ^^ can check for an exam with question count = 0
+            ** save exam id # as var for reference
+        * user sets question count and detail flag (default false)
+        * on Begin, update exam id question count, detail flag, timer, questions, etc. 
+    - working on the above. in progress.
+    - saved value of options to variables 
+    - set up initial createExam 
+        -> need to make sure initial "empty exam" is created, also check to see if empty exam exists
+    - starting to set up submit button to create new exam 
+        -> need to make new component for StartExam?
+    ** TODO: search for exam with qCount = 0

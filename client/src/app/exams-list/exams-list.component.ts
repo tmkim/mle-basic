@@ -27,7 +27,7 @@ import { ExamService } from '../exam.service';
               <td>{{exam.current}}</td>
               <td>
                  <!--TODO: conditional - only show one ("Continue"/"Review") -->
-                 <button class="btn btn-primary me-1" [routerLink]="['continue/', exam._id]">Continue</button>
+                 <button class="btn btn-primary me-1" [routerLink]="['examtime/', exam._id]">Continue</button>
                  <button class="btn btn-primary me-1" [routerLink]="['review/', exam._id]">Review</button>
               </td>
           </tr>

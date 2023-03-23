@@ -1,10 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, Input, EventEmitter, OnInit, Output } from '@angular/core';
+import { takeWhile } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { BehaviorSubject, timer } from 'rxjs';
+import { Exam } from '../exam';
 
 @Component({
   selector: 'app-exam-time',
   template: `
-  <h2 class="text-center m-5" num=1>Question {{num}}</h2>
   <div class="container">
+    <h2 class="text-center m-3" num=1> Question {{num}}</h2>  
+    <div class="col">
+    <h3>
+    {{ timeRemaining$ | async | date:'mm:ss' }}      
+    </h3>
+  </div>
+
+    </div>
+    <div class="container">
     <div class="row">
       <div class="col">
         <p>Question text</p>  
@@ -54,6 +66,32 @@ import { Component } from '@angular/core';
   styles: [
   ]
 })
-export class ExamTimeComponent {
+export class ExamTimeComponent implements OnInit {
   num = 1;
+
+  @Input() 
+  initialState: BehaviorSubject<Exam> = new BehaviorSubject({});
+
+  @Output()
+  nextQuestion = new EventEmitter<Exam>();
+
+  @Output()
+  prevQuestion = new EventEmitter<Exam>();
+
+  @Output()
+  pauseQuestion = new EventEmitter<Exam>();
+
+  @Input() seconds = 300;
+  timeRemaining$ = timer(0, 1000).pipe(
+    map(n => (this.seconds - n) * 1000),
+    takeWhile(n => n >= 0),
+  );
+
+  ngOnInit() {
+//    this.initialState.subscribe(exam => {
+//      this.examTime = this.fb.group({
+//
+    //  })
+    //})
+  }
 }
