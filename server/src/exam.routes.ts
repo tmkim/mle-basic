@@ -17,34 +17,42 @@ examRouter.get("/", async (_req, res) => {
 examRouter.get("/:id", async (req, res) => {
     try {
         const id = req?.params?.id;
-        const query = { _id: new mongodb.ObjectId(id) };
+        var query, querytype;
+        if (id == '-1') {
+            query = { time: id };
+            querytype = 'time';
+        }
+        else{
+            query = { _id: new mongodb.ObjectId(id) };
+            querytype = 'id';
+        }
         const exam = await examColl.exams.findOne(query);
-  
+        
         if (exam) {
             res.status(200).send(exam);
         } else {
-            res.status(404).send(`Failed to find an exam: ID ${id}`);
+            res.status(404).send(`Failed to find an exam with ${querytype}: ${id}`);
         }
   
     } catch (error) {
-        res.status(404).send(`Failed to find an exam: ID ${req?.params?.id}`);
+        res.status(404).send(`Caught failure to find an exam with ${querytype}: ${req?.params?.id}`);
     }
  });
 
- examRouter.get("/:qCount", async (req, res) => {
+ examRouter.get("/:time", async (req, res) => {
     try {
-        const qCount = req?.params?.qCount;
-        const query = { _qCount: qCount };
+        const questionCount = Number(req?.params?.time);
+        const query = { qCount: questionCount };
         const exam = await examColl.exams.findOne(query);
-  
+        
         if (exam) {
             res.status(200).send(exam);
         } else {
-            res.status(404).send(`Failed to find an exam with ${qCount} questions`);
+            res.status(404).send(`Failed to find an exam with ${questionCount} time`);
         }
   
     } catch (error) {
-        res.status(404).send(`Failed to find an exam with ${req?.params?.qCount} questions`);
+        res.status(404).send(`Failed to find an exam with ${req?.params?.time} time`);
     }
  });
 

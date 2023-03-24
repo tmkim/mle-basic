@@ -92,3 +92,9 @@ Basic exam app for tw mle (no users)
     - starting to set up submit button to create new exam 
         -> need to make new component for StartExam?
     ** TODO: search for exam with qCount = 0
+
+03/24/2023
+    - working on query database for EmptyExam
+    - created dummy "EmptyExam" in database and non-EmptyExam 
+    - query for ID works, trying to figure out if/how I can set up multiple get() or need to conditionalize one
+    ^ used conditional, query works, trying to figure out how to store result for use outside of subscribe

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
+import * as e from 'express';
+import { async, asyncScheduler, BehaviorSubject, Observable } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 
@@ -50,6 +51,9 @@ import { ExamService } from '../exam.service';
         </div>
       </div>
     </div>
+    <div>
+      {{exam | async}}
+    </div>
   </form>
 `,
   styles: [
@@ -59,9 +63,13 @@ export class OptionsComponent implements OnInit {
   @Output()
   formSubmitted = new EventEmitter<Exam>();
 
+  exam: BehaviorSubject<Exam> = new BehaviorSubject({});
+  exams$: Observable<Exam[]> = new Observable();
+  newExam: Observable<Exam> = new Observable();
+  
+  examForm: FormGroup = new FormGroup({});
   details = false;
   qCount = 0;
-  examForm: FormGroup = new FormGroup({});
 
   constructor(
     private examService: ExamService,
@@ -70,8 +78,25 @@ export class OptionsComponent implements OnInit {
   //constructor(private fb: FormBuilder){}
 
   ngOnInit(): void{
-    //TODO: get exams where questionCount = 0, if empty, createExam. else use retrieved entry.0
-//    this.examService.createExam(this.examForm.value);
+    //TODO: get exams where questionCount = 0, if empty, createExam. else use retrieved entry.
+    //this.newExam = this.examService.getEmptyExam(0).subscribe((exam) => {
+    this.examService.getEmptyExam("-1").subscribe((emptyExam) => {
+      this.exam.next(emptyExam);
+      //this.newExam = emptyExam;
+      console.log(this.exam.value);
+      
+      if (!emptyExam){
+        this.examService.createExam(this.examForm.value);
+      }
+      else{
+        //this.newExam = emptyExam;
+        //this.newExam = new BehaviorSubject(exam);
+      }
+    });
+  }
+
+    //this.exams$.
+//    
 //    this.fetchQuestions();
 
     /*this.newExam.subscribe(exam => {
@@ -79,8 +104,6 @@ export class OptionsComponent implements OnInit {
         questions: exam.questions
       });
     });*/
-
-  }
 
   private fetchQuestions(): void{
     // fetch list of previously answered questions + wrong questions

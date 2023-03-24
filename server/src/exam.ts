@@ -3,7 +3,6 @@ import * as mongodb from "mongodb";
 export interface Exam {
     _id?: mongodb.ObjectId;
     number: number; //0 if most recent, else in order
-    qCount: number; // number of total questions
     score: string; // "[correct answers]/[total questions]"
     questions: Array<string>; // list of questions used in test in order (as presented in exam)
     incorrect: Array<string>; // list of questions answered incorrectly
