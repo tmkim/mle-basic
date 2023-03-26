@@ -19,8 +19,8 @@ examRouter.get("/:id", async (req, res) => {
         const id = req?.params?.id;
         var query, querytype;
         if (id == '-1') {
-            query = { time: id };
-            querytype = 'time';
+            query = { number: new mongodb.Int32(id) };
+            querytype = 'number';
         }
         else{
             query = { _id: new mongodb.ObjectId(id) };

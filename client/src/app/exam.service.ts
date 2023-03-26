@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, tap } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Exam } from './exam';
+import { Int32 } from 'mongodb';
 
 @Injectable({
   providedIn: 'root'
@@ -27,8 +29,18 @@ export class ExamService {
     return this.httpClient.get<Exam>(`${this.url}/exams/${id}`);
   }
 
-  getEmptyExam(time: string): Observable<Exam> {
-    return this.httpClient.get<Exam>(`${this.url}/exams/${time}`);
+  getEmptyExam(number: number): Observable<Exam> {
+      return this.httpClient.get<Exam>(`${this.url}/exams/${number}`);
+    /*return this.httpClient.get<Exam>(`${this.url}/exams/${number}`).pipe(map(res => {
+      if(res.status == 404) {
+        console.log("404");
+         throw new Error('This request has failed ' + res.status);
+      } 
+     else {
+      console.log("nop"); 
+        return res.json();
+     }
+    }));*/
   }
   
   createExam(exam: Exam): Observable<string> {

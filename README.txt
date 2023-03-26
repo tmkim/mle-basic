@@ -98,3 +98,10 @@ Basic exam app for tw mle (no users)
     - created dummy "EmptyExam" in database and non-EmptyExam 
     - query for ID works, trying to figure out if/how I can set up multiple get() or need to conditionalize one
     ^ used conditional, query works, trying to figure out how to store result for use outside of subscribe
+
+03/26/2023
+    - Kind of got a handle on using query results in code and displaying on screen
+    - Working on error handling for 404 not found.
+    ^ in progress
+        * TODO: create new empty exam during handling
+        * TODO: figure out if "complete" status needs to be met ?

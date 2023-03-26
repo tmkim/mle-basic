@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import * as e from 'express';
-import { async, asyncScheduler, BehaviorSubject, Observable } from 'rxjs';
+import { async, asyncScheduler, BehaviorSubject, Observable, of } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 
@@ -52,7 +52,7 @@ import { ExamService } from '../exam.service';
       </div>
     </div>
     <div>
-      {{exam | async}}
+      {{exam$.value.number}}
     </div>
   </form>
 `,
@@ -63,7 +63,7 @@ export class OptionsComponent implements OnInit {
   @Output()
   formSubmitted = new EventEmitter<Exam>();
 
-  exam: BehaviorSubject<Exam> = new BehaviorSubject({});
+  exam$: BehaviorSubject<Exam> = new BehaviorSubject({});
   exams$: Observable<Exam[]> = new Observable();
   newExam: Observable<Exam> = new Observable();
   
@@ -80,19 +80,28 @@ export class OptionsComponent implements OnInit {
   ngOnInit(): void{
     //TODO: get exams where questionCount = 0, if empty, createExam. else use retrieved entry.
     //this.newExam = this.examService.getEmptyExam(0).subscribe((exam) => {
-    this.examService.getEmptyExam("-1").subscribe((emptyExam) => {
-      this.exam.next(emptyExam);
+    
+    this.examService.getEmptyExam(-1).subscribe({
+      next: (emptyExam) => {
+        console.log(emptyExam);
+        this.exam$.next(emptyExam);
+      },
+      error: (e) => {
+        console.log(`${e.error} -> Create new empty exam`)
+      },
+      complete: () => console.log('complete')
+    })
+
+    /*this.examService.getEmptyExam(-1).subscribe((emptyExam) => {
+      this.exam$.next(emptyExam);
       //this.newExam = emptyExam;
-      console.log(this.exam.value);
-      
-      if (!emptyExam){
-        this.examService.createExam(this.examForm.value);
-      }
-      else{
-        //this.newExam = emptyExam;
-        //this.newExam = new BehaviorSubject(exam);
-      }
-    });
+      console.log(this.exam$.value);
+    },
+    err => {
+      console.log("Empty Exam does not exist -> create new empty exam");
+//        this.examService.createExam(this.examForm.value)
+    });*/
+
   }
 
     //this.exams$.
