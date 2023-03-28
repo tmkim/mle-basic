@@ -15,7 +15,7 @@ export class ExamService {
   constructor(private httpClient: HttpClient) { }
 
   private refreshExams() {
-    this.httpClient.get<Exam[]>('${this.url}/exam')
+    this.httpClient.get<Exam[]>(`${this.url}/exams`)
      .subscribe(exams => {
       this.exams$.next(exams);
     });

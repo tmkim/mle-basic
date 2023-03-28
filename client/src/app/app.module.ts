@@ -8,19 +8,23 @@ import { ExamTimeComponent } from './exam-time/exam-time.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OptionsComponent } from './options/options.component';
+import { BeginExamComponent } from './begin-exam/begin-exam.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     ExamsListComponent,
     ExamTimeComponent,
-    OptionsComponent
+    OptionsComponent,
+    BeginExamComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

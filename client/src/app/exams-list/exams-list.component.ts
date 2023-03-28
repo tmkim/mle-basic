@@ -34,7 +34,7 @@ import { ExamService } from '../exam.service';
       </tbody>
   </table>
 
-  <button class="btn btn-primary mt-3" [routerLink]="['options']">Start a New Exam</button>
+  <button class="btn btn-primary mt-3" [routerLink]="['/new-exam']">Start a New Exam</button>
 `
 })
 export class ExamsListComponent implements OnInit {

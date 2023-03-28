@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import * as e from 'express';
 import { async, asyncScheduler, BehaviorSubject, Observable, of } from 'rxjs';
 import { Exam } from '../exam';
@@ -8,9 +8,7 @@ import { ExamService } from '../exam.service';
 @Component({
   selector: 'app-options',
   template: `
-  <form class="exam-form" autocomplete="off" [formGroup]="examForm" (ngSubmit)="submitForm()">
-    <h2 class="text-center m-5">Exam Options</h2>
-
+  <form class="options" autocomplete="off" [formGroup]="optionsForm" (ngSubmit)="submitForm()">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col"></div>
@@ -40,19 +38,16 @@ import { ExamService } from '../exam.service';
       <div class="row justify-content-center">
         <div class="col"></div>
         <div class="col-5">
-          <form>
-            <div>
-              <div class="form-check form-switch">
-                <button class="btn btn-primary mt-3" type="submit">Begin</button>
-                <!--button class="btn btn-primary mt-3" [routerLink]="['examtime/']">Begin</button-->
-              </div>
+          <div>
+            <div class="form-check form-switch">
+              <button class="btn btn-primary mt-3" type="submit">Begin</button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
     <div>
-      {{exam$.value.number}}
+      {{exam$.value._id}}
     </div>
   </form>
 `,
@@ -67,7 +62,7 @@ export class OptionsComponent implements OnInit {
   exams$: Observable<Exam[]> = new Observable();
   newExam: Observable<Exam> = new Observable();
   
-  examForm: FormGroup = new FormGroup({});
+  optionsForm: FormGroup = new FormGroup({});
   details = false;
   qCount = 0;
 
@@ -78,19 +73,21 @@ export class OptionsComponent implements OnInit {
   //constructor(private fb: FormBuilder){}
 
   ngOnInit(): void{
-    //TODO: get exams where questionCount = 0, if empty, createExam. else use retrieved entry.
-    //this.newExam = this.examService.getEmptyExam(0).subscribe((exam) => {
-    
     this.examService.getEmptyExam(-1).subscribe({
       next: (emptyExam) => {
         console.log(emptyExam);
         this.exam$.next(emptyExam);
+
+        this.optionsForm = this.fb.group({
+          _id: [emptyExam._id]
+        })
       },
       error: (e) => {
         console.log(`${e.error} -> Create new empty exam`)
+        //this.examService.createExam();
       },
-      complete: () => console.log('complete')
-    })
+      complete: () => console.log('Empty Exam available')
+    });
 
     /*this.examService.getEmptyExam(-1).subscribe((emptyExam) => {
       this.exam$.next(emptyExam);
@@ -121,16 +118,26 @@ export class OptionsComponent implements OnInit {
   getQuestionCount(event:any){
     this.qCount = event.target.value;
     console.log(this.qCount);
+
+    this.optionsForm.setValue({
+      qCount: [this.qCount]
+    });
   }
 
   toggleDetails(){
     this.details = !this.details;
     console.log(this.details);
-
+    this.optionsForm.addControl('details_flag', this.details);
+//    this.optionsForm?.addControl('control-name', new FormControl('', [Validators.required])
+    /*this.optionsForm.setValue({
+      _id: this.exam$.value._id,
+      details_flag: [this.details]
+    });*/
   }
 
   submitForm(){
-    this.formSubmitted.emit(this.examForm.value);
+    console.log("Submit!");
+    this.formSubmitted.emit(this.optionsForm.value);
   }
 
 }

@@ -105,3 +105,12 @@ Basic exam app for tw mle (no users)
     ^ in progress
         * TODO: create new empty exam during handling
         * TODO: figure out if "complete" status needs to be met ?
+
+03/28/2023
+    - use options component in begin-exam component 
+    - clean up routing 
+    * TODO/DONE: figure out why Begin button is not working ??
+        >> fixed --> submit button was in an inner <form> so outer <form> submission logic did not apply 
+    ** OPTIONAL TODO: make options form pretty (fix spacing when shrinking window size)
+    ** TODO: make sure current EmptyExam is being passed properly
+        --> form controls ?
