@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import * as e from 'express';
 import { async, asyncScheduler, BehaviorSubject, Observable, of } from 'rxjs';
 import { Exam } from '../exam';
@@ -8,7 +8,7 @@ import { ExamService } from '../exam.service';
 @Component({
   selector: 'app-options',
   template: `
-  <form class="options" autocomplete="off" [formGroup]="optionsForm" (ngSubmit)="submitForm()">
+  <form class="options" autocomplete="off" [formGroup]="fg_optionsForm" (ngSubmit)="submitForm()">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col"></div>
@@ -47,7 +47,7 @@ import { ExamService } from '../exam.service';
       </div>
     </div>
     <div>
-      {{exam$.value._id}}
+      {{bs_exam$.value._id}}
     </div>
   </form>
 `,
@@ -58,14 +58,16 @@ export class OptionsComponent implements OnInit {
   @Output()
   formSubmitted = new EventEmitter<Exam>();
 
-  exam$: BehaviorSubject<Exam> = new BehaviorSubject({});
-  exams$: Observable<Exam[]> = new Observable();
-  newExam: Observable<Exam> = new Observable();
+  bs_exam$: BehaviorSubject<Exam> = new BehaviorSubject({});
+  obs_exams$: Observable<Exam[]> = new Observable();
+  obs_newExam: Observable<Exam> = new Observable();
   
-  optionsForm: FormGroup = new FormGroup({});
-  details = false;
-  qCount = 0;
-
+  fg_optionsForm: FormGroup = new FormGroup({});
+  bln_details = false;
+  ctr_details: FormControl = new FormControl(this.bln_details);
+  num_qCount = 40;
+  ctr_qCount: FormControl = new FormControl(this.num_qCount);
+  
   constructor(
     private examService: ExamService,
     private fb: FormBuilder
@@ -76,23 +78,23 @@ export class OptionsComponent implements OnInit {
     this.examService.getEmptyExam(-1).subscribe({
       next: (emptyExam) => {
         console.log(emptyExam);
-        this.exam$.next(emptyExam);
+        this.bs_exam$.next(emptyExam);
 
-        this.optionsForm = this.fb.group({
-          _id: [emptyExam._id]
+        this.fg_optionsForm = this.fb.group({
+          _id: emptyExam._id
         })
       },
       error: (e) => {
         console.log(`${e.error} -> Create new empty exam`)
-        //this.examService.createExam();
+        //this.examService.createEmptyExam();
       },
       complete: () => console.log('Empty Exam available')
     });
 
     /*this.examService.getEmptyExam(-1).subscribe((emptyExam) => {
-      this.exam$.next(emptyExam);
-      //this.newExam = emptyExam;
-      console.log(this.exam$.value);
+      this.bs_exam$.next(emptyExam);
+      //this.obs_newExam = emptyExam;
+      console.log(this.bs_exam$.value);
     },
     err => {
       console.log("Empty Exam does not exist -> create new empty exam");
@@ -101,11 +103,11 @@ export class OptionsComponent implements OnInit {
 
   }
 
-    //this.exams$.
+    //this.obs_exams$.
 //    
 //    this.fetchQuestions();
 
-    /*this.newExam.subscribe(exam => {
+    /*this.obs_newExam.subscribe(exam => {
       this.examForm = this.fb.group({
         questions: exam.questions
       });
@@ -115,29 +117,28 @@ export class OptionsComponent implements OnInit {
     // fetch list of previously answered questions + wrong questions
   }
 
-  getQuestionCount(event:any){
-    this.qCount = event.target.value;
-    console.log(this.qCount);
-
-    this.optionsForm.setValue({
-      qCount: [this.qCount]
-    });
+  getQuestionCount(event:any): void{
+    this.num_qCount = event.target.value;
+    this.ctr_qCount.setValue(this.num_qCount);
+    console.log(this.num_qCount);
   }
 
-  toggleDetails(){
-    this.details = !this.details;
-    console.log(this.details);
-    this.optionsForm.addControl('details_flag', this.details);
-//    this.optionsForm?.addControl('control-name', new FormControl('', [Validators.required])
-    /*this.optionsForm.setValue({
-      _id: this.exam$.value._id,
-      details_flag: [this.details]
-    });*/
+  toggleDetails(): void{
+    this.bln_details = !this.bln_details;
+    this.ctr_details.setValue(this.bln_details);
+    console.log(this.bln_details);
   }
 
-  submitForm(){
+  submitForm(): void{
+    //this.fg_optionsForm.addControl('bln_details', this.ctr_details);
+    //this.fg_optionsForm.addControl('num_qCount', this.ctr_qCount);
+    var ctr_options: FormArray = new FormArray([this.ctr_qCount, this.ctr_details]);
+    this.fg_optionsForm.addControl('options', ctr_options);
+
     console.log("Submit!");
-    this.formSubmitted.emit(this.optionsForm.value);
+    console.log(this.fg_optionsForm.value);
+    this.formSubmitted.emit(this.fg_optionsForm.value);
+    
   }
 
 }

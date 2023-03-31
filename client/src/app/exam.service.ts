@@ -46,6 +46,11 @@ export class ExamService {
   createExam(exam: Exam): Observable<string> {
     return this.httpClient.post(`${this.url}/exams`, exam, { responseType: 'text' });
   }
+
+  createEmptyExam(): Observable<string> {
+    var exam: Observable<Exam> = new Observable();
+    return this.httpClient.post(`${this.url}/exams`, exam, { responseType: 'text' });
+  }
   
   updateExam(id: string, exam: Exam): Observable<string> {
     return this.httpClient.put(`${this.url}/exams/${id}`, exam, { responseType: 'text' });

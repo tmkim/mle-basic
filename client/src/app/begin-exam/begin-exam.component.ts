@@ -13,30 +13,44 @@ import { ExamService } from '../exam.service';
   ]
 })
 export class BeginExamComponent {
+
+  num_seconds = 420;
+
   constructor(
     private router: Router,
     private examService: ExamService
   ){}
 
-  beginExam(exam: Exam){
+  ngOnInit(): void{
+
+  }
+
+  beginExam(exam: Exam): void{
     console.log("begin!");
-    console.log(exam._id);
+    console.log(exam.options);
+
+    this.set_timer(exam.options);
+    this.set_exam_questions();
+    this.update_exam();
     
-    this.router.navigate(['/exam-time', 'asdf']);
-    /*
-    TODO: update exam entry with number=0 to latest number (n)
-    TODO: change below to update empty exam to be current exam
-      + update DB entry with options + initial exam config 
-    *
-    this.examService.createExam(exam) 
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/examtime', exam._id]);
-        },
-        error: (error) => {
-          alert("Failed to begin exam");
-          console.error(error);
-        }
-      });*/
+    //this.router.navigate(['/exam-time', exam._id]);
+  }
+
+  set_timer(options: any): void{
+    //options[0] == options[qCount]
+    var num_qCount = options[0];
+    this.num_seconds = num_qCount * 180;
+    //calculate timer based on number of questions
+  }
+
+  set_exam_questions(): void{
+    // randomly grab qCount questions from questions database
+    // add logic to grab intelligently (unasked Qs, incorrect Qs, no repeats, etc)
+  }
+
+  update_exam(): void{
+    // update DB entry for current exam 
+    // number = latest number (n), question array, time, options
+
   }
 }

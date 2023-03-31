@@ -112,5 +112,13 @@ Basic exam app for tw mle (no users)
     * TODO/DONE: figure out why Begin button is not working ??
         >> fixed --> submit button was in an inner <form> so outer <form> submission logic did not apply 
     ** OPTIONAL TODO: make options form pretty (fix spacing when shrinking window size)
-    ** TODO: make sure current EmptyExam is being passed properly
+    ** TODO/DONE: make sure current EmptyExam is being passed properly
         --> form controls ?
+
+03/31/2023
+    - set up form array for options 
+    - start building skeleton for exam creation
+    - calculate time based on number of questions 
+    - TODO: make dummy questions, grab questions with smart RNG
+        ** update EmptyExam to no longer be empty
+        ** create empty exam if none 
