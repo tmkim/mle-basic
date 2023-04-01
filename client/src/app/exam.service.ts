@@ -24,6 +24,16 @@ export class ExamService {
     this.refreshExams();
     return this.exams$;
   }
+
+  getNumExams(): number{
+    var numExams = 0;
+    this.httpClient.get<Exam[]>(`${this.url}/exams`)
+    .subscribe(exams => {
+     numExams = exams.length
+   });
+    return numExams;
+  }
+
   
   getExam(id: string): Observable<Exam> {
     return this.httpClient.get<Exam>(`${this.url}/exams/${id}`);

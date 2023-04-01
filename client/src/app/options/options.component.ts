@@ -16,8 +16,8 @@ import { ExamService } from '../exam.service';
           <form>
             <label for="formControlRange">Number of Questions: </label>
             <div>
-              <input type="range" value="40" min="1" max="100" oninput="this.nextElementSibling.value = this.value" (change)="getQuestionCount($event)">
-              <output>40</output>
+              <input type="range" value="20" min="1" max="40" oninput="this.nextElementSibling.value = this.value" (change)="getQuestionCount($event)">
+              <output>20</output>
             </div>
           </form>
         </div>
@@ -65,7 +65,7 @@ export class OptionsComponent implements OnInit {
   fg_optionsForm: FormGroup = new FormGroup({});
   bln_details = false;
   ctr_details: FormControl = new FormControl(this.bln_details);
-  num_qCount = 40;
+  num_qCount = 20;
   ctr_qCount: FormControl = new FormControl(this.num_qCount);
   
   constructor(

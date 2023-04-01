@@ -13,13 +13,31 @@ export class QuestionService {
   constructor(private httpClient: HttpClient) { }
 
   private refreshQuestions() {
-    this.httpClient.get<Question[]>('${this.url}/question')
+    this.httpClient.get<Question[]>(`${this.url}/questions`)
      .subscribe(questions => {
       this.questions$.next(questions);
     });
   }
   getQuestions(): Subject<Question[]> {
     this.refreshQuestions();
+    return this.questions$;
+  }
+
+  getExamQuestions(qCount: number): Subject<Question[]>{
+    var buildQ$: Question[] = [];
+    var rngCheck: any[] = [];
+    var rng = 0;
+    this.httpClient.get<Question[]>(`${this.url}/questions/`)
+     .subscribe(questions => {      
+      while(rngCheck.length < qCount){
+        rng = Math.floor(Math.random() * (questions.length));
+        if(!rngCheck.includes(rng)){
+          rngCheck.push(rng);
+          buildQ$.push(questions[rng]);
+        }
+      }
+        this.questions$.next(buildQ$);
+     })
     return this.questions$;
   }
   
