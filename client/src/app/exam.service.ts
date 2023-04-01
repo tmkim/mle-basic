@@ -11,6 +11,7 @@ import { Int32 } from 'mongodb';
 export class ExamService {
   private url = 'http://localhost:5200';
   private exams$: Subject<Exam[]> = new Subject();
+  private numExams$ = 0;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -25,15 +26,13 @@ export class ExamService {
     return this.exams$;
   }
 
-  getNumExams(): number{
-    var numExams = 0;
+  getNumExams(): Observable<Exam[]>{
     this.httpClient.get<Exam[]>(`${this.url}/exams`)
     .subscribe(exams => {
-     numExams = exams.length
+      this.exams$.next(exams);
    });
-    return numExams;
+    return this.exams$;
   }
-
   
   getExam(id: string): Observable<Exam> {
     return this.httpClient.get<Exam>(`${this.url}/exams/${id}`);

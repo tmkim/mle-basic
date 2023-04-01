@@ -23,24 +23,41 @@ export class QuestionService {
     return this.questions$;
   }
 
-  getExamQuestions(qCount: number): Subject<Question[]>{
+  // getExamQuestions(qCount: number): Subject<Question[]>{
+  //   var buildQ$: Question[] = [];
+  //   var rngCheck: any[] = [];
+  //   var rng = 0;
+  //   this.httpClient.get<Question[]>(`${this.url}/questions/`)
+  //    .subscribe(questions => {      
+  //     while(rngCheck.length < qCount){
+  //       rng = Math.floor(Math.random() * (questions.length-1));
+  //       if(!rngCheck.includes(rng)){
+  //         rngCheck.push(rng);
+  //         buildQ$.push(questions[rng]);
+  //       }
+  //     }
+  //       this.questions$.next(buildQ$);
+  //    })
+  //   return this.questions$;
+  // }
+  
+  getExamQuestions(qCount: number): Question[]{
     var buildQ$: Question[] = [];
     var rngCheck: any[] = [];
     var rng = 0;
     this.httpClient.get<Question[]>(`${this.url}/questions/`)
      .subscribe(questions => {      
       while(rngCheck.length < qCount){
-        rng = Math.floor(Math.random() * (questions.length));
+        rng = Math.floor(Math.random() * (questions.length-1));
         if(!rngCheck.includes(rng)){
           rngCheck.push(rng);
           buildQ$.push(questions[rng]);
         }
       }
-        this.questions$.next(buildQ$);
      })
-    return this.questions$;
+    return buildQ$;
   }
-  
+
   getQuestion(id: string): Observable<Question> {
     return this.httpClient.get<Question>(`${this.url}/questions/${id}`);
   }

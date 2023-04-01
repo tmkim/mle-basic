@@ -34,6 +34,9 @@ export class BeginExamComponent {
   questions$: Observable<Question[]> = new Observable();
   exams$: Observable<Exam[]> = new Observable();
   num_seconds = 0;
+  num_exams = 0;
+
+  arr_questions: any[] = [];
 
   constructor(
     private router: Router,
@@ -49,30 +52,44 @@ export class BeginExamComponent {
     console.log("begin!");
     console.log(exam.options);
 
-    this.set_timer(exam.options);
-    this.set_exam_questions(exam.options);
     this.update_exam(exam);
     
     //this.router.navigate(['/exam-time', exam._id]);
   }
 
-  set_timer(options: any): void{
-    //options[0] == options[qCount]
-    var num_qCount = options[0];
-    this.num_seconds = num_qCount * 72;
-    //calculate timer based on number of questions
+  //options[0] == options[qCount]
+  //calculate timer based on number of questions
+  set_timer(exam: any): void{
+    this.num_seconds = exam.options[0] * 72;
   }
 
-  set_exam_questions(options: any): void{
-    // randomly grab qCount questions from questions database
-    // add logic to grab more intelligently (unasked Qs, incorrect Qs, no repeats, etc)
-    this.questions$ = this.questionService.getExamQuestions(options[0]);
+  // randomly grabs qCount questions from questions database
+  set_exam_questions(exam: any): void{
+  this.arr_questions = this.questionService.getExamQuestions(exam.options[0])
+
+  // Optional TODO: add logic to grab more intelligently (unasked Qs, incorrect Qs, no repeats, etc) -> in question.services.ts
+
+  // Below uses Subject<Question[]> instead of Question[].. not sure which is better yet
+  // this.questionService.getExamQuestions(options[0]).subscribe(res =>
+  //   this.arr_questions.push(res));
+  }
+
+  set_num_exams(exam: Exam): void{
+    this.examService.getExams().subscribe(
+      data => {
+        exam.number = data.length;
+      }
+    );
+
   }
 
   update_exam(exam: Exam): void{
-    exam.number = this.examService.getNumExams();
-    //exam.questions = this.questions$; *** fix "questions" in DB to be object array? or build question array based on this.questions$ ?
-    //exam.time = this.num_seconds; *** fix "time" to be number instead of string
+    this.set_num_exams(exam);
+    this.set_timer(exam);
+    this.set_exam_questions(exam);
+    exam.questions = this.arr_questions; //*** fix "questions" in DB to be object array? or build question array based on this.questions$ ?
+    exam.time = this.num_seconds; //*** fix "time" to be number instead of string
+
     //exam.options is already set
 
     // update DB entry for current exam 

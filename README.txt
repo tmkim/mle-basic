@@ -130,3 +130,8 @@ Basic exam app for tw mle (no users)
     - build exam with qCount random questions (non-repeating)
     - work on updating emptyexam with initial exam config
         ** need to update database structure 
+
+04/01 p2
+    - did more work on configuring initial exam config > mostly done 
+    - cleaned up twmle-basic database config and validators
+    

@@ -1,14 +1,13 @@
-import * as mongodb from "mongodb";
-
 export interface Question {
-    _id?: mongodb.ObjectId;
+    _id?: string;
     question?: string;
     image?: string;
     optionA?: string; 
     optionB?: string; 
     optionC?: string; 
-    optionDv: string; 
+    optionD?: string; 
     answer?: "A" | "B" | "C" | "D";
+    userAnswer?: "A" | "B" | "C" | "D";
     explanation?: string;
     //topic?: string;
     //difficulty?: "1" | "2" | "3" | "4" | "5"

@@ -14,7 +14,7 @@ export async function connectToDatabase(uri: string) {
     const client = new mongodb.MongoClient(uri);
     await client.connect();
 
-    const db = client.db("twmle");
+    const db = client.db("twmle-basic");
     await applySchemaValidation(db);
 
     const examsCollection = db.collection<Exam>("exams");
@@ -27,7 +27,7 @@ async function applySchemaValidation(db: mongodb.Db) {
     const examSchema = {
         $jsonSchema: {
             bsonType: "object",
-            required: ["number","time", "options"],
+//            required: ["number","time", "options"],
             additionalProperties: false,
             properties: {
                 _id: {},
@@ -41,12 +41,12 @@ async function applySchemaValidation(db: mongodb.Db) {
                 },
                 questions: {
                     bsonType: ["array"],
-                    description: "'questions' is optional and is an array of strings",
+                    description: "'questions' is optional and is an array of objects",
                     minItems: 0,
                     maxItems: 255,
                     items: {
-                        bsonType: "string",
-                        description: "question ID number"
+                        bsonType: "object",
+                        description: "array of question objects"
                     }
                 },
                 incorrect: {
@@ -56,7 +56,7 @@ async function applySchemaValidation(db: mongodb.Db) {
                     maxItems: 255,
                     items: {
                         bsonType: "string",
-                        description: "question ID number"
+                        description: "array of incorrect question ID numbers"
                     }
                 },
                 flagged: {
@@ -66,12 +66,12 @@ async function applySchemaValidation(db: mongodb.Db) {
                     maxItems: 255,
                     items: {
                         bsonType: "string",
-                        description: "question ID number"
+                        description: "array of flagged question ID numbers"
                     }
                 },
                 time: {
-                    bsonType: "string",
-                    description: "'time' is required and is a string"
+                    bsonType: "int",
+                    description: "'time' is required and is an int"
                 },
                 current: {
                     bsonType: "string",
@@ -79,22 +79,22 @@ async function applySchemaValidation(db: mongodb.Db) {
                 },
                 options: {
                     bsonType: ["array"],
-                    description: "'qflag' is optional and is an array of strings",
+                    description: "'options' is an optional array of objects",
                     minItems: 0,
-                    maxItems: 255,
+                    maxItems: 2,
                     items: {
                         bsonType: "object",
-                        required: ["place","holder"],
+//                        required: ["place","holder"],
                         additionalProperties: false,
                         description: "options must contain the following fields",
                         properties: {
-                            place: {
-                                bsonType: "string",
-                                description: "TBD"
+                            qCount: {
+                                bsonType: "int",
+                                description: "qCount is a number that represents how many questions are in the exam"
                             },
-                            holder: {
-                                bsonType: "string",
-                                description: "TBD",
+                            details: {
+                                bsonType: "bool",
+                                description: "details is a boolean that represents whether an expalanation will be showed after each question or not",
                             }
                         }
                     }
@@ -109,6 +109,7 @@ async function applySchemaValidation(db: mongodb.Db) {
             required: ["question","optionA","optionB","optionC","optionD","answer"],
             additionalProperties: false,
             properties: {
+                _id: {},
                 question: {
                     bsonType: "string",
                     description: "'question' is required and is a string"
@@ -141,6 +142,16 @@ async function applySchemaValidation(db: mongodb.Db) {
                         "D"
                     ],
                     description: "'answer' is required and must use one of the listed options"
+                },
+                userAnswer: {
+                    enum: [
+                        "A",
+                        "B",
+                        "C",
+                        "D",
+                        ""
+                    ],
+                    description: "'userAnswer' is optional and must use one of the listed options"
                 },
                 explanation: {
                     bsonType: "string",
