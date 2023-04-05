@@ -11,7 +11,6 @@ import { Int32 } from 'mongodb';
 export class ExamService {
   private url = 'http://localhost:5200';
   private exams$: Subject<Exam[]> = new Subject();
-  private numExams$ = 0;
 
   constructor(private httpClient: HttpClient) { }
 

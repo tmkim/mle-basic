@@ -134,4 +134,12 @@ Basic exam app for tw mle (no users)
 04/01 p2
     - did more work on configuring initial exam config > mostly done 
     - cleaned up twmle-basic database config and validators
-    
+
+04/04 
+    - Work on updating database properly (exam)
+    - need to work on building question list properly!! 
+        * console.log(array) shows array but array[0] shows undefined ??
+        - I think it is built correctly but need to use value outside of subscribe 
+    ** Need to work on properly passing question list to update exam!
+        - going to try moving update call to inside of set_question subscription
+        

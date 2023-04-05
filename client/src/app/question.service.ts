@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, tap } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { Question } from './question';
+import { access } from 'fs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { Question } from './question';
 export class QuestionService {
   private url = 'http://localhost:5200';
   private questions$: Subject<Question[]> = new Subject();
+  private qList$: Subject<Question[]> = new Subject();
 
   constructor(private httpClient: HttpClient) { }
 
@@ -41,7 +43,25 @@ export class QuestionService {
   //   return this.questions$;
   // }
   
-  getExamQuestions(qCount: number): Question[]{
+  // getExamQuestions(qCount: number): Question[]{
+  //   var buildQ$: Question[] = [];
+  //   var rngCheck: any[] = [];
+  //   var rng = 0;
+  //   this.httpClient.get<Question[]>(`${this.url}/questions/`)
+  //    .subscribe(questions => {      
+  //     while(rngCheck.length < qCount){
+  //       rng = Math.floor(Math.random() * (questions.length-1));
+  //       if(!rngCheck.includes(rng)){
+  //         rngCheck.push(rng);
+  //         buildQ$.push(questions[rng]);
+  //       }
+  //     }
+  //     console.log(buildQ$);
+  //    })
+  //   return buildQ$;
+  // }
+
+  getExamQuestions(qCount: number): Subject<Question[]>{
     var buildQ$: Question[] = [];
     var rngCheck: any[] = [];
     var rng = 0;
@@ -54,8 +74,10 @@ export class QuestionService {
           buildQ$.push(questions[rng]);
         }
       }
+      this.qList$.next(buildQ$);
+      
      })
-    return buildQ$;
+    return this.qList$;
   }
 
   getQuestion(id: string): Observable<Question> {

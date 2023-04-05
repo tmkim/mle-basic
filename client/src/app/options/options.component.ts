@@ -135,8 +135,8 @@ export class OptionsComponent implements OnInit {
     var ctr_options: FormArray = new FormArray([this.ctr_qCount, this.ctr_details]);
     this.fg_optionsForm.addControl('options', ctr_options);
 
-    console.log("Submit!");
-    console.log(this.fg_optionsForm.value);
+    //console.log("Submit!");
+    //console.log(this.fg_optionsForm.value);
     this.formSubmitted.emit(this.fg_optionsForm.value);
     
   }

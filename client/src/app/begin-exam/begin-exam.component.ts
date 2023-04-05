@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, map } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { Question } from '../question';
@@ -31,8 +31,21 @@ import { QuestionService } from '../question.service';
 })
 export class BeginExamComponent {
 
+  newExam: Exam = {
+    number: 0,
+    score: '',
+    questions: new Array<Question>,
+    incorrect: new Array<String>,
+    flagged: new Array<String>,
+    time: 0,
+    current: '',
+    options: new Array<Object>
+  };
+
   questions$: Observable<Question[]> = new Observable();
   exams$: Observable<Exam[]> = new Observable();
+  examQs$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
+  arr_examQs: any[] = [];
   num_seconds = 0;
   num_exams = 0;
 
@@ -61,39 +74,69 @@ export class BeginExamComponent {
   //calculate timer based on number of questions
   set_timer(exam: any): void{
     this.num_seconds = exam.options[0] * 72;
+    this.newExam.time = this.num_seconds;
   }
 
   // randomly grabs qCount questions from questions database
   set_exam_questions(exam: any): void{
-  this.arr_questions = this.questionService.getExamQuestions(exam.options[0])
+    //this.newExam.questions = this.questionService.getExamQuestions(exam.options[0])
+    this.questionService.getExamQuestions(exam.options[0]).subscribe(qList => {
+      this.examQs$.next(qList);
+      // console.log(this.newExam.questions[0]);
+      this.newExam.questions = this.examQs$.value;
+      this.newExam.current = this.newExam.questions[0]._id;
+      //console.log(this.examQs$.value);
+      console.log(this.newExam);
+
+      this.examService.updateExam(exam._id || '', this.newExam)
+       .subscribe({
+          next: () => {
+                this.router.navigate(['/exam-time', exam._id]);
+          },
+          error: (e) => {
+            alert(`Failed to update exam: ${exam._id}`);
+            console.error(e);
+          }
+        })
+  })
+  console.log(this.arr_examQs);
 
   // Optional TODO: add logic to grab more intelligently (unasked Qs, incorrect Qs, no repeats, etc) -> in question.services.ts
 
-  // Below uses Subject<Question[]> instead of Question[].. not sure which is better yet
-  // this.questionService.getExamQuestions(options[0]).subscribe(res =>
-  //   this.arr_questions.push(res));
+  /* This uses Subject<Question[]> instead of Question[].. not sure which is better yet
+     this.questionService.getExamQuestions(options[0]).subscribe(res =>
+     this.arr_questions.push(res));*/
   }
 
-  set_num_exams(exam: Exam): void{
+  set_exam_num(): void{
     this.examService.getExams().subscribe(
       data => {
-        exam.number = data.length;
+    this.newExam.number = data.length;
       }
     );
-
   }
 
   update_exam(exam: Exam): void{
-    this.set_num_exams(exam);
-    this.set_timer(exam);
-    this.set_exam_questions(exam);
-    exam.questions = this.arr_questions; //*** fix "questions" in DB to be object array? or build question array based on this.questions$ ?
-    exam.time = this.num_seconds; //*** fix "time" to be number instead of string
 
-    //exam.options is already set
+    this.set_exam_num();
+    this.set_timer(exam);
+    this.newExam.options = exam.options;
+    this.set_exam_questions(exam);
+
+    console.log(exam);
+
+    // this.examService.updateExam(exam._id || '', this.newExam)
+    //  .subscribe({
+    //   next: () => {
+    //         this.router.navigate(['/exam-time', exam._id]);
+    //   },
+    //   error: (e) => {
+    //     alert(`Failed to update exam: ${exam._id}`);
+    //     console.error(e);
+    //   }
+    //  })
 
     // update DB entry for current exam 
-    // number = latest number (n), question array, time, options
 
   }
 }
