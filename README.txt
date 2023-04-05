@@ -142,4 +142,8 @@ Basic exam app for tw mle (no users)
         - I think it is built correctly but need to use value outside of subscribe 
     ** Need to work on properly passing question list to update exam!
         - going to try moving update call to inside of set_question subscription
-        
+
+04/04 p2
+    - Successfully update empty exam with initial config based on options 
+        > properly update number, question list, time, options, current 
+    - Create new empty exam if no empty exam exists 

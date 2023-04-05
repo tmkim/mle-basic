@@ -68,7 +68,7 @@ export class QuestionService {
     this.httpClient.get<Question[]>(`${this.url}/questions/`)
      .subscribe(questions => {      
       while(rngCheck.length < qCount){
-        rng = Math.floor(Math.random() * (questions.length-1));
+        rng = Math.floor(Math.random() * (questions.length));
         if(!rngCheck.includes(rng)){
           rngCheck.push(rng);
           buildQ$.push(questions[rng]);

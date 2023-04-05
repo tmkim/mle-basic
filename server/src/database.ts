@@ -78,11 +78,11 @@ async function applySchemaValidation(db: mongodb.Db) {
                     description: "'current' is optional and is a string"
                 },
                 options: {
-                    bsonType: ["array"],
-                    description: "'options' is an optional array of objects",
-                    minItems: 0,
-                    maxItems: 2,
-                    items: {
+                    // bsonType: ["array"],
+                    // description: "'options' is an optional array of objects",
+                    // minItems: 0,
+                    // maxItems: 2,
+                    // items: {
                         bsonType: "object",
 //                        required: ["place","holder"],
                         additionalProperties: false,
@@ -97,7 +97,7 @@ async function applySchemaValidation(db: mongodb.Db) {
                                 description: "details is a boolean that represents whether an expalanation will be showed after each question or not",
                             }
                         }
-                    }
+                    //}
                 },
 
             },

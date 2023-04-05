@@ -39,22 +39,6 @@ examRouter.get("/:id", async (req, res) => {
     }
  });
 
- examRouter.get("/:time", async (req, res) => {
-    try {
-        const questionCount = Number(req?.params?.time);
-        const query = { qCount: questionCount };
-        const exam = await examColl.exams.findOne(query);
-        
-        if (exam) {
-            res.status(200).send(exam);
-        } else {
-            res.status(404).send(`Failed to find an exam with ${questionCount} time`);
-        }
-  
-    } catch (error) {
-        res.status(404).send(`Failed to find an exam with ${req?.params?.time} time`);
-    }
- });
 
  examRouter.post("/", async (req, res) => {
     try {

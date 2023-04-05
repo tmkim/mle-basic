@@ -37,8 +37,8 @@ export class ExamService {
     return this.httpClient.get<Exam>(`${this.url}/exams/${id}`);
   }
 
-  getEmptyExam(number: number): Observable<Exam> {
-      return this.httpClient.get<Exam>(`${this.url}/exams/${number}`);
+  getEmptyExam(): Observable<Exam> {
+      return this.httpClient.get<Exam>(`${this.url}/exams/-1`);
     /*return this.httpClient.get<Exam>(`${this.url}/exams/${number}`).pipe(map(res => {
       if(res.status == 404) {
         console.log("404");
@@ -56,7 +56,9 @@ export class ExamService {
   }
 
   createEmptyExam(): Observable<string> {
-    var exam: Observable<Exam> = new Observable();
+    var exam = {
+      number: -1,
+    };
     return this.httpClient.post(`${this.url}/exams`, exam, { responseType: 'text' });
   }
   

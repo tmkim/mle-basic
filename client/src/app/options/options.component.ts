@@ -1,9 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import * as e from 'express';
-import { async, asyncScheduler, BehaviorSubject, Observable, of } from 'rxjs';
+import { async, asyncScheduler, BehaviorSubject, EmptyError, Observable, of } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
+import { Option } from '../option';
 
 @Component({
   selector: 'app-options',
@@ -63,10 +64,12 @@ export class OptionsComponent implements OnInit {
   obs_newExam: Observable<Exam> = new Observable();
   
   fg_optionsForm: FormGroup = new FormGroup({});
-  bln_details = false;
-  ctr_details: FormControl = new FormControl(this.bln_details);
-  num_qCount = 20;
-  ctr_qCount: FormControl = new FormControl(this.num_qCount);
+  // bln_details = false;
+  // ctr_details: FormControl = new FormControl(this.bln_details);
+  // num_qCount = 20;
+  // ctr_qCount: FormControl = new FormControl(this.num_qCount);
+  obj_option: Option = new Option(20, false);
+  ctr_option: FormControl = new FormControl(this.obj_option);
   
   constructor(
     private examService: ExamService,
@@ -75,7 +78,7 @@ export class OptionsComponent implements OnInit {
   //constructor(private fb: FormBuilder){}
 
   ngOnInit(): void{
-    this.examService.getEmptyExam(-1).subscribe({
+    this.examService.getEmptyExam().subscribe({
       next: (emptyExam) => {
         console.log(emptyExam);
         this.bs_exam$.next(emptyExam);
@@ -86,7 +89,22 @@ export class OptionsComponent implements OnInit {
       },
       error: (e) => {
         console.log(`${e.error} -> Create new empty exam`)
-        //this.examService.createEmptyExam();
+        this.examService.createEmptyExam().subscribe({
+          next: () => {
+            console.log('added');
+            this.examService.getEmptyExam().subscribe({
+              next: (emptyExam) => {
+                this.bs_exam$.next(emptyExam);        
+                this.fg_optionsForm = this.fb.group({
+                  _id: emptyExam._id
+                })
+              },
+            })
+          },
+          error: (e) => {
+            console.log(`${e.error}`)
+          }
+        });
       },
       complete: () => console.log('Empty Exam available')
     });
@@ -118,22 +136,24 @@ export class OptionsComponent implements OnInit {
   }
 
   getQuestionCount(event:any): void{
-    this.num_qCount = event.target.value;
-    this.ctr_qCount.setValue(this.num_qCount);
-    console.log(this.num_qCount);
+    this.obj_option.qCount = Number(event.target.value);
+    // this.num_qCount = event.target.value;
+    // this.ctr_qCount.setValue(this.num_qCount);
+    // console.log(this.num_qCount);
   }
 
   toggleDetails(): void{
-    this.bln_details = !this.bln_details;
-    this.ctr_details.setValue(this.bln_details);
-    console.log(this.bln_details);
+    this.obj_option.details = !this.obj_option.details;
+    // this.bln_details = !this.bln_details;
+    // this.ctr_details.setValue(this.bln_details);
+    // console.log(this.bln_details);
   }
 
   submitForm(): void{
     //this.fg_optionsForm.addControl('bln_details', this.ctr_details);
     //this.fg_optionsForm.addControl('num_qCount', this.ctr_qCount);
-    var ctr_options: FormArray = new FormArray([this.ctr_qCount, this.ctr_details]);
-    this.fg_optionsForm.addControl('options', ctr_options);
+    //var ctr_options: FormArray = new FormArray([this.ctr_qCount, this.ctr_details]);
+    this.fg_optionsForm.addControl('options', this.ctr_option);
 
     //console.log("Submit!");
     //console.log(this.fg_optionsForm.value);
