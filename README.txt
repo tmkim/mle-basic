@@ -135,7 +135,7 @@ Basic exam app for tw mle (no users)
     - did more work on configuring initial exam config > mostly done 
     - cleaned up twmle-basic database config and validators
 
-04/04 
+04/05 
     - Work on updating database properly (exam)
     - need to work on building question list properly!! 
         * console.log(array) shows array but array[0] shows undefined ??
@@ -143,7 +143,15 @@ Basic exam app for tw mle (no users)
     ** Need to work on properly passing question list to update exam!
         - going to try moving update call to inside of set_question subscription
 
-04/04 p2
+04/05 p2
     - Successfully update empty exam with initial config based on options 
         > properly update number, question list, time, options, current 
     - Create new empty exam if no empty exam exists 
+
+04/06
+    - Plan:
+        > start working on exam-time functionality 
+    - on init, load exam data and display first question 
+    - npm install ngx-countdown (countdown timer)
+        ** couldn't get it working well? Says I need to make sure it is part of module but if I add to app.module.ts it breaks other things?
+    - Timer starts at correct value, need to figure out how to save value.

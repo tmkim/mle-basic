@@ -12,20 +12,6 @@ import { Option } from '../option';
   template: `
     <h2 class="text-center m-5">Begin New Exam</h2>
     <app-options (formSubmitted)="beginExam($event)"></app-options>
-    <table class="table table-striped table-bordered">
-      <thead>
-        <tr>
-          <th>question id</th>
-          <th>question</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let question of questions$ | async">
-          <td>{{question._id}}</td>
-          <td>{{question.question}}</td>
-        </tr>
-      </tbody>
-    </table>
   `,
   styles: [
   ]
@@ -43,14 +29,10 @@ export class BeginExamComponent {
     options: new Option(20, false)
   };
 
-  questions$: Observable<Question[]> = new Observable();
   exams$: Observable<Exam[]> = new Observable();
   examQs$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
-  arr_examQs: any[] = [];
   num_seconds = 0;
   num_exams = 0;
-
-  arr_questions: any[] = [];
 
   constructor(
     private router: Router,
@@ -65,15 +47,9 @@ export class BeginExamComponent {
     this.update_exam(exam);
   }
 
-  //calculate timer based on number of questions
-  set_timer(exam: any): void{
-    this.num_seconds = exam.options.qCount * 72;
-    this.newExam.time = this.num_seconds;
-  }
-
   // randomly grabs qCount questions from questions database
   update_exam(exam: any): void{
-    this.set_timer(exam);
+    this.newExam.time = exam.options.qCount * 72
     this.newExam.options = exam.options;
 
     this.questionService.getExamQuestions(exam.options.qCount).subscribe(qList => {
