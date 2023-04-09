@@ -163,3 +163,6 @@ Basic exam app for tw mle (no users)
         - timer starts at appropriate value 
         - timer pauses on submit -> saves value and can update database with new value (TODO)
         - timer starts again on prev/next 
+        - cleaned up "timer" component
+
+        
