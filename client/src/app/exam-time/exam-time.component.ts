@@ -29,25 +29,25 @@ import { Option } from '../option';
     </div>
     <div class="form-check">
       <div class="row-1">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" [(ngModel)]="answerRadio" value="A">
           <label class="form-check-label" for="flexRadioDefault1">
           {{currQ.value.optionA}}
           </label>
       </div>
       <div class="row-2">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" [(ngModel)]="answerRadio" value="B">
         <label class="form-check-label" for="flexRadioDefault2">
         {{currQ.value.optionB}}
         </label>
       </div>
       <div class="row-3">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" [(ngModel)]="answerRadio" value="C">
         <label class="form-check-label" for="flexRadioDefault3">
         {{currQ.value.optionC}}
         </label>
       </div>
       <div class="row-4">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4">
+      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" [(ngModel)]="answerRadio" value="D">
         <label class="form-check-label" for="flexRadioDefault4">
         {{currQ.value.optionD}}
         </label>
@@ -125,6 +125,8 @@ export class ExamTimeComponent implements OnInit {
   extimer = 0;
   timerSub: Subscription = new Subscription();
   pausetimer = new Subject();
+  answerMap = new Map;
+  answerRadio = '';
 
   // config: CountdownConfig = {};
 
@@ -147,6 +149,7 @@ export class ExamTimeComponent implements OnInit {
       this.options$.next(exam.options !);
 
       this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
+      this.resetAnswer(); // TODO: in case of resume exam
       console.log(this.exam.value);
     });
   }
@@ -181,19 +184,40 @@ export class ExamTimeComponent implements OnInit {
 
   }
 
+  //display previous question - if details off, save answer choice. Unpause timer if paused.
+  prevQ(){
+    if (this.num > 1){ //prevent going into negative numbers - TODO: disable button on condition
+      this.num -= 1;
+      if(this.pausetimer){
+        this.setTimer(this.extimer);
+      }
+
+      this.currQ.next(this.examQs$.value[this.num-1]);
+
+      this.resetAnswer();  
+    }
+  }
+
   //display next question - if details off, save answer choice. Unpause timer if paused.
   nextQ(){
-    if(this.pausetimer){
-      this.setTimer(this.extimer);
-    }
+    if(this.num < this.examQs$.value.length){ //prevent going too far - TODO: disable button on condition
+      this.num += 1;
+      if(this.pausetimer){
+        this.setTimer(this.extimer);
+      }
+      // this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
+      this.currQ.next(this.examQs$.value[this.num-1]);
 
+      this.resetAnswer();
+    }
   }
 
   submitQ(){
-    console.log(this.extimer);
+    this.answerMap.set(this.num, this.answerRadio)
+    console.log(this.answerMap.get(this.num));
     //update exam entry with new time
     //if details, pause timer??
-    if (!this.options$.value.details){
+    if (this.options$.value.details){
       this.timerSub.unsubscribe()
       this.pausetimer.next(0);
     }else{
@@ -202,9 +226,11 @@ export class ExamTimeComponent implements OnInit {
     }
   }
 
-  prevQ(){
-    if(this.pausetimer){
-      this.setTimer(this.extimer);
+  resetAnswer(){
+    if(this.answerMap.get(this.num)){
+      this.answerRadio = this.answerMap.get(this.num);
+    }else{
+      this.answerRadio = '';
     }
   }
 }

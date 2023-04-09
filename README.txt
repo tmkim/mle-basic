@@ -165,4 +165,8 @@ Basic exam app for tw mle (no users)
         - timer starts again on prev/next 
         - cleaned up "timer" component
 
-        
+    - answerMap to keep track of answers provided for each question #
+    - radio button functionality 
+        > checks answerMap if answer has been provided - if so, radio button selected by default. else no selection.
+        > set ngModel for buttons to access and reset values
+    - update questions appropriately when going next/prev 
