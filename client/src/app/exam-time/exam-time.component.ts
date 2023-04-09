@@ -1,11 +1,12 @@
 import { Component, Input, EventEmitter, OnInit, Output, DEFAULT_CURRENCY_CODE } from '@angular/core';
-import { takeWhile } from 'rxjs/operators';
+import { takeUntil, takeWhile } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs';
 import { Exam } from '../exam';
 import { Question } from '../question';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExamService } from '../exam.service';
+import { Option } from '../option';
 // import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
 
 @Component({
@@ -56,12 +57,17 @@ import { ExamService } from '../exam.service';
     <div class="row">
       <div class="col">
         <div class="form-check form-switch">
-          <button class="btn btn-primary mt-3" [routerLink]="['prev']"> <-- Previous</button>
+          <button class="btn btn-primary mt-3" (click)="prevQ()"> <-- Previous</button>
         </div>
       </div>
       <div class="col">
+      <div class="form-check form-switch">
+        <button class="btn btn-primary mt-3" (click)="submitQ()"> Submit </button>
+      </div>
+    </div>
+      <div class="col">
        <div class="form-check form-switch">
-          <button class="btn btn-primary mt-3" (click)="nextQ(timeRemaining$)">Next --></button>
+          <button class="btn btn-primary mt-3" (click)="nextQ()">Next --></button>
         </div>
       </div>
     </div>
@@ -113,8 +119,12 @@ export class ExamTimeComponent implements OnInit {
   exam: BehaviorSubject<Exam> = new BehaviorSubject({});
   currQ: BehaviorSubject<Question> = new BehaviorSubject({});
   examQs$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
+  //options$ = new Subject<Option>
+  options$: BehaviorSubject<Option> = new BehaviorSubject<Option>({qCount: 0, details: false});
   timeRemaining$: Observable<number> = new Observable<number>();
-  timer = 0;
+  extimer = 0;
+  timerSub: Subscription = new Subscription();
+  pausetimer = new Subject();
 
   // config: CountdownConfig = {};
 
@@ -134,6 +144,7 @@ export class ExamTimeComponent implements OnInit {
       this.exam.next(exam);
       this.setTimer(exam.time !);
       this.examQs$.next(exam.questions !);
+      this.options$.next(exam.options !);
 
       this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
       console.log(this.exam.value);
@@ -151,12 +162,49 @@ export class ExamTimeComponent implements OnInit {
     var seconds = time;
     this.timeRemaining$ = timer(0, 1000).pipe(
       map(n => (seconds - n) * 1000),
-      takeWhile(n => n >= 0),
+      //takeWhile(n => n >= 0, !this.pausetimer),// && !this.pausetimer),
+      takeUntil(this.pausetimer)
     );
+    this.timerSub = this.timeRemaining$.subscribe(t => {
+      //console.log(t);
+      this.extimer = t/1000;
+      if (t < 0){
+        this.pausetimer.next(0);
+        this.examOOT();
+      }
+    })
     // this.config.leftTime = seconds;
   }
 
-  nextQ(timer: Observable<number>){
-    timer.subscribe(t => console.log(t));
+  //Exam Out Of Time! (Time Remaining == 0)
+  examOOT(){
+
+  }
+
+  //display next question - if details off, save answer choice. Unpause timer if paused.
+  nextQ(){
+    if(this.pausetimer){
+      this.setTimer(this.extimer);
+    }
+
+  }
+
+  submitQ(){
+    console.log(this.extimer);
+    //update exam entry with new time
+    //if details, pause timer??
+    if (!this.options$.value.details){
+      this.timerSub.unsubscribe()
+      this.pausetimer.next(0);
+    }else{
+      //if details are not on, go to next question
+      this.nextQ();
+    }
+  }
+
+  prevQ(){
+    if(this.pausetimer){
+      this.setTimer(this.extimer);
+    }
   }
 }

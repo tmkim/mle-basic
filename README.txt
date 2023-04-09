@@ -155,3 +155,11 @@ Basic exam app for tw mle (no users)
     - npm install ngx-countdown (countdown timer)
         ** couldn't get it working well? Says I need to make sure it is part of module but if I add to app.module.ts it breaks other things?
     - Timer starts at correct value, need to figure out how to save value.
+
+
+04/09
+    - Work on timer ! 
+    >> Timer works pretty well~
+        - timer starts at appropriate value 
+        - timer pauses on submit -> saves value and can update database with new value (TODO)
+        - timer starts again on prev/next 

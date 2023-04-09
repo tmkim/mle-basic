@@ -6,4 +6,5 @@ export class Option{
         this.qCount = q;
         this.details = d;
     }
+    
 }

@@ -1,3 +1,4 @@
+import { Option } from "./option";
 import { Question } from "./question";
 
 export interface Exam {
@@ -10,5 +11,5 @@ export interface Exam {
     flagged?: Array<String>; //list of questions that are flagged for extra review
     time?: number; //"xx:xx" time left in case test is paused. 00:00 if done.
     current?: string; //current question id# in case test is paused
-    options?: Object; //options configured for test
+    options?: Option; //options configured for test
 }
