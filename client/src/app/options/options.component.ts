@@ -5,6 +5,7 @@ import { async, asyncScheduler, BehaviorSubject, EmptyError, Observable, of } fr
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { Option } from '../option';
+//import { Option } from '../option';
 
 @Component({
   selector: 'app-options',
@@ -68,7 +69,8 @@ export class OptionsComponent implements OnInit {
   // ctr_details: FormControl = new FormControl(this.bln_details);
   // num_qCount = 20;
   // ctr_qCount: FormControl = new FormControl(this.num_qCount);
-  obj_option: Option = new Option(20, false);
+  //obj_option: Option = new Option(20, false);
+  obj_option: Option = { qCount: 20, details: false};
   ctr_option: FormControl = new FormControl(this.obj_option);
   
   constructor(

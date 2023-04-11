@@ -57,17 +57,17 @@ import { Option } from '../option';
     <div class="row">
       <div class="col">
         <div class="form-check form-switch">
-          <button class="btn btn-primary mt-3" (click)="prevQ()"> <-- Previous</button>
+          <button class="btn btn-primary mt-3" *ngIf="num > 1" (click)="prevQ()"> <-- Previous</button>
         </div>
       </div>
       <div class="col">
       <div class="form-check form-switch">
-        <button class="btn btn-primary mt-3" (click)="submitQ()"> Submit </button>
+        <button class="btn btn-primary mt-3" *ngIf="options$.value.details" (click)="submitQ()"> Submit </button>
       </div>
     </div>
       <div class="col">
        <div class="form-check form-switch">
-          <button class="btn btn-primary mt-3" (click)="nextQ()">Next --></button>
+          <button class="btn btn-primary mt-3" *ngIf="num < examQs$.value.length" (click)="nextQ()">Next --></button>
         </div>
       </div>
     </div>
@@ -108,13 +108,6 @@ export class ExamTimeComponent implements OnInit {
   @Output()
   pauseExam = new EventEmitter<Exam>();
 
-//  @Input() 
-//   seconds = 300;
-//   timeRemaining$ = timer(0, 1000).pipe(
-//     map(n => (this.seconds - n) * 1000),
-//     takeWhile(n => n >= 0),
-//   );
-
 
   exam: BehaviorSubject<Exam> = new BehaviorSubject({});
   currQ: BehaviorSubject<Question> = new BehaviorSubject({});
@@ -122,13 +115,14 @@ export class ExamTimeComponent implements OnInit {
   //options$ = new Subject<Option>
   options$: BehaviorSubject<Option> = new BehaviorSubject<Option>({qCount: 0, details: false});
   timeRemaining$: Observable<number> = new Observable<number>();
+  answerMap$: BehaviorSubject<Map<Number, String>> = new BehaviorSubject(new Map());
   extimer = 0;
   timerSub: Subscription = new Subscription();
   pausetimer = new Subject();
   answerMap = new Map;
   answerRadio = '';
 
-  // config: CountdownConfig = {};
+  currExam: Exam = {};
 
   constructor(
     // private router: Router,
@@ -147,19 +141,16 @@ export class ExamTimeComponent implements OnInit {
       this.setTimer(exam.time !);
       this.examQs$.next(exam.questions !);
       this.options$.next(exam.options !);
-
+      // this.answerMap$.next(exam.answers !)
+      // console.log(this.answerMap$.value);
+      // if(exam.answers){
+      //   //this.answerMap = exam.answers;
+      // }
       this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
-      this.resetAnswer(); // TODO: in case of resume exam
+      //this.resetAnswer(); // TODO: in case of resume exam
       console.log(this.exam.value);
     });
   }
-
-  // handleEvent(ev: CountdownEvent){
-  //   console.log(ev);
-  //   if (ev.action == 'notify'){
-      
-  //   }
-  // }
 
   setTimer(time: number){
     var seconds = time;
@@ -186,44 +177,50 @@ export class ExamTimeComponent implements OnInit {
 
   //display previous question - if details off, save answer choice. Unpause timer if paused.
   prevQ(){
-    if (this.num > 1){ //prevent going into negative numbers - TODO: disable button on condition
+      // save exam progress
+      this.saveExamProgress();
       this.num -= 1;
+
+      // if timer is paused, unpause
       if(this.pausetimer){
         this.setTimer(this.extimer);
       }
 
+      // select next question to be displayed
       this.currQ.next(this.examQs$.value[this.num-1]);
 
       this.resetAnswer();  
-    }
   }
 
   //display next question - if details off, save answer choice. Unpause timer if paused.
   nextQ(){
-    if(this.num < this.examQs$.value.length){ //prevent going too far - TODO: disable button on condition
-      this.num += 1;
-      if(this.pausetimer){
-        this.setTimer(this.extimer);
-      }
-      // this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
-      this.currQ.next(this.examQs$.value[this.num-1]);
-
-      this.resetAnswer();
+    
+    // save exam progress
+    this.saveExamProgress();
+    this.num += 1;
+  
+    // if timer is paused, unpause
+    if(this.pausetimer){ 
+      this.setTimer(this.extimer);
     }
+
+    // select next question to be displayed
+    // this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
+    this.currQ.next(this.examQs$.value[this.num-1]);
+
+    this.resetAnswer();
   }
 
+  // button only available if details are on
   submitQ(){
-    this.answerMap.set(this.num, this.answerRadio)
-    console.log(this.answerMap.get(this.num));
-    //update exam entry with new time
-    //if details, pause timer??
-    if (this.options$.value.details){
-      this.timerSub.unsubscribe()
-      this.pausetimer.next(0);
-    }else{
-      //if details are not on, go to next question
-      this.nextQ();
-    }
+
+    this.saveExamProgress();
+  
+    //pause timer
+    this.timerSub.unsubscribe()
+    this.pausetimer.next(0); 
+  
+    //TODO: display answer details
   }
 
   resetAnswer(){
@@ -232,5 +229,31 @@ export class ExamTimeComponent implements OnInit {
     }else{
       this.answerRadio = '';
     }
+  }
+
+  //TODO: Not sure if answerMap is being stored properly - will need to test. Maybe mongodb storing but not displaying properly? idk
+  saveExamProgress(){
+    //save answer selection
+    this.answerMap.set(this.num, this.answerRadio)
+
+    //update exam entry in DB (do on each prev/next/submit to save exam progress)
+    this.currExam.answers = this.answerMap;
+    this.currExam.current = this.examQs$.value[this.num-1]._id;
+    //TODO: this.currExam.flagged
+    //TODO: this.currExam.incorrect (if details on)
+    this.currExam.time = this.extimer;
+    //TODO: on finish exam - this.currExam.score
+    this.examService.updateExam(this.exam.value._id || '', this.currExam)
+      .subscribe({
+      next: () =>{
+        console.log('exam progress saved');
+      },
+      error: (e) => {
+        alert("failed to update exam");
+        console.error(e);
+      }
+    })
+
+    console.log(this.currExam.answers);
   }
 }

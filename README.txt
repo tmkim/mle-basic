@@ -170,3 +170,23 @@ Basic exam app for tw mle (no users)
         > checks answerMap if answer has been provided - if so, radio button selected by default. else no selection.
         > set ngModel for buttons to access and reset values
     - update questions appropriately when going next/prev 
+
+04/11
+    - Now that basic exam functionality is set up, things I need to work on:
+        - Non-detail workflow vs Detail workflow 
+        - "Continue" and "Review" buttons (disable on condition)
+        - "Flag" questions 
+        - update UI to show list of questions on side bar 
+    - Today I work on non-detail workflow~
+        - "submit" and "next" are the same -> maybe "submit" invis? next() calls submit() 
+
+    - "submit" invisible if details are off, "prev" invis on q1, "next" invis on last q
+    - change Option() class to be interface 
+    - include "answers" map in Exams database table //TODO: make sure DB is saving map correctly 
+    - saveExamProgress() called on each button click 
+        TODO: Show details on submit( button )
+    - TODO: save and reload exam on page refresh 
+    - TODO: figure out how to make answerMap work with mongodb
+        (store and retrieve value)
+        > currently getting empty object on both store and retrieve 
+

@@ -21,12 +21,13 @@ export class BeginExamComponent {
   newExam: Exam = {
     number: -1,
     score: '',
+    answers: new Map(),
     questions: new Array<Question>,
     incorrect: new Array<String>,
     flagged: new Array<String>,
     time: 0,
     current: '',
-    options: new Option(20, false)
+    options: {},
   };
 
   exams$: Observable<Exam[]> = new Observable();
