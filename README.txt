@@ -190,3 +190,17 @@ Basic exam app for tw mle (no users)
         (store and retrieve value)
         > currently getting empty object on both store and retrieve 
 
+04/13
+    - work on saving answer map correctly! 
+        > looks like mongodb does not support storing maps
+            ** Alternative - convert map to array, convert back on reload (or just use array instead)
+    -- Discovered that maps do not store properly in mongodb -> replaced answerMap with arr_answers[]
+        > stores and retrieves properly!
+    -- added condition to "Continue" and "Review" buttons
+        -> review no function yet
+        -> continue pulls correct exam and current question!
+        --> current question also retrieved on page refresh 
+            * updated this.num to this.qNum$ (BehaviorSubject)
+    -- added "Delete" button on exams-list 
+    -- updated time column on exams-list to display formatted time
+

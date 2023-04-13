@@ -21,7 +21,7 @@ export class BeginExamComponent {
   newExam: Exam = {
     number: -1,
     score: '',
-    answers: new Map(),
+    answers: new Array<String>,
     questions: new Array<Question>,
     incorrect: new Array<String>,
     flagged: new Array<String>,

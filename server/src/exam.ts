@@ -5,8 +5,7 @@ export interface Exam {
     _id?: mongodb.ObjectId;
     number: number; //-1 if EmptyExam, else ascending
     score: string; // "[correct answers]/[total questions]"
-//    answers: Object; // Map of answers provided
-    answers: Map<any, any>; // Map of answers provided
+    answers: Array<any>; // Map of answers provided
     questions: Array<Question>; // list of questions used in test in order (as presented in exam)
     incorrect: Array<String>; // list of questions answered incorrectly
     flagged: Array<String>; //list of questions that are flagged for extra review

@@ -7,8 +7,7 @@ export interface Exam {
     //qCount?: number;
     score?: string; // "[correct answers]/[total questions]"
     questions?: Array<Question>; // list of questions used in test in order (as presented in exam)
-    //answers?: Object; // map of questions and answers
-    answers?: Map<any, any>; // Map of answers provided
+    answers?: Array<any>; // Map of answers provided
     incorrect?: Array<String>; // list of questions answered incorrectly
     flagged?: Array<String>; //list of questions that are flagged for extra review
     time?: number; //"xx:xx" time left in case test is paused. 00:00 if done.

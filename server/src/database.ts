@@ -50,9 +50,10 @@ async function applySchemaValidation(db: mongodb.Db) {
                     }
                 },
                 answers: {
-                    bsonType: "object",
-                    description: "Map of <V> answers to <K> question number"
-                },
+                    bsonType: ["array"],
+                    description: "'answers' is an optional array of provided answers"
+                  }
+                  ,
                 incorrect: {
                     bsonType: ["array"],
                     description: "'incorrect' is optional and is an array of strings",

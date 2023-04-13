@@ -13,7 +13,7 @@ import { Option } from '../option';
   selector: 'app-exam-time',
   template: `
   <div class="container">
-    <h2 class="text-center m-3" num=1> Question {{num}}</h2>  
+    <h2 class="text-center m-3" num=1> Question {{qNum$.value}}</h2>  
     <div class="col">
     <h3>
     {{ timeRemaining$ | async | date:'mm:ss' }}      
@@ -57,7 +57,7 @@ import { Option } from '../option';
     <div class="row">
       <div class="col">
         <div class="form-check form-switch">
-          <button class="btn btn-primary mt-3" *ngIf="num > 1" (click)="prevQ()"> <-- Previous</button>
+          <button class="btn btn-primary mt-3" *ngIf="qNum$.value > 1" (click)="prevQ()"> <-- Previous</button>
         </div>
       </div>
       <div class="col">
@@ -67,7 +67,7 @@ import { Option } from '../option';
     </div>
       <div class="col">
        <div class="form-check form-switch">
-          <button class="btn btn-primary mt-3" *ngIf="num < examQs$.value.length" (click)="nextQ()">Next --></button>
+          <button class="btn btn-primary mt-3" *ngIf="qNum$.value < examQs$.value.length" (click)="nextQ()">Next --></button>
         </div>
       </div>
     </div>
@@ -94,19 +94,19 @@ import { Option } from '../option';
   ]
 })
 export class ExamTimeComponent implements OnInit {
-  num = 1;
+  qNum$: BehaviorSubject<number> = new BehaviorSubject(1);
   
-  @Input() 
-  initialState: BehaviorSubject<Exam> = new BehaviorSubject({});
+  // @Input() 
+  // initialState: BehaviorSubject<Exam> = new BehaviorSubject({});
 
-  @Output()
-  nextQuestion = new EventEmitter<Exam>();
+  // @Output()
+  // nextQuestion = new EventEmitter<Exam>();
 
-  @Output()
-  prevQuestion = new EventEmitter<Exam>();
+  // @Output()
+  // prevQuestion = new EventEmitter<Exam>();
 
-  @Output()
-  pauseExam = new EventEmitter<Exam>();
+  // @Output()
+  // pauseExam = new EventEmitter<Exam>();
 
 
   exam: BehaviorSubject<Exam> = new BehaviorSubject({});
@@ -115,11 +115,10 @@ export class ExamTimeComponent implements OnInit {
   //options$ = new Subject<Option>
   options$: BehaviorSubject<Option> = new BehaviorSubject<Option>({qCount: 0, details: false});
   timeRemaining$: Observable<number> = new Observable<number>();
-  answerMap$: BehaviorSubject<Map<Number, String>> = new BehaviorSubject(new Map());
+  arr_Answers$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
   extimer = 0;
   timerSub: Subscription = new Subscription();
   pausetimer = new Subject();
-  answerMap = new Map;
   answerRadio = '';
 
   currExam: Exam = {};
@@ -141,14 +140,15 @@ export class ExamTimeComponent implements OnInit {
       this.setTimer(exam.time !);
       this.examQs$.next(exam.questions !);
       this.options$.next(exam.options !);
-      // this.answerMap$.next(exam.answers !)
-      // console.log(this.answerMap$.value);
-      // if(exam.answers){
-      //   //this.answerMap = exam.answers;
-      // }
+      this.arr_Answers$.next(exam.answers !)
       this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
-      //this.resetAnswer(); // TODO: in case of resume exam
-      console.log(this.exam.value);
+      this.qNum$.next(this.examQs$.value.findIndex(q => q._id == this.exam.value.current)+1 !);
+      console.log(this.examQs$.value);
+      console.log(this.currQ);
+      console.log(this.qNum$.value);
+
+      //TODO: start on "current" question
+      this.resetAnswer();
     });
   }
 
@@ -178,8 +178,8 @@ export class ExamTimeComponent implements OnInit {
   //display previous question - if details off, save answer choice. Unpause timer if paused.
   prevQ(){
       // save exam progress
+      this.qNum$.next(this.qNum$.value - 1);
       this.saveExamProgress();
-      this.num -= 1;
 
       // if timer is paused, unpause
       if(this.pausetimer){
@@ -187,7 +187,7 @@ export class ExamTimeComponent implements OnInit {
       }
 
       // select next question to be displayed
-      this.currQ.next(this.examQs$.value[this.num-1]);
+      this.currQ.next(this.examQs$.value[this.qNum$.value-1]);
 
       this.resetAnswer();  
   }
@@ -196,9 +196,9 @@ export class ExamTimeComponent implements OnInit {
   nextQ(){
     
     // save exam progress
+    this.qNum$.next(this.qNum$.value + 1);
     this.saveExamProgress();
-    this.num += 1;
-  
+
     // if timer is paused, unpause
     if(this.pausetimer){ 
       this.setTimer(this.extimer);
@@ -206,7 +206,8 @@ export class ExamTimeComponent implements OnInit {
 
     // select next question to be displayed
     // this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
-    this.currQ.next(this.examQs$.value[this.num-1]);
+    // this.currQ.next(this.examQs$.value[this.num-1]);
+    this.currQ.next(this.examQs$.value[this.qNum$.value-1]);
 
     this.resetAnswer();
   }
@@ -224,21 +225,19 @@ export class ExamTimeComponent implements OnInit {
   }
 
   resetAnswer(){
-    if(this.answerMap.get(this.num)){
-      this.answerRadio = this.answerMap.get(this.num);
+    if(this.arr_Answers$.value[this.qNum$.value-1]){
+      this.answerRadio = this.arr_Answers$.value[this.qNum$.value-1];
     }else{
       this.answerRadio = '';
     }
   }
 
-  //TODO: Not sure if answerMap is being stored properly - will need to test. Maybe mongodb storing but not displaying properly? idk
   saveExamProgress(){
-    //save answer selection
-    this.answerMap.set(this.num, this.answerRadio)
+    this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
 
     //update exam entry in DB (do on each prev/next/submit to save exam progress)
-    this.currExam.answers = this.answerMap;
-    this.currExam.current = this.examQs$.value[this.num-1]._id;
+    this.currExam.answers = this.arr_Answers$.value;
+    this.currExam.current = this.examQs$.value[this.qNum$.value-1]._id;
     //TODO: this.currExam.flagged
     //TODO: this.currExam.incorrect (if details on)
     this.currExam.time = this.extimer;
@@ -254,6 +253,8 @@ export class ExamTimeComponent implements OnInit {
       }
     })
 
+    console.log(this.currQ);
+    console.log(this.qNum$.value);
     console.log(this.currExam.answers);
   }
 }
