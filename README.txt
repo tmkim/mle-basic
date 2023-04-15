@@ -204,3 +204,32 @@ Basic exam app for tw mle (no users)
     -- added "Delete" button on exams-list 
     -- updated time column on exams-list to display formatted time
 
+04/15
+    -- added confirmation alert to exam deletion
+    -- hide "empty exam" from exams list 
+    -- cleaned up next/prev/save to make sure answers are saved properly and current question is correct on refresh/continue
+    -- enable "Submit Exam" on last question 
+    -- disabled "prev/next/submit exam" instead of hiding  
+    -- submit exam functionality
+        - calculate score 
+        - redirect to "review" page 
+        - set timer = 0
+        - set list of incorrect answers (if details, should already be set -> skip)
+    -- set up image display for questions (optional TODO: image hosting)
+
+    -- start setting up "Review" component 
+        - displays all questions and possible answers 
+            > display whether user got it right/wrong 
+            > highlight correct answer -- if wrong, also highlight wrong answer 
+
+    * updated calculateScore to store user answer in currExam.question[].userAnswer 
+    -- reflects in Review (appropriate Y or N -- TODO check mark / X mark)
+    -- Review highlights answers in green/red
+        > correct answer for each question always highlighted in green 
+        > if user submit incorrect, highlight red 
+
+TODOS:
+    - scrollable question number list 
+    - flaggable questions + flag list 
+    - "Details on" workflow 
+    - image hosting

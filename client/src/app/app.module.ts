@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { OptionsComponent } from './options/options.component';
 import { BeginExamComponent } from './begin-exam/begin-exam.component';
 import { FormsModule } from '@angular/forms';
+import { ReviewExamComponent } from './review-exam/review-exam.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { FormsModule } from '@angular/forms';
     ExamTimeComponent,
     OptionsComponent,
     BeginExamComponent,
+    ReviewExamComponent,
   ],
   imports: [
     BrowserModule,

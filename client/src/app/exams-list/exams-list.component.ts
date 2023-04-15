@@ -14,23 +14,24 @@ import { ExamService } from '../exam.service';
               <th>Exam Number</th>
               <th>Score</th>
               <th>Time</th>
-              <th>Available</th>
+              <!--th>Current Question</th-->
               <th>Action</th>
           </tr>
       </thead>
 
       <tbody>
           <tr *ngFor="let exam of exams$ | async">
+          <ng-container *ngIf="$any(exam)?.number > 0">
               <td>{{exam.number}}</td>
               <td>{{exam.score}}</td>
               <td>{{timeFormat($any(exam)?.time)}}
-              <td>{{exam.current}}</td>
+              <!--td>{{exam.current}}</td-->
               <td>
-                 <!--TODO: conditional - only show one ("Continue"/"Review") -->
                  <button class="btn btn-primary me-1" *ngIf="$any(exam)?.time > 0" [routerLink]="['/exam-time/', exam._id]">Continue</button>
-                 <button class="btn btn-primary me-1" *ngIf="exam.time == 0" [routerLink]="['review/', exam._id]">Review</button>
-                 <button class="btn btn-danger" (click)="deleteExam(exam._id || '')">Delete</button>
+                 <button class="btn btn-primary me-1" *ngIf="exam.time == 0" [routerLink]="['/review/', exam._id]">Review</button>
+                 <button class="btn btn-danger" (click)="deleteExam(exam._id || '', exam.number || 0)">Delete</button>
               </td>
+            </ng-container>
           </tr>
       </tbody>
   </table>
@@ -48,7 +49,12 @@ export class ExamsListComponent implements OnInit {
     this.fetchExams();
   }
 
-  deleteExam(id: string): void {
+  deleteExam(id: string, num: number): void {
+    // if(confirm("Are you sure you want to delete Exam number "+num+"?")) {
+    //   this.examsService.deleteExam(id).subscribe({
+    //     next: () => this.fetchExams()
+    //   });
+    // }
     this.examsService.deleteExam(id).subscribe({
       next: () => this.fetchExams()
     });
@@ -56,17 +62,31 @@ export class ExamsListComponent implements OnInit {
 
   timeFormat(totalSeconds: number): string{
     const totalMinutes = Math.floor(totalSeconds / 60);
+
+    const h = Math.floor(totalMinutes / 60);
+    const m = (totalMinutes % 60);
+    const s = (totalSeconds % 60)
   
-    const seconds = totalSeconds % 60;
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
+    const seconds = s.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    const hours = h.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+    const minutes = m.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    });
+
     var timeStr
   
-    if(hours > 0){
+    if(h > 0){
       timeStr = `${hours}:${minutes}:${seconds}`;
     }
     else{
-      timeStr = `${minutes}:${seconds}`;
+      timeStr = (`${minutes}:${seconds}`);
     }
 
     return timeStr

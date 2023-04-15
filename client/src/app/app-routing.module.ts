@@ -4,6 +4,7 @@ import { ExamTimeComponent } from './exam-time/exam-time.component';
 import { ExamsListComponent } from './exams-list/exams-list.component';
 //import { OptionsComponent } from './options/options.component';
 import { BeginExamComponent } from './begin-exam/begin-exam.component';
+import { ReviewExamComponent } from './review-exam/review-exam.component';
 
 const routes: Routes = [
  { path: '', redirectTo: 'exams', pathMatch: 'full' },
@@ -13,6 +14,7 @@ const routes: Routes = [
  //{ path: 'options', component: OptionsComponent },
  //{ path: 'options/examtime', redirectTo: 'examtime', pathMatch: 'full' },
  { path: 'exam-time/:id', component: ExamTimeComponent },
+ { path: 'review/:id', component: ReviewExamComponent }
 ];
  
 @NgModule({

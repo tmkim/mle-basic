@@ -12,120 +12,104 @@ import { Option } from '../option';
 @Component({
   selector: 'app-exam-time',
   template: `
-  <div class="container">
-    <h2 class="text-center m-3" num=1> Question {{qNum$.value}}</h2>  
-    <div class="col">
-    <h3>
-    {{ timeRemaining$ | async | date:'mm:ss' }}      
-    </h3>
-  </div>
-
-    </div>
     <div class="container">
-    <div class="row">
+      <h2 class="text-center m-3" num=1> Question {{qNum$.value}}</h2>  
       <div class="col">
-        <p>{{currQ.value.question}}</p>  
+        <h3>
+          {{ timeRemaining$ | async | date:'mm:ss' }}      
+        </h3>
       </div>
     </div>
-    <div class="form-check">
-      <div class="row-1">
+
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <p>{{currQ.value.question}}</p>  
+        </div>
+      </div>
+      <ng-container *ngIf="currQ.value.image">
+        <div>display image here </div>
+      </ng-container>
+    </div>
+
+    <div class="container">
+      <div class="form-check">
+        <div class="row-1">
         <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" [(ngModel)]="answerRadio" value="A">
           <label class="form-check-label" for="flexRadioDefault1">
-          {{currQ.value.optionA}}
+            {{currQ.value.optionA}}
           </label>
-      </div>
-      <div class="row-2">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" [(ngModel)]="answerRadio" value="B">
-        <label class="form-check-label" for="flexRadioDefault2">
-        {{currQ.value.optionB}}
-        </label>
-      </div>
-      <div class="row-3">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" [(ngModel)]="answerRadio" value="C">
-        <label class="form-check-label" for="flexRadioDefault3">
-        {{currQ.value.optionC}}
-        </label>
-      </div>
-      <div class="row-4">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" [(ngModel)]="answerRadio" value="D">
-        <label class="form-check-label" for="flexRadioDefault4">
-        {{currQ.value.optionD}}
-        </label>
-      </div>
-    </div>
-    <div></div>
-    <div class="row">
-      <div class="col">
-        <div class="form-check form-switch">
-          <button class="btn btn-primary mt-3" *ngIf="qNum$.value > 1" (click)="prevQ()"> <-- Previous</button>
+        </div>
+        <div class="row-2">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" [(ngModel)]="answerRadio" value="B">
+          <label class="form-check-label" for="flexRadioDefault2">
+            {{currQ.value.optionB}}
+          </label>
+        </div>
+        <div class="row-3">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" [(ngModel)]="answerRadio" value="C">
+          <label class="form-check-label" for="flexRadioDefault3">
+            {{currQ.value.optionC}}
+          </label>
+        </div>
+        <div class="row-4">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" [(ngModel)]="answerRadio" value="D">
+          <label class="form-check-label" for="flexRadioDefault4">
+            {{currQ.value.optionD}}
+          </label>
         </div>
       </div>
-      <div class="col">
-      <div class="form-check form-switch">
-        <button class="btn btn-primary mt-3" *ngIf="options$.value.details" (click)="submitQ()"> Submit </button>
-      </div>
-    </div>
-      <div class="col">
-       <div class="form-check form-switch">
-          <button class="btn btn-primary mt-3" *ngIf="qNum$.value < examQs$.value.length" (click)="nextQ()">Next --></button>
+      <div class="row">
+        <div class="col">
+          <div class="form-check form-switch">
+            <button class="btn btn-primary mt-3" [disabled]="qNum$.value <= 1" (click)="prevQ()"> <-- Previous</button>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-check form-switch">
+            <button class="btn btn-primary mt-3" *ngIf="options$.value.details" (click)="submitQ()"> Submit </button>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-check form-switch">
+              <button class="btn btn-primary mt-3" [disabled]="qNum$.value >= examQs$.value.length" (click)="nextQ()">Next --></button>
+          </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col"></div>
+        <div class="col">
+          <div class="form-check form-switch">
+            <!--button class="btn btn-primary mt-3" [disabled]="qNum$.value != examQs$.value.length" (click)="submitExam()">Submit Exam</button-->
+            <button class="btn btn-primary mt-3" (click)="submitExam()">Submit Exam</button>
+          </div>
+        </div>
+        <div class="col"></div>
     </div>
-
-    <!--
-    <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>question id</th>
-        <th>question</th>
-      </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let question of examQs$ | async">
-      <td>{{question._id}}</td>
-      <td>{{question.question}}</td>
-    </tr>
-  </tbody>
-  </table> -->
-
-  </div>
   `,
   styles: [
   ]
 })
 export class ExamTimeComponent implements OnInit {
+
   qNum$: BehaviorSubject<number> = new BehaviorSubject(1);
-  
-  // @Input() 
-  // initialState: BehaviorSubject<Exam> = new BehaviorSubject({});
-
-  // @Output()
-  // nextQuestion = new EventEmitter<Exam>();
-
-  // @Output()
-  // prevQuestion = new EventEmitter<Exam>();
-
-  // @Output()
-  // pauseExam = new EventEmitter<Exam>();
-
-
   exam: BehaviorSubject<Exam> = new BehaviorSubject({});
   currQ: BehaviorSubject<Question> = new BehaviorSubject({});
   examQs$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
-  //options$ = new Subject<Option>
   options$: BehaviorSubject<Option> = new BehaviorSubject<Option>({qCount: 0, details: false});
-  timeRemaining$: Observable<number> = new Observable<number>();
   arr_Answers$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
-  extimer = 0;
-  timerSub: Subscription = new Subscription();
   pausetimer = new Subject();
-  answerRadio = '';
-
   currExam: Exam = {};
+  answerRadio = '';
+  incorrectQs = new Array();
+
+  timeRemaining$: Observable<number> = new Observable<number>();
+  timerSub: Subscription = new Subscription();
+  extimer = 0;
 
   constructor(
-    // private router: Router,
     private route: ActivatedRoute,
+    private router: Router,
     private examService: ExamService
   ) {}
 
@@ -177,9 +161,8 @@ export class ExamTimeComponent implements OnInit {
 
   //display previous question - if details off, save answer choice. Unpause timer if paused.
   prevQ(){
-      // save exam progress
-      this.qNum$.next(this.qNum$.value - 1);
-      this.saveExamProgress();
+    this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
+    this.qNum$.next(this.qNum$.value - 1);
 
       // if timer is paused, unpause
       if(this.pausetimer){
@@ -189,15 +172,16 @@ export class ExamTimeComponent implements OnInit {
       // select next question to be displayed
       this.currQ.next(this.examQs$.value[this.qNum$.value-1]);
 
+      // save exam progress
+      this.saveExamProgress();
+
       this.resetAnswer();  
   }
 
   //display next question - if details off, save answer choice. Unpause timer if paused.
   nextQ(){
-    
-    // save exam progress
+    this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
     this.qNum$.next(this.qNum$.value + 1);
-    this.saveExamProgress();
 
     // if timer is paused, unpause
     if(this.pausetimer){ 
@@ -209,6 +193,9 @@ export class ExamTimeComponent implements OnInit {
     // this.currQ.next(this.examQs$.value[this.num-1]);
     this.currQ.next(this.examQs$.value[this.qNum$.value-1]);
 
+    // save exam progress
+    this.saveExamProgress();
+    
     this.resetAnswer();
   }
 
@@ -224,6 +211,48 @@ export class ExamTimeComponent implements OnInit {
     //TODO: display answer details
   }
 
+  submitExam(){
+    // * save answer for last question
+    // * calculate score 
+    // * set timer = 0
+    // * set list of incorrect answers (if details, should already be set -> skip)
+    // * redirect to "review" page 
+    this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
+    this.calculateScore();
+    this.currExam.time = 0;
+    console.log(this.currExam);
+
+    this.examService.updateExam(this.exam.value._id || '', this.currExam)
+      .subscribe({
+      next: () =>{
+        console.log('exam submitted');
+        this.router.navigate([`/review/${this.exam.value._id}`]);
+      },
+      error: (e) => {
+        alert("failed to update exam");
+        console.error(e);
+      }
+    })
+  }
+
+  calculateScore(){
+    var correct = 0;
+    this.currExam.questions = this.examQs$.value;
+    this.arr_Answers$.value.forEach((answer, index) =>{
+      if(answer == this.examQs$.value[index].answer){
+        correct += 1;
+      }else{
+        this.incorrectQs.push(this.examQs$.value[index]._id);
+      }
+
+      if(this.currExam.questions){
+        this.currExam.questions[index].userAnswer = answer;
+      }
+    })
+    this.currExam.score = `${correct}/${this.examQs$.value.length}`;
+    this.currExam.incorrect = this.incorrectQs;
+  }
+
   resetAnswer(){
     if(this.arr_Answers$.value[this.qNum$.value-1]){
       this.answerRadio = this.arr_Answers$.value[this.qNum$.value-1];
@@ -233,8 +262,6 @@ export class ExamTimeComponent implements OnInit {
   }
 
   saveExamProgress(){
-    this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
-
     //update exam entry in DB (do on each prev/next/submit to save exam progress)
     this.currExam.answers = this.arr_Answers$.value;
     this.currExam.current = this.examQs$.value[this.qNum$.value-1]._id;
