@@ -16,22 +16,21 @@ Basic exam app for tw mle (no users)
         > ng generate component exam ?? 
         > ng generate component exam-time -m app
     > register copmonent to app.routing.module.ts 
-    > TODO: exam-time!!!
 
 03/12/2023
     > exam-options
         - number of questions (range input)
         - show answer details (switch input)
         - "Begin" button
-            TODO: > starts test - set timer based on questions, pick specified number of questions, start exam-time!
-    TODO: > exam-time form component
+           DONE: > starts test - set timer based on questions, pick specified number of questions, start exam-time!
+    DONE: > exam-time form component
         - shows a single question at a time 
          x radio buttons (answer choices)
          x "next" + "previous" buttons
          + list of question numbers (clickable, scrollable)
          + timer
         - hidden answer explanation/details 
-    TODO: > exams-list pulls exams out of database, start new test functionality (goto exam-options)
+    DONE: > exams-list pulls exams out of database, start new test functionality (goto exam-options)
 
 03/14/2023
     > exam-time component~
@@ -40,12 +39,12 @@ Basic exam app for tw mle (no users)
             * show single question text 
             * show 4 answer choice radio buttons 
             * Previous and Next buttons 
-        - TODO: add functionality to next/previous buttons, pull question info from database 
+        - DONE: add functionality to next/previous buttons, pull question info from database 
             > next/prev button should save answer, load next/prev question
                 - load saved answer as well in case already answered 
-        - TODO: add countdown timer, list of question numbers on the side (ngFor)
+        - DONE: add countdown timer, list of question numbers on the side (ngFor)
 
-    > TODO : don't forget to store answers for current exam !!
+    > DONE : don't forget to store answers for current exam !!
 
 03/18/2023
     > update redirect paths 
@@ -76,7 +75,7 @@ Basic exam app for tw mle (no users)
 
 03/23/2023
     - implement basic countdown timer  
-        > TODO: pass input based on number of questions  
+        > DONE: pass input based on number of questions  
     - OPTIONS:
         * on init, I want to create a new exam entry in database
             ** require exam id #, question count = 0
@@ -91,7 +90,7 @@ Basic exam app for tw mle (no users)
         -> need to make sure initial "empty exam" is created, also check to see if empty exam exists
     - starting to set up submit button to create new exam 
         -> need to make new component for StartExam?
-    ** TODO: search for exam with qCount = 0
+    ** DONE: search for exam with number = -1
 
 03/24/2023
     - working on query database for EmptyExam
@@ -103,23 +102,22 @@ Basic exam app for tw mle (no users)
     - Kind of got a handle on using query results in code and displaying on screen
     - Working on error handling for 404 not found.
     ^ in progress
-        * TODO: create new empty exam during handling
-        * TODO: figure out if "complete" status needs to be met ?
+        * DONE: create new empty exam during handling
 
 03/28/2023
     - use options component in begin-exam component 
     - clean up routing 
-    * TODO/DONE: figure out why Begin button is not working ??
+    * DONE: figure out why Begin button is not working ??
         >> fixed --> submit button was in an inner <form> so outer <form> submission logic did not apply 
     ** OPTIONAL TODO: make options form pretty (fix spacing when shrinking window size)
-    ** TODO/DONE: make sure current EmptyExam is being passed properly
+    ** DONE: make sure current EmptyExam is being passed properly
         --> form controls ?
 
 03/31/2023
     - set up form array for options 
     - start building skeleton for exam creation
     - calculate time based on number of questions 
-    - TODO: make dummy questions, grab questions with smart RNG
+    - DONE: make dummy questions, grab questions with smart RNG
         ** update EmptyExam to no longer be empty
         ** create empty exam if none 
 
@@ -161,7 +159,7 @@ Basic exam app for tw mle (no users)
     - Work on timer ! 
     >> Timer works pretty well~
         - timer starts at appropriate value 
-        - timer pauses on submit -> saves value and can update database with new value (TODO)
+        - timer pauses on submit -> saves value and can update database with new value (DONE)
         - timer starts again on prev/next 
         - cleaned up "timer" component
 
@@ -182,13 +180,14 @@ Basic exam app for tw mle (no users)
 
     - "submit" invisible if details are off, "prev" invis on q1, "next" invis on last q
     - change Option() class to be interface 
-    - include "answers" map in Exams database table //TODO: make sure DB is saving map correctly 
+    - include "answers" map in Exams database table //DONE: make sure DB is saving map correctly 
     - saveExamProgress() called on each button click 
         TODO: Show details on submit( button )
-    - TODO: save and reload exam on page refresh 
-    - TODO: figure out how to make answerMap work with mongodb
+    - DONE: save and reload exam on page refresh 
+    - DONE: figure out how to make answerMap work with mongodb
         (store and retrieve value)
         > currently getting empty object on both store and retrieve 
+        *** Answer is that map does not work with mongodb SAD ***
 
 04/13
     - work on saving answer map correctly! 
@@ -233,3 +232,20 @@ TODOS:
     - flaggable questions + flag list 
     - "Details on" workflow 
     - image hosting
+
+04/28:
+    > Update Review component 
+        - add bootstrap icons for correct/incorrect answers 
+        - update table appearance
+        - add sticky header with {Home button} and {Final Score}  
+        - include question number in question box 
+    > Update exams list 
+        - update table appearance 
+        - use media query to set widths based on screen size 
+    > Update exam-time 
+        - Re-label buttons 
+        - Add Save/Quit button 
+            TODO:
+                ** does not function properly on new exam
+                ** does function properly on continued/refreshed exam
+                ????????????????

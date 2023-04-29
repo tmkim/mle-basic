@@ -62,7 +62,7 @@ import { Option } from '../option';
       <div class="row">
         <div class="col">
           <div class="form-check form-switch">
-            <button class="btn btn-primary mt-3" [disabled]="qNum$.value <= 1" (click)="prevQ()"> <-- Previous</button>
+            <button class="btn btn-primary mt-3" [disabled]="qNum$.value <= 1" (click)="prevQ()"> <--Previous</button>
           </div>
         </div>
         <div class="col">
@@ -72,7 +72,7 @@ import { Option } from '../option';
         </div>
         <div class="col">
           <div class="form-check form-switch">
-              <button class="btn btn-primary mt-3" [disabled]="qNum$.value >= examQs$.value.length" (click)="nextQ()">Next --></button>
+              <button class="btn btn-primary mt-3" [disabled]="qNum$.value >= examQs$.value.length" (click)="nextQ()">Next--></button>
           </div>
         </div>
       </div>
@@ -80,8 +80,12 @@ import { Option } from '../option';
         <div class="col"></div>
         <div class="col">
           <div class="form-check form-switch">
-            <!--button class="btn btn-primary mt-3" [disabled]="qNum$.value != examQs$.value.length" (click)="submitExam()">Submit Exam</button-->
-            <button class="btn btn-primary mt-3" (click)="submitExam()">Submit Exam</button>
+            <button class="btn btn-primary mt-3" (click)="saveQuit()">Save/Quit</button>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-check form-switch">
+            <button class="btn btn-primary mt-3" (click)="submitExam()">DONEDONE</button>
           </div>
         </div>
         <div class="col"></div>
@@ -209,6 +213,29 @@ export class ExamTimeComponent implements OnInit {
     this.pausetimer.next(0); 
   
     //TODO: display answer details
+  }
+
+  saveQuit(){
+    //update exam entry in DB (do on each prev/next/submit to save exam progress)
+    this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
+    this.currExam.answers = this.arr_Answers$.value;
+    this.currExam.current = this.examQs$.value[this.qNum$.value-1]._id;
+    //TODO: this.currExam.flagged
+    //TODO: this.currExam.incorrect (if details on)
+    this.currExam.time = this.extimer;
+    //TODO: on finish exam - this.currExam.score
+      
+    this.examService.updateExam(this.exam.value._id || '', this.currExam)
+    .subscribe({
+    next: () =>{
+      console.log('exam submitted');
+      this.router.navigate([`/exams/`]);
+    },
+    error: (e) => {
+      alert("failed to update exam");
+      console.error(e);
+    }
+  })
   }
 
   submitExam(){

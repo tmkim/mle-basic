@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { min, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 
@@ -8,10 +8,10 @@ import { ExamService } from '../exam.service';
   template: `
   <h2 class="text-center m-5">Exams List</h2>
 
-  <table class="table table-striped table-bordered">
+  <table class="table table-striped table-bordered center">
       <thead>
           <tr>
-              <th>Exam Number</th>
+              <th>Exam</th>
               <th>Score</th>
               <th>Time</th>
               <!--th>Current Question</th-->
@@ -22,11 +22,11 @@ import { ExamService } from '../exam.service';
       <tbody>
           <tr *ngFor="let exam of exams$ | async">
           <ng-container *ngIf="$any(exam)?.number > 0">
-              <td>{{exam.number}}</td>
-              <td>{{exam.score}}</td>
-              <td>{{timeFormat($any(exam)?.time)}}
+              <td class="num">{{exam.number}}</td>
+              <td class="score">{{exam.score}}</td>
+              <td class="time">{{timeFormat($any(exam)?.time)}}
               <!--td>{{exam.current}}</td-->
-              <td>
+              <td class="actions">
                  <button class="btn btn-primary me-1" *ngIf="$any(exam)?.time > 0" [routerLink]="['/exam-time/', exam._id]">Continue</button>
                  <button class="btn btn-primary me-1" *ngIf="exam.time == 0" [routerLink]="['/review/', exam._id]">Review</button>
                  <button class="btn btn-danger" (click)="deleteExam(exam._id || '', exam.number || 0)">Delete</button>
@@ -37,8 +37,55 @@ import { ExamService } from '../exam.service';
   </table>
 
   <button class="btn btn-primary mt-3" [routerLink]="['/new-exam']">Start a New Exam</button>
-`
+`,
+styles:[`
+th, td {
+  padding-left: .5rem;
+  border: 2px solid black;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table {
+  width: 420px;
+}
+td.num{
+  width: 50px;
+}
+td.score{
+  width: 80px;
+}
+td.time{
+  width: 80px;
+}
+td.actions{
+  width: 210px;
+}
+
+/* if the browser window is at least 1000px-s wide: */
+@media screen and (min-width: 840px) {
+  table {
+  width: 60%;
+  }
+  td.num{
+    width: 12%;
+  }
+  td.score{
+    width: 19%;
+  }
+  td.time{
+    width: 19%;
+  }
+  td.actions{
+    width: 50%;
+  }
+}
+
+`]
 })
+
 export class ExamsListComponent implements OnInit {
   exams$: Observable<Exam[]> = new Observable();
   num = 1;
