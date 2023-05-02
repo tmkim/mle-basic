@@ -227,15 +227,15 @@ export class ExamTimeComponent implements OnInit {
       
     this.examService.updateExam(this.exam.value._id || '', this.currExam)
     .subscribe({
-    next: () =>{
-      console.log('exam submitted');
-      this.router.navigate([`/exams/`]);
-    },
-    error: (e) => {
-      alert("failed to update exam");
-      console.error(e);
-    }
-  })
+      next: () =>{
+        console.log('exam saved/quit');
+        this.router.navigate([`/exams/`]);
+      },
+      error: (e) => {
+        alert("failed to update exam");
+        console.error(e);
+      }
+    })
   }
 
   submitExam(){
