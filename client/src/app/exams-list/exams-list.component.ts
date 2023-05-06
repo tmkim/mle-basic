@@ -6,41 +6,41 @@ import { ExamService } from '../exam.service';
 @Component({
   selector: 'app-exams-list',
   template: `
-  <h2 class="text-center m-5">Exams List</h2>
+  <h2 class="text-center m-5" style="color:black">Exams List</h2>
 
   <table class="table table-striped table-bordered center">
-      <thead>
-          <tr>
-              <th>Exam</th>
-              <th>Score</th>
-              <th>Time</th>
-              <!--th>Current Question</th-->
-              <th>Action</th>
-          </tr>
-      </thead>
+  <thead>
+      <tr>
+          <th>Exam</th>
+          <th>Score</th>
+          <th>Time</th>
+          <!--th>Current Question</th-->
+          <th>Action</th>
+      </tr>
+  </thead>
 
-      <tbody>
-          <tr *ngFor="let exam of exams$ | async">
-          <ng-container *ngIf="$any(exam)?.number > 0">
-              <td class="num">{{exam.number}}</td>
-              <td class="score">{{exam.score}}</td>
-              <td class="time">{{timeFormat($any(exam)?.time)}}
-              <!--td>{{exam.current}}</td-->
-              <td class="actions">
-                 <button class="btn btn-primary me-1" *ngIf="$any(exam)?.time > 0" [routerLink]="['/exam-time/', exam._id]">Continue</button>
-                 <button class="btn btn-primary me-1" *ngIf="exam.time == 0" [routerLink]="['/review/', exam._id]">Review</button>
-                 <button class="btn btn-danger" (click)="deleteExam(exam._id || '', exam.number || 0)">Delete</button>
-              </td>
-            </ng-container>
-          </tr>
-      </tbody>
-  </table>
-
-
-
-  <button class="btn btn-primary mt-3" [routerLink]="['/new-exam']">Start a New Exam</button>
+  <tbody>
+      <tr *ngFor="let exam of exams$ | async">
+      <ng-container *ngIf="$any(exam)?.number > 0">
+          <td class="num">{{exam.number}}</td>
+          <td class="score">{{exam.score}}</td>
+          <td class="time">{{timeFormat($any(exam)?.time)}}
+          <!--td>{{exam.current}}</td-->
+          <td class="actions">
+             <button class="btn btn-primary me-1" *ngIf="$any(exam)?.time > 0" [routerLink]="['/exam-time/', exam._id]">Continue</button>
+             <button class="btn btn-primary me-1" *ngIf="exam.time == 0" [routerLink]="['/review/', exam._id]">Review</button>
+             <button class="btn btn-danger" (click)="deleteExam(exam._id || '', exam.number || 0)">Delete</button>
+          </td>
+        </ng-container>
+      </tr>
+  </tbody>
+</table>
+<table class="center">
+<button class="btn btn-primary mt-3" [routerLink]="['/new-exam']">Start a New Exam</button>
+</table>
 `,
 styles:[`
+
 th, td {
   padding-left: .5rem;
   border: 2px solid black;
@@ -83,7 +83,6 @@ td.actions{
   td.actions{
     width: 50%;
   }
-  
 }
 
 `]

@@ -254,3 +254,14 @@ TODOS:
     > look into save/quit error 
         ** Fixed by unsubscribing after routing (in begin-exam)!
         -- TODO: clean up subscriptions everywhere and make sure to unsubscribe appropriately
+
+05/05:
+    TODO: when deleting an exam, update exam numbers to make sense 
+    > work on adding sidebar nav for question numbers 
+        * basics kinda functional 
+            > displays table with correct amount of question numbers
+            - working on removing scrollbar ????
+                * trying to do mat-list instead of table, still in progress 
+        * hides sidenav if screen is too small (TODO: include way to toggle)
+    - Reposition start exam button to be directly under table 
+    - update angular and add angular/material

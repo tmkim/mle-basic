@@ -1,5 +1,5 @@
-import { Component, Input, EventEmitter, OnInit, Output, DEFAULT_CURRENCY_CODE } from '@angular/core';
-import { takeUntil, takeWhile } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs';
 import { Exam } from '../exam';
@@ -7,91 +7,162 @@ import { Question } from '../question';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExamService } from '../exam.service';
 import { Option } from '../option';
+
 // import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
 
 @Component({
   selector: 'app-exam-time',
   template: `
-    <div class="container">
-      <h2 class="text-center m-3" num=1> Question {{qNum$.value}}</h2>  
-      <div class="col">
-        <h3>
-          {{ timeRemaining$ | async | date:'mm:ss' }}      
-        </h3>
+  <mat-sidenav-container class="side-container">
+    <mat-sidenav mode="side" [opened]="screenW>500" disableClosed="true" class="side-nav">
+    <!--table class="table-striped side-nav-table">
+      <tr *ngFor="let q of examQs$ | async; let i = index" style="height: 52px">
+      <td>{{i+1}}</td>
+      </tr>
+    </table-->
+    <mat-nav-list class="side-nav-table">
+        <mat-list-item routerLink="." *ngFor="let q of examQs$ | async; let i = index" style="height: 52px">
+          <div mat-line>{{i+1}}</div>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    
+    <mat-sidenav-content style="padding-left:32px">
+      <div>
+        <h2 class="text-center m-3" num=1> Question {{qNum$.value}}</h2>  
+        <div class="col">
+          <h3>
+            {{ timeRemaining$ | async | date:'mm:ss' }}      
+          </h3>
+        </div>
       </div>
-    </div>
 
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <p>{{currQ.value.question}}</p>  
+      <div>
+        <div class="row">
+          <div class="col">
+            <p>{{currQ.value.question}}</p>  
+          </div>
         </div>
+        <ng-container *ngIf="currQ.value.image">
+          <div>display image here </div>
+        </ng-container>
       </div>
-      <ng-container *ngIf="currQ.value.image">
-        <div>display image here </div>
-      </ng-container>
-    </div>
 
-    <div class="container">
-      <div class="form-check">
-        <div class="row-1">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" [(ngModel)]="answerRadio" value="A">
-          <label class="form-check-label" for="flexRadioDefault1">
-            {{currQ.value.optionA}}
-          </label>
+      <div>
+        <div class="form-check">
+          <div class="row-1">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" [(ngModel)]="answerRadio" value="A">
+            <label class="form-check-label" for="flexRadioDefault1">
+              {{currQ.value.optionA}}
+            </label>
+          </div>
+          <div class="row-2">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" [(ngModel)]="answerRadio" value="B">
+            <label class="form-check-label" for="flexRadioDefault2">
+              {{currQ.value.optionB}}
+            </label>
+          </div>
+          <div class="row-3">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" [(ngModel)]="answerRadio" value="C">
+            <label class="form-check-label" for="flexRadioDefault3">
+              {{currQ.value.optionC}}
+            </label>
+          </div>
+          <div class="row-4">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" [(ngModel)]="answerRadio" value="D">
+            <label class="form-check-label" for="flexRadioDefault4">
+              {{currQ.value.optionD}}
+            </label>
+          </div>
         </div>
-        <div class="row-2">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" [(ngModel)]="answerRadio" value="B">
-          <label class="form-check-label" for="flexRadioDefault2">
-            {{currQ.value.optionB}}
-          </label>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-check form-switch">
+              <button class="btn btn-primary mt-3" [disabled]="qNum$.value <= 1" (click)="prevQ()"> <--Previous</button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-check form-switch">
+              <button class="btn btn-primary mt-3" *ngIf="options$.value.details" (click)="submitQ()"> Submit </button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-check form-switch">
+                <button class="btn btn-primary mt-3" [disabled]="qNum$.value >= examQs$.value.length" (click)="nextQ()">Next--></button>
+            </div>
+          </div>
         </div>
-        <div class="row-3">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" [(ngModel)]="answerRadio" value="C">
-          <label class="form-check-label" for="flexRadioDefault3">
-            {{currQ.value.optionC}}
-          </label>
-        </div>
-        <div class="row-4">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" [(ngModel)]="answerRadio" value="D">
-          <label class="form-check-label" for="flexRadioDefault4">
-            {{currQ.value.optionD}}
-          </label>
+
+        <div class="row">
+          <div class="col"></div>
+          <div class="col">
+            <div class="form-check form-switch">
+              <button class="btn btn-primary mt-3" (click)="saveQuit()">Save/Quit</button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-check form-switch">
+              <button class="btn btn-primary mt-3" (click)="submitExam()">DONEDONE</button>
+            </div>
+          </div>
+          <div class="col"></div>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-check form-switch">
-            <button class="btn btn-primary mt-3" [disabled]="qNum$.value <= 1" (click)="prevQ()"> <--Previous</button>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-check form-switch">
-            <button class="btn btn-primary mt-3" *ngIf="options$.value.details" (click)="submitQ()"> Submit </button>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-check form-switch">
-              <button class="btn btn-primary mt-3" [disabled]="qNum$.value >= examQs$.value.length" (click)="nextQ()">Next--></button>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col"></div>
-        <div class="col">
-          <div class="form-check form-switch">
-            <button class="btn btn-primary mt-3" (click)="saveQuit()">Save/Quit</button>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-check form-switch">
-            <button class="btn btn-primary mt-3" (click)="submitExam()">DONEDONE</button>
-          </div>
-        </div>
-        <div class="col"></div>
-    </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
   `,
-  styles: [
+  styles: [`
+  .side-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    color: black;
+  }
+  .side-nav{
+    background: grey;
+    overflow: hidden;
+  }
+  .side-nav-table{
+    width: 69px;
+    overflow: hidden;
+  }
+  table td{
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-left: 7px;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+  }
+  table tr:first-child td {
+    border-top: 0;
+  }
+  table tr:last-child td {
+    border-bottom: 0;
+  }
+  mat-nav-list mat-list-item{
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-left: 7px;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+  }
+  mat-nav-list:first-child mat-list-item {
+    border-top: 0;
+  }
+  mat-nav-list:last-child mat-list-item {
+    border-bottom: 0;
+  }
+  mat-list-item:first-child mat-line {
+    border-top: 0;
+  }
+  mat-list-item:last-child mat-line {
+    border-bottom: 0;
+  }
+  `
   ]
 })
 export class ExamTimeComponent implements OnInit {
@@ -106,6 +177,7 @@ export class ExamTimeComponent implements OnInit {
   currExam: Exam = {};
   answerRadio = '';
   incorrectQs = new Array();
+  screenW = 0;
 
   timeRemaining$: Observable<number> = new Observable<number>();
   timerSub: Subscription = new Subscription();
@@ -121,6 +193,13 @@ export class ExamTimeComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       alert('No id provided');
+    }
+
+    this.screenW = window.innerWidth;
+
+    window.onresize = () => {
+      // set screenWidth on screen size change
+      this.screenW = window.innerWidth;
     }
   
     this.examService.getExam(id !).subscribe((exam) => {
