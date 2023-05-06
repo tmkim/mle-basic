@@ -11,6 +11,7 @@ import { OptionsComponent } from './options/options.component';
 import { BeginExamComponent } from './begin-exam/begin-exam.component';
 import { FormsModule } from '@angular/forms';
 import { ReviewExamComponent } from './review-exam/review-exam.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ReviewExamComponent } from './review-exam/review-exam.component';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
