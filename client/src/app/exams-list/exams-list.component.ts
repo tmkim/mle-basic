@@ -36,6 +36,8 @@ import { ExamService } from '../exam.service';
       </tbody>
   </table>
 
+
+
   <button class="btn btn-primary mt-3" [routerLink]="['/new-exam']">Start a New Exam</button>
 `,
 styles:[`
@@ -81,6 +83,7 @@ td.actions{
   td.actions{
     width: 50%;
   }
+  
 }
 
 `]
