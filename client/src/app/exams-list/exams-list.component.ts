@@ -6,7 +6,7 @@ import { ExamService } from '../exam.service';
 @Component({
   selector: 'app-exams-list',
   template: `
-  <h2 class="text-center m-5" style="color:black">Exams List</h2>
+  <h2 class="text-center m-5">Exams List</h2>
 
   <table class="table table-striped table-bordered center">
   <thead>

@@ -9,7 +9,7 @@ import { Question } from '../question';
   selector: 'app-review-exam',
   template: `
   <h2>
-    <button class="btn btn-primary mt-3" [routerLink]="['/exams/']"> <-- Home</button>
+    <button class="btn btn-primary mt-3" [routerLink]="['/exams/']">Home</button>
     <div class="score">Final Score: {{exam.value.score}}</div>
   </h2>
   <table class="table table-striped table-bordered" border="2px solid black">
@@ -54,7 +54,7 @@ import { Question } from '../question';
   styles: [
     `@import "~bootstrap-icons/font/bootstrap-icons.css";
     .correct { color:green; font-size: 50px; -webkit-text-stroke-width: 3px; }
-    .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; }
+    .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:28px}
     .answers {padding-left: .7rem;}
     th, td {
       padding-left: .5rem;
@@ -101,8 +101,5 @@ export class ReviewExamComponent {
       this.incorrect.next(exam.incorrect !);
     });
     
-  }
-  home(){
-
   }
 }

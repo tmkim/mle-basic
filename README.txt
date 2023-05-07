@@ -228,7 +228,7 @@ Basic exam app for tw mle (no users)
         > if user submit incorrect, highlight red 
 
 TODOS:
-    - scrollable question number list 
+    - scrollable question number list (DONE-ish)
     - flaggable questions + flag list 
     - "Details on" workflow 
     - image hosting
@@ -259,9 +259,17 @@ TODOS:
     TODO: when deleting an exam, update exam numbers to make sense 
     > work on adding sidebar nav for question numbers 
         * basics kinda functional 
-            > displays table with correct amount of question numbers
-            - working on removing scrollbar ????
-                * trying to do mat-list instead of table, still in progress 
+            - displays table with correct amount of question numbers
+            - clicking on a number will save current progress and jump to specified question number
+            - Optional TODO: remove scrollbar 
+            > include icon(?) to show whether answered or not, flagged
         * hides sidenav if screen is too small (TODO: include way to toggle)
     - Reposition start exam button to be directly under table 
     - update angular and add angular/material
+
+    > working on detail workflow 
+        - submit question only available if answer has been selected, and not yet submitted
+        - save userAnswer to currQ on submit 
+        - show details on questions that have been submitted (on submit, on return to question)
+        - timer pauses when returning to a question that has been submitted
+            > had trouble with refresh/init, got it fixed by adding conditions to setTimer

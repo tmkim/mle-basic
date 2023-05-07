@@ -14,15 +14,15 @@ import { Option } from '../option';
   selector: 'app-exam-time',
   template: `
   <mat-sidenav-container class="side-container">
-    <mat-sidenav mode="side" [opened]="screenW>500" disableClosed="true" class="side-nav">
-    <!--table class="table-striped side-nav-table">
-      <tr *ngFor="let q of examQs$ | async; let i = index" style="height: 52px">
-      <td>{{i+1}}</td>
-      </tr>
-    </table-->
-    <mat-nav-list class="side-nav-table">
-        <mat-list-item routerLink="." *ngFor="let q of examQs$ | async; let i = index" style="height: 52px">
-          <div mat-line>{{i+1}}</div>
+    <mat-sidenav mode="side" [opened]="screenW>500" disableClosed="true">
+      <!--table class="table-striped side-nav-table">
+        <tr *ngFor="let q of examQs$ | async; let i = index" style="height: 52px">
+        <td>{{i+1}}</td>
+        </tr>
+      </table-->
+      <mat-nav-list class="side-nav-table">
+      <mat-list-item class="side-nav-items" routerLink="." *ngFor="let q of examQs$ | async; let i = index" (click)="goQuestion(i)">
+          <div mat-line style="color:black;">{{i+1}}</div>
         </mat-list-item>
       </mat-nav-list>
     </mat-sidenav>
@@ -84,7 +84,8 @@ import { Option } from '../option';
           </div>
           <div class="col">
             <div class="form-check form-switch">
-              <button class="btn btn-primary mt-3" *ngIf="options$.value.details" (click)="submitQ()"> Submit </button>
+              <button class="btn btn-primary mt-3" *ngIf="options$.value.details"  (click)="submitQ()"
+              [disabled]="answerRadio == '' || ['A','B','C','D'].includes(currQ.value.userAnswer!)"> Submit </button>
             </div>
           </div>
           <div class="col">
@@ -93,6 +94,11 @@ import { Option } from '../option';
             </div>
           </div>
         </div>
+
+        <ng-container *ngIf="showExplain">
+          <div>{{currQ.value.explanation}}</div>
+          <div>test explain</div>
+        </ng-container>
 
         <div class="row">
           <div class="col"></div>
@@ -122,13 +128,8 @@ import { Option } from '../option';
     background: white;
     color: black;
   }
-  .side-nav{
-    background: grey;
-    overflow: hidden;
-  }
   .side-nav-table{
-    width: 69px;
-    overflow: hidden;
+    width: 80px;
   }
   table td{
     padding-top:5px;
@@ -147,20 +148,12 @@ import { Option } from '../option';
     padding-top:5px;
     padding-bottom:5px;
     padding-left: 7px;
-    border-top: 1px solid white;
-    border-bottom: 1px solid white;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
   }
-  mat-nav-list:first-child mat-list-item {
-    border-top: 0;
-  }
-  mat-nav-list:last-child mat-list-item {
-    border-bottom: 0;
-  }
-  mat-list-item:first-child mat-line {
-    border-top: 0;
-  }
-  mat-list-item:last-child mat-line {
-    border-bottom: 0;
+  .side-nav-items{
+    background:rgb(200,200,200);
+
   }
   `
   ]
@@ -178,6 +171,10 @@ export class ExamTimeComponent implements OnInit {
   answerRadio = '';
   incorrectQs = new Array();
   screenW = 0;
+  showExplain = false;
+
+  sub_init = new Subscription();
+  
 
   timeRemaining$: Observable<number> = new Observable<number>();
   timerSub: Subscription = new Subscription();
@@ -194,7 +191,6 @@ export class ExamTimeComponent implements OnInit {
     if (!id) {
       alert('No id provided');
     }
-
     this.screenW = window.innerWidth;
 
     window.onresize = () => {
@@ -202,7 +198,7 @@ export class ExamTimeComponent implements OnInit {
       this.screenW = window.innerWidth;
     }
   
-    this.examService.getExam(id !).subscribe((exam) => {
+    this.sub_init = this.examService.getExam(id !).subscribe((exam) => {
       this.exam.next(exam);
       this.setTimer(exam.time !);
       this.examQs$.next(exam.questions !);
@@ -210,17 +206,19 @@ export class ExamTimeComponent implements OnInit {
       this.arr_Answers$.next(exam.answers !)
       this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
       this.qNum$.next(this.examQs$.value.findIndex(q => q._id == this.exam.value.current)+1 !);
-      console.log(this.examQs$.value);
-      console.log(this.currQ);
-      console.log(this.qNum$.value);
-
-      //TODO: start on "current" question
       this.resetAnswer();
+      
+      this.sub_init.unsubscribe();
+      // console.log(this.examQs$.value);
+      // console.log(this.currQ);
+      // console.log(this.qNum$.value);
+      // this.checkExplain();
     });
   }
 
   setTimer(time: number){
     var seconds = time;
+    
     this.timeRemaining$ = timer(0, 1000).pipe(
       map(n => (seconds - n) * 1000),
       //takeWhile(n => n >= 0, !this.pausetimer),// && !this.pausetimer),
@@ -229,17 +227,15 @@ export class ExamTimeComponent implements OnInit {
     this.timerSub = this.timeRemaining$.subscribe(t => {
       //console.log(t);
       this.extimer = t/1000;
+      if ( this.exam.value.options?.details && ['A','B','C','D'].includes(this.currQ.value.userAnswer!) && this.extimer < seconds){
+        this.pausetimer.next(0);
+        this.extimer += 1;
+      }
       if (t < 0){
         this.pausetimer.next(0);
-        this.examOOT();
+        this.submitExam();
       }
-    })
-    // this.config.leftTime = seconds;
-  }
-
-  //Exam Out Of Time! (Time Remaining == 0)
-  examOOT(){
-
+    })    
   }
 
   //display previous question - if details off, save answer choice. Unpause timer if paused.
@@ -247,29 +243,25 @@ export class ExamTimeComponent implements OnInit {
     this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
     this.qNum$.next(this.qNum$.value - 1);
 
-      // if timer is paused, unpause
-      if(this.pausetimer){
-        this.setTimer(this.extimer);
-      }
+    // if timer is paused, unpause
+    // if(this.pausetimer){
+    //   this.setTimer(this.extimer);
+    // }
 
-      // select next question to be displayed
-      this.currQ.next(this.examQs$.value[this.qNum$.value-1]);
+    // select next question to be displayed
+    this.currQ.next(this.examQs$.value[this.qNum$.value-1]);
 
-      // save exam progress
-      this.saveExamProgress();
+    // save exam progress
+    this.saveExamProgress();
 
-      this.resetAnswer();  
+    this.checkExplain();
+    this.resetAnswer();  
   }
 
   //display next question - if details off, save answer choice. Unpause timer if paused.
   nextQ(){
     this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
     this.qNum$.next(this.qNum$.value + 1);
-
-    // if timer is paused, unpause
-    if(this.pausetimer){ 
-      this.setTimer(this.extimer);
-    }
 
     // select next question to be displayed
     // this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
@@ -279,19 +271,45 @@ export class ExamTimeComponent implements OnInit {
     // save exam progress
     this.saveExamProgress();
     
+    this.checkExplain();
     this.resetAnswer();
+  }
+  
+  goQuestion(ind: any){
+    this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
+    this.qNum$.next(ind+1);
+
+    // if timer is paused, unpause
+    // if(this.pausetimer){ 
+    //   this.setTimer(this.extimer);
+    // }
+
+    this.currQ.next(this.examQs$.value[ind]);
+
+    // save exam progress
+    this.saveExamProgress();
+    
+    this.checkExplain();
+    this.resetAnswer();
+    console.log(ind)
   }
 
   // button only available if details are on
   submitQ(){
-
-    this.saveExamProgress();
   
     //pause timer
+    this.timepause();
+
+    this.showExplain = true;
+    this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
+    this.currQ.value.userAnswer = this.arr_Answers$.value[this.qNum$.value-1];
+    this.saveExamProgress();
+    //TODO: display answer details
+  }
+
+  timepause(){
     this.timerSub.unsubscribe()
     this.pausetimer.next(0); 
-  
-    //TODO: display answer details
   }
 
   saveQuit(){
@@ -371,6 +389,7 @@ export class ExamTimeComponent implements OnInit {
     //update exam entry in DB (do on each prev/next/submit to save exam progress)
     this.currExam.answers = this.arr_Answers$.value;
     this.currExam.current = this.examQs$.value[this.qNum$.value-1]._id;
+    this.currExam.questions = this.examQs$.value;
     //TODO: this.currExam.flagged
     //TODO: this.currExam.incorrect (if details on)
     this.currExam.time = this.extimer;
@@ -389,5 +408,31 @@ export class ExamTimeComponent implements OnInit {
     console.log(this.currQ);
     console.log(this.qNum$.value);
     console.log(this.currExam.answers);
+  }
+
+  checkExplain(){
+    this.showExplain = false;
+    if(this.exam.value.options?.details){
+      if(['A','B','C','D'].includes(this.currQ.value.userAnswer!)){
+        this.showExplain = true;
+        this.timepause();
+        console.log('check explain true');
+      }
+      else{
+        this.showExplain = false;
+        console.log('check explain false');
+        console.log(this.currQ.value.userAnswer);
+        // if timer is paused, unpause
+        if(this.pausetimer){ 
+          this.setTimer(this.extimer);
+        }
+      }
+    }
+    else{
+      // if timer is paused, unpause
+      if(this.pausetimer){ 
+        this.setTimer(this.extimer);
+      }
+    }
   }
 }
