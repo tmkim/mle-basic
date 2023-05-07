@@ -10,16 +10,18 @@ import { Question } from '../question';
   template: `
   <h2>
     <button class="btn btn-primary mt-3" [routerLink]="['/exams/']">Home</button>
-    <div class="score">Final Score: {{exam.value.score}}</div>
+    <div class="score">Final Score: {{exam.value.score}}</div> 
   </h2>
   <table class="table table-striped table-bordered" border="2px solid black">
     <colgroup>
       <col span="1" style="width: 5%;">
-      <col span="1" style="width: 55%;">
+      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 50%;">
       <col span="1" style="width: 40%;">
     </colgroup>
     <thead>
       <tr>
+          <th>Flag</th>
           <th>Correct</th>
           <th>Question</th>
           <th>Options</th>
@@ -28,8 +30,11 @@ import { Question } from '../question';
     <tbody>
       <tr *ngFor="let q of examQs | async; let i = index">
         <td>
-          <ng-container *ngIf="q.userAnswer == q.answer"><div><i class="bi bi-check-lg correct"></i></div></ng-container>
-          <ng-container *ngIf="q.userAnswer != q.answer"><div class="incorrect">&nbsp;X</div></ng-container>
+          <div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i></div>
+        </td>
+        <td>
+          <div class="cor-space" *ngIf="q.userAnswer == q.answer"><i class="bi bi-check-lg correct"></i></div>
+          <div class="incorrect" *ngIf="q.userAnswer != q.answer">&nbsp;X</div>
         </td>
         <td>{{i+1}}. {{q.question}}</td>
         <td>
@@ -54,7 +59,10 @@ import { Question } from '../question';
   styles: [
     `@import "~bootstrap-icons/font/bootstrap-icons.css";
     .correct { color:green; font-size: 50px; -webkit-text-stroke-width: 3px; }
-    .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:28px}
+    .cor-space { padding-top: 10px }
+    .flag-space { padding-top: 15px }
+    .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:25px}
+    .flag { color: red; font-size: 40px; display: inline }
     .answers {padding-left: .7rem;}
     th, td {
       padding-left: .5rem;
@@ -81,6 +89,7 @@ export class ReviewExamComponent {
   exam: BehaviorSubject<Exam> = new BehaviorSubject({});
   examQs: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
   incorrect: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
+  arr_flaggedQs$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
 
   constructor(
     private route: ActivatedRoute,
@@ -97,7 +106,7 @@ export class ReviewExamComponent {
     this.examService.getExam(id !).subscribe((exam) => {
       this.exam.next(exam);
       this.examQs.next(exam.questions !);
-      console.log(this.examQs.value);
+      this.arr_flaggedQs$.next(exam.flagged !);
       this.incorrect.next(exam.incorrect !);
     });
     

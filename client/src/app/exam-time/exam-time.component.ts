@@ -14,7 +14,7 @@ import { Option } from '../option';
   selector: 'app-exam-time',
   template: `
   <mat-sidenav-container class="side-container">
-    <mat-sidenav mode="side" [opened]="screenW>500" disableClosed="true">
+    <mat-sidenav mode="side" [opened]="screenW>800 || blnSidenav" disableClosed="true">
       <!--table class="table-striped side-nav-table">
         <tr *ngFor="let q of examQs$ | async; let i = index" style="height: 52px">
         <td>{{i+1}}</td>
@@ -22,14 +22,24 @@ import { Option } from '../option';
       </table-->
       <mat-nav-list class="side-nav-table">
       <mat-list-item class="side-nav-items" routerLink="." *ngFor="let q of examQs$ | async; let i = index" (click)="goQuestion(i)">
-          <div mat-line style="color:black;">{{i+1}}</div>
+          <div mat-line style="color:black;">{{i+1}}
+          <span class="incorrect" *ngIf="arr_incorrect$.value.includes(q._id)">X&nbsp;</span>
+          <i class="bi bi-check-lg correct" *ngIf="arr_correct$.value.includes(q._id)">&nbsp;</i>
+          <i class="bi bi-flag-fill" style="color:red" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i>
+          </div>
         </mat-list-item>
       </mat-nav-list>
     </mat-sidenav>
     
     <mat-sidenav-content style="padding-left:32px">
       <div>
-        <h2 class="text-center m-3" num=1> Question {{qNum$.value}}</h2>  
+        <button (click)="sidenavToggle()" *ngIf="screenW<=800" class="hide-btn">
+          <i class="bi bi-list sn-tog"></i>
+        </button>
+        <h2 class="text-center m-3"> Question {{qNum$.value}}&nbsp;&nbsp;
+          <button *ngIf="!currFlag" class="hide-btn" (click)="flagQ()"><i class="bi bi-flag fFlag"></i></button>
+          <button *ngIf="currFlag" class="hide-btn" (click)="flagQ()"><i class="bi bi-flag-fill tFlag" ></i></button>
+        </h2>
         <div class="col">
           <h3>
             {{ timeRemaining$ | async | date:'mm:ss' }}      
@@ -40,10 +50,10 @@ import { Option } from '../option';
       <div>
         <div class="row">
           <div class="col">
-            <p>{{currQ.value.question}}</p>  
+            <p>{{currQ$.value.question}}</p>  
           </div>
         </div>
-        <ng-container *ngIf="currQ.value.image">
+        <ng-container *ngIf="currQ$.value.image">
           <div>display image here </div>
         </ng-container>
       </div>
@@ -51,30 +61,42 @@ import { Option } from '../option';
       <div>
         <div class="form-check">
           <div class="row-1">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" [(ngModel)]="answerRadio" value="A">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" 
+              [(ngModel)]="answerRadio" [disabled]="['B','C','D'].includes(currQ$.value.userAnswer!)" value="A">
             <label class="form-check-label" for="flexRadioDefault1">
-              {{currQ.value.optionA}}
+              {{currQ$.value.optionA}}
             </label>
           </div>
           <div class="row-2">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" [(ngModel)]="answerRadio" value="B">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" 
+              [(ngModel)]="answerRadio" [disabled]="['A','C','D'].includes(currQ$.value.userAnswer!)" value="B">
             <label class="form-check-label" for="flexRadioDefault2">
-              {{currQ.value.optionB}}
+              {{currQ$.value.optionB}}
             </label>
           </div>
           <div class="row-3">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" [(ngModel)]="answerRadio" value="C">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" 
+            [(ngModel)]="answerRadio" [disabled]="['A','B','D'].includes(currQ$.value.userAnswer!)" value="C">
             <label class="form-check-label" for="flexRadioDefault3">
-              {{currQ.value.optionC}}
+              {{currQ$.value.optionC}}
             </label>
           </div>
           <div class="row-4">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" [(ngModel)]="answerRadio" value="D">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" 
+            [(ngModel)]="answerRadio" [disabled]="['A','B','C'].includes(currQ$.value.userAnswer!)" value="D">
             <label class="form-check-label" for="flexRadioDefault4">
-              {{currQ.value.optionD}}
+              {{currQ$.value.optionD}}
             </label>
           </div>
         </div>
+
+        <ng-container *ngIf="showExplain">
+          <div style="margin-top:20px">
+            <i class="exp-incorrect" *ngIf="arr_incorrect$.value.includes(currQ$.value._id)">Incorrect!</i>
+            <i class="exp-correct" *ngIf="arr_correct$.value.includes(currQ$.value._id)">Correct!</i>
+          </div>
+          <div>{{currQ$.value.explanation}}</div>
+        </ng-container>
 
         <div class="row">
           <div class="col">
@@ -85,7 +107,7 @@ import { Option } from '../option';
           <div class="col">
             <div class="form-check form-switch">
               <button class="btn btn-primary mt-3" *ngIf="options$.value.details"  (click)="submitQ()"
-              [disabled]="answerRadio == '' || ['A','B','C','D'].includes(currQ.value.userAnswer!)"> Submit </button>
+              [disabled]="answerRadio == '' || ['A','B','C','D'].includes(currQ$.value.userAnswer!)"> Submit </button>
             </div>
           </div>
           <div class="col">
@@ -94,11 +116,6 @@ import { Option } from '../option';
             </div>
           </div>
         </div>
-
-        <ng-container *ngIf="showExplain">
-          <div>{{currQ.value.explanation}}</div>
-          <div>test explain</div>
-        </ng-container>
 
         <div class="row">
           <div class="col"></div>
@@ -119,6 +136,8 @@ import { Option } from '../option';
   </mat-sidenav-container>
   `,
   styles: [`
+  @import "~bootstrap-icons/font/bootstrap-icons.css";
+
   .side-container {
     position: absolute;
     top: 0;
@@ -128,8 +147,25 @@ import { Option } from '../option';
     background: white;
     color: black;
   }
+  .tFlag { font-size: 25px; color:red; -webkit-text-stroke-width: 2px; }
+  .fFlag { font-size: 25px; color:red; -webkit-text-stroke-width: 2px; }
+  .incorrect { color:red; font-size: 15px; -webkit-text-stroke-width: 2px; }
+  .correct { color:green; font-size: 20px; -webkit-text-stroke-width: 2px; }
+  .exp-incorrect { color:red; font-size: 20px; }
+  .exp-correct { color:green; font-size: 20px; }
+  .sn-tog{
+    position: absolute;
+    top:0;
+    left:0;
+    font-size: 40px; 
+    -webkit-text-stroke-width: 2px;
+  }
+  .hide-btn{
+    background:none;
+    border:none
+  }
   .side-nav-table{
-    width: 80px;
+    width: 120px;
   }
   table td{
     padding-top:5px;
@@ -161,17 +197,21 @@ import { Option } from '../option';
 export class ExamTimeComponent implements OnInit {
 
   qNum$: BehaviorSubject<number> = new BehaviorSubject(1);
-  exam: BehaviorSubject<Exam> = new BehaviorSubject({});
-  currQ: BehaviorSubject<Question> = new BehaviorSubject({});
+  exam$: BehaviorSubject<Exam> = new BehaviorSubject({});
+  currQ$: BehaviorSubject<Question> = new BehaviorSubject({});
   examQs$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
   options$: BehaviorSubject<Option> = new BehaviorSubject<Option>({qCount: 0, details: false});
   arr_Answers$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
+  arr_incorrect$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
+  arr_correct$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
+  arr_flaggedQs$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
   pausetimer = new Subject();
   currExam: Exam = {};
   answerRadio = '';
-  incorrectQs = new Array();
   screenW = 0;
   showExplain = false;
+  currFlag = false;
+  blnSidenav = false;
 
   sub_init = new Subscription();
   
@@ -199,13 +239,16 @@ export class ExamTimeComponent implements OnInit {
     }
   
     this.sub_init = this.examService.getExam(id !).subscribe((exam) => {
-      this.exam.next(exam);
+      this.exam$.next(exam);
       this.setTimer(exam.time !);
       this.examQs$.next(exam.questions !);
       this.options$.next(exam.options !);
-      this.arr_Answers$.next(exam.answers !)
-      this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
-      this.qNum$.next(this.examQs$.value.findIndex(q => q._id == this.exam.value.current)+1 !);
+      this.arr_Answers$.next(exam.answers !);
+      this.arr_incorrect$.next(exam.incorrect !);
+      this.arr_correct$.next(exam.correct !);
+      this.arr_flaggedQs$.next(exam.flagged !);
+      this.currQ$.next(this.examQs$.value.find(q => q._id == this.exam$.value.current) !);
+      this.qNum$.next(this.examQs$.value.findIndex(q => q._id == this.exam$.value.current)+1 !);
       this.resetAnswer();
       
       this.sub_init.unsubscribe();
@@ -227,7 +270,8 @@ export class ExamTimeComponent implements OnInit {
     this.timerSub = this.timeRemaining$.subscribe(t => {
       //console.log(t);
       this.extimer = t/1000;
-      if ( this.exam.value.options?.details && ['A','B','C','D'].includes(this.currQ.value.userAnswer!) && this.extimer < seconds){
+      if ( this.exam$.value.options?.details && ['A','B','C','D'].includes(this.currQ$.value.userAnswer!) && this.extimer < seconds){
+        this.showExplain = true;
         this.pausetimer.next(0);
         this.extimer += 1;
       }
@@ -249,7 +293,7 @@ export class ExamTimeComponent implements OnInit {
     // }
 
     // select next question to be displayed
-    this.currQ.next(this.examQs$.value[this.qNum$.value-1]);
+    this.currQ$.next(this.examQs$.value[this.qNum$.value-1]);
 
     // save exam progress
     this.saveExamProgress();
@@ -266,7 +310,7 @@ export class ExamTimeComponent implements OnInit {
     // select next question to be displayed
     // this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
     // this.currQ.next(this.examQs$.value[this.num-1]);
-    this.currQ.next(this.examQs$.value[this.qNum$.value-1]);
+    this.currQ$.next(this.examQs$.value[this.qNum$.value-1]);
 
     // save exam progress
     this.saveExamProgress();
@@ -284,7 +328,7 @@ export class ExamTimeComponent implements OnInit {
     //   this.setTimer(this.extimer);
     // }
 
-    this.currQ.next(this.examQs$.value[ind]);
+    this.currQ$.next(this.examQs$.value[ind]);
 
     // save exam progress
     this.saveExamProgress();
@@ -302,7 +346,12 @@ export class ExamTimeComponent implements OnInit {
 
     this.showExplain = true;
     this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
-    this.currQ.value.userAnswer = this.arr_Answers$.value[this.qNum$.value-1];
+    this.currQ$.value.userAnswer = this.arr_Answers$.value[this.qNum$.value-1];
+    if(this.currQ$.value.userAnswer != this.currQ$.value.answer){
+      this.arr_incorrect$.value.push(this.currQ$.value._id)
+    }else{
+      this.arr_correct$.value.push(this.currQ$.value._id)
+    }
     this.saveExamProgress();
     //TODO: display answer details
   }
@@ -322,7 +371,7 @@ export class ExamTimeComponent implements OnInit {
     this.currExam.time = this.extimer;
     //TODO: on finish exam - this.currExam.score
       
-    this.examService.updateExam(this.exam.value._id || '', this.currExam)
+    this.examService.updateExam(this.exam$.value._id || '', this.currExam)
     .subscribe({
       next: () =>{
         console.log('exam saved/quit');
@@ -346,11 +395,11 @@ export class ExamTimeComponent implements OnInit {
     this.currExam.time = 0;
     console.log(this.currExam);
 
-    this.examService.updateExam(this.exam.value._id || '', this.currExam)
+    this.examService.updateExam(this.exam$.value._id || '', this.currExam)
       .subscribe({
       next: () =>{
         console.log('exam submitted');
-        this.router.navigate([`/review/${this.exam.value._id}`]);
+        this.router.navigate([`/review/${this.exam$.value._id}`]);
       },
       error: (e) => {
         alert("failed to update exam");
@@ -366,15 +415,16 @@ export class ExamTimeComponent implements OnInit {
       if(answer == this.examQs$.value[index].answer){
         correct += 1;
       }else{
-        this.incorrectQs.push(this.examQs$.value[index]._id);
+        if(!this.exam$.value.options?.details){
+          this.arr_incorrect$.value.push(this.examQs$.value[index]._id);
+        }
       }
-
       if(this.currExam.questions){
         this.currExam.questions[index].userAnswer = answer;
       }
     })
     this.currExam.score = `${correct}/${this.examQs$.value.length}`;
-    this.currExam.incorrect = this.incorrectQs;
+    this.currExam.incorrect = this.arr_incorrect$.value;
   }
 
   resetAnswer(){
@@ -383,6 +433,11 @@ export class ExamTimeComponent implements OnInit {
     }else{
       this.answerRadio = '';
     }
+    if(this.arr_flaggedQs$.value.includes(this.examQs$.value[this.qNum$.value-1]._id)){
+      this.currFlag = true;
+    }else{
+      this.currFlag = false;
+    }
   }
 
   saveExamProgress(){
@@ -390,11 +445,12 @@ export class ExamTimeComponent implements OnInit {
     this.currExam.answers = this.arr_Answers$.value;
     this.currExam.current = this.examQs$.value[this.qNum$.value-1]._id;
     this.currExam.questions = this.examQs$.value;
-    //TODO: this.currExam.flagged
-    //TODO: this.currExam.incorrect (if details on)
+    this.currExam.flagged = this.arr_flaggedQs$.value;
+    this.currExam.incorrect = this.arr_incorrect$.value;
+    this.currExam.correct = this.arr_correct$.value;
     this.currExam.time = this.extimer;
     //TODO: on finish exam - this.currExam.score
-    this.examService.updateExam(this.exam.value._id || '', this.currExam)
+    this.examService.updateExam(this.exam$.value._id || '', this.currExam)
       .subscribe({
       next: () =>{
         console.log('exam progress saved');
@@ -405,15 +461,15 @@ export class ExamTimeComponent implements OnInit {
       }
     })
 
-    console.log(this.currQ);
+    console.log(this.currQ$);
     console.log(this.qNum$.value);
     console.log(this.currExam.answers);
   }
 
   checkExplain(){
     this.showExplain = false;
-    if(this.exam.value.options?.details){
-      if(['A','B','C','D'].includes(this.currQ.value.userAnswer!)){
+    if(this.exam$.value.options?.details){
+      if(['A','B','C','D'].includes(this.currQ$.value.userAnswer!)){
         this.showExplain = true;
         this.timepause();
         console.log('check explain true');
@@ -421,7 +477,7 @@ export class ExamTimeComponent implements OnInit {
       else{
         this.showExplain = false;
         console.log('check explain false');
-        console.log(this.currQ.value.userAnswer);
+        console.log(this.currQ$.value.userAnswer);
         // if timer is paused, unpause
         if(this.pausetimer){ 
           this.setTimer(this.extimer);
@@ -434,5 +490,22 @@ export class ExamTimeComponent implements OnInit {
         this.setTimer(this.extimer);
       }
     }
+  }
+
+  flagQ(){
+    this.currFlag = !this.currFlag
+    if(this.currFlag){
+      this.arr_flaggedQs$.value.push(this.examQs$.value[this.qNum$.value-1]._id);
+    }else{
+      var ind = this.arr_flaggedQs$.value.indexOf(this.examQs$.value[this.qNum$.value-1]._id)
+      if(ind != -1){
+        this.arr_flaggedQs$.value.splice(ind,1);
+      }
+    }
+    this.saveExamProgress();
+  }
+
+  sidenavToggle(){
+    this.blnSidenav = !this.blnSidenav
   }
 }

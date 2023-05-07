@@ -64,6 +64,16 @@ async function applySchemaValidation(db: mongodb.Db) {
                         description: "array of incorrect question ID numbers"
                     }
                 },
+                correct: {
+                    bsonType: ["array"],
+                    description: "'correct' is optional and is an array of strings",
+                    minItems: 0,
+                    maxItems: 255,
+                    items: {
+                        bsonType: "string",
+                        description: "array of correct question ID numbers"
+                    }
+                },
                 flagged: {
                     bsonType: ["array"],
                     description: "'flagged' is optional and is an array of strings",

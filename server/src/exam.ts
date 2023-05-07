@@ -8,6 +8,7 @@ export interface Exam {
     answers: Array<any>; // Map of answers provided
     questions: Array<Question>; // list of questions used in test in order (as presented in exam)
     incorrect: Array<String>; // list of questions answered incorrectly
+    correct: Array<String>; // list of questions answered correctly
     flagged: Array<String>; //list of questions that are flagged for extra review
     time: number; //time left in seconds (in case test is paused). 0 if done.
     current: String; //current question id# in case test is paused

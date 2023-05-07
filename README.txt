@@ -182,7 +182,7 @@ Basic exam app for tw mle (no users)
     - change Option() class to be interface 
     - include "answers" map in Exams database table //DONE: make sure DB is saving map correctly 
     - saveExamProgress() called on each button click 
-        TODO: Show details on submit( button )
+        DONE: Show details on submit( button )
     - DONE: save and reload exam on page refresh 
     - DONE: figure out how to make answerMap work with mongodb
         (store and retrieve value)
@@ -222,15 +222,15 @@ Basic exam app for tw mle (no users)
             > highlight correct answer -- if wrong, also highlight wrong answer 
 
     * updated calculateScore to store user answer in currExam.question[].userAnswer 
-    -- reflects in Review (appropriate Y or N -- TODO check mark / X mark)
+    -- reflects in Review (appropriate Y or N -- DONE: check mark / X mark)
     -- Review highlights answers in green/red
         > correct answer for each question always highlighted in green 
         > if user submit incorrect, highlight red 
 
 TODOS:
     - scrollable question number list (DONE-ish)
-    - flaggable questions + flag list 
-    - "Details on" workflow 
+    - flaggable questions + flag list (DONE)
+    - "Details on" workflow (DONE)
     - image hosting
 
 04/28:
@@ -245,7 +245,7 @@ TODOS:
     > Update exam-time 
         - Re-label buttons 
         - Add Save/Quit button 
-            TODO:
+            DONE:
                 ** does not function properly on new exam
                 ** does function properly on continued/refreshed exam
                 ????????????????
@@ -273,3 +273,18 @@ TODOS:
         - show details on questions that have been submitted (on submit, on return to question)
         - timer pauses when returning to a question that has been submitted
             > had trouble with refresh/init, got it fixed by adding conditions to setTimer
+        ** mostly good for now~
+
+05/06
+    > work on flagging questions~
+        -- add flag button, save flag info into currExam
+        -- populate sidenav with flag icon 
+        ** good! flag populated, sidenav populates, saves, reloads. 
+    > work on incorrect questions (when details on)
+        -- update calculateScore to account for details on 
+        -- update submitQ 
+        -- update showing of explanation 
+        -- save both incorrect and correct questions 
+        ** good! [in]correct questions are properly saved, reloaded, used for scoring
+        optional TODO: optimize use of correct/incorrect arrays 
+    > include toggle for sidenav 

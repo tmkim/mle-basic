@@ -24,6 +24,7 @@ export class BeginExamComponent {
     answers: new Array<String>,
     questions: new Array<Question>,
     incorrect: new Array<String>,
+    correct: new Array<String>,
     flagged: new Array<String>,
     time: 0,
     current: '',
