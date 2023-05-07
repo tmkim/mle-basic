@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscriber, Subscription } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 
@@ -29,7 +29,7 @@ import { ExamService } from '../exam.service';
           <td class="actions">
              <button class="btn btn-primary me-1" *ngIf="$any(exam)?.time > 0" [routerLink]="['/exam-time/', exam._id]">Continue</button>
              <button class="btn btn-primary me-1" *ngIf="exam.time == 0" [routerLink]="['/review/', exam._id]">Review</button>
-             <button class="btn btn-danger" (click)="deleteExam(exam._id || '', exam.number || 0)">Delete</button>
+             <button class="btn btn-danger" (click)="deleteExam(exam._id || '')">Delete</button>
           </td>
         </ng-container>
       </tr>
@@ -90,7 +90,15 @@ td.actions{
 
 export class ExamsListComponent implements OnInit {
   exams$: Observable<Exam[]> = new Observable();
-  num = 1;
+  // num = 1;
+  sub_delete = new Subscription();
+  sub_updateNums = new Subscription();
+  sub_exams = new Subscription();
+  ex_count = 0;
+
+  newExam: Exam = {
+    number: -1
+  };
 
   constructor(private examsService: ExamService) { }
 
@@ -98,15 +106,31 @@ export class ExamsListComponent implements OnInit {
     this.fetchExams();
   }
 
-  deleteExam(id: string, num: number): void {
+  deleteExam(id: string): void {
     // if(confirm("Are you sure you want to delete Exam number "+num+"?")) {
     //   this.examsService.deleteExam(id).subscribe({
     //     next: () => this.fetchExams()
     //   });
     // }
-    this.examsService.deleteExam(id).subscribe({
-      next: () => this.fetchExams()
+    this.sub_delete = this.examsService.deleteExam(id).subscribe({
+      next: () => {
+        this.fetchExams();
+        this.sub_delete.unsubscribe();
+      }
     });
+
+    this.exams$.forEach(exams => {
+      exams.forEach(exam => {
+        this.ex_count++;
+        this.newExam.number = this.ex_count;
+        this.sub_updateNums = this.examsService.updateExam(exam._id!, this.newExam).subscribe({
+          next: () => {
+            console.log(exam);
+            this.sub_updateNums.unsubscribe();
+          }
+        });
+      })
+    })
   }
 
   timeFormat(totalSeconds: number): string{

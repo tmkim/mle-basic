@@ -279,6 +279,7 @@ TODOS:
     > work on flagging questions~
         -- add flag button, save flag info into currExam
         -- populate sidenav with flag icon 
+        -- show whether question was flagged or not during review 
         ** good! flag populated, sidenav populates, saves, reloads. 
     > work on incorrect questions (when details on)
         -- update calculateScore to account for details on 
@@ -288,3 +289,8 @@ TODOS:
         ** good! [in]correct questions are properly saved, reloaded, used for scoring
         optional TODO: optimize use of correct/incorrect arrays 
     > include toggle for sidenav 
+        -- add button when screen width is low enough to hide nav
+        ** good! button appears when SW <= 800, toggles sidenav visibility. 
+
+    > work on updating exam deletion to remap exam numbers 
+        - kinda works but kinda funny ?? iDONO
