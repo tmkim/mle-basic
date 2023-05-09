@@ -255,7 +255,7 @@ TODOS:
         ** Fixed by unsubscribing after routing (in begin-exam)!
         -- TODO: clean up subscriptions everywhere and make sure to unsubscribe appropriately
 
-05/05:
+05/06:
     TODO: when deleting an exam, update exam numbers to make sense 
     > work on adding sidebar nav for question numbers 
         * basics kinda functional 
@@ -275,7 +275,7 @@ TODOS:
             > had trouble with refresh/init, got it fixed by adding conditions to setTimer
         ** mostly good for now~
 
-05/06
+05/07
     > work on flagging questions~
         -- add flag button, save flag info into currExam
         -- populate sidenav with flag icon 
@@ -294,3 +294,10 @@ TODOS:
 
     > work on updating exam deletion to remap exam numbers 
         - kinda works but kinda funny ?? iDONO
+
+05/09
+    > working on updating exam deletion to remap exam numbers 
+        - having trouble ...
+            * trying to delete, get new list of exams, update number for each exam in new list 
+            * new list is including the exam that was deleted.. need to delay? 
+            ~ Kinda works, but you have to refresh page for numbers to be updated. Might need to figure out map/pipe?

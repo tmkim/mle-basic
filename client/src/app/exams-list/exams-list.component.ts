@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, Subscriber, Subscription } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
+import { Console } from 'console';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exams-list',
@@ -90,10 +92,12 @@ td.actions{
 
 export class ExamsListComponent implements OnInit {
   exams$: Observable<Exam[]> = new Observable();
+  bs_exams$: BehaviorSubject<Exam[]> = new BehaviorSubject([{}]);
   // num = 1;
   sub_delete = new Subscription();
   sub_updateNums = new Subscription();
   sub_exams = new Subscription();
+  sub_bs = new Subscription();
   ex_count = 0;
 
   newExam: Exam = {
@@ -112,25 +116,70 @@ export class ExamsListComponent implements OnInit {
     //     next: () => this.fetchExams()
     //   });
     // }
-    this.sub_delete = this.examsService.deleteExam(id).subscribe({
-      next: () => {
-        this.fetchExams();
-        this.sub_delete.unsubscribe();
-      }
+    this.ex_count = 0;
+    //this.exams$.forEach(exs => exs.forEach(ex => console.log(ex)));
+
+    // this.sub_delete = this.examsService.deleteExam(id).subscribe({
+    //   next: () => {
+    //     console.log(`deleted ${id}`);
+    //     this.sub_exams = this.examsService.getExams().subscribe(
+    //       exs => {this.bs_exams$.next(exs);
+    //       console.log(this.bs_exams$.value);
+    //       this.bs_exams$.value.forEach(exam => {
+    //         this.ex_count++;
+    //         this.newExam.number = this.ex_count;
+    //         this.sub_updateNums = this.examsService.updateExam(exam._id!, this.newExam).subscribe({
+    //           next: () => {
+    //             this.sub_updateNums.unsubscribe();
+    //           }
+    //         })
+    //         console.log(`updated ${this.ex_count}`)
+    //       })
+    //       this.sub_exams.unsubscribe();
+    //     })
+    //     this.sub_delete.unsubscribe();
+    //   }
+    // })
+
+    // this.examsService.deleteExam(id).pipe(map(() => {
+    //   this.examsService.getExams().pipe(
+    //     map(res => {
+    //      res.forEach(ex => {
+    //       this.ex_count++;
+    //       this.newExam.number = this.ex_count;
+    //       this.examsService.updateExam(ex._id!, this.newExam).pipe()
+    //       })
+    //     }) 
+    //   )  
+    // }))
+
+    this.sub_delete = this.examsService.deleteExam(id).subscribe(() => {
+      console.log("Exam deleted")
+      this.exams$ = this.examsService.getExams().pipe(map(exams => {
+        return exams;
+      }));
+
+      this.exams$.forEach(exams => {
+        exams.forEach(exam => {
+          this.ex_count++;
+          this.newExam.number = this.ex_count;
+          this.sub_updateNums = this.examsService.updateExam(exam._id!, this.newExam).subscribe({
+            next: () => {
+              this.sub_updateNums.unsubscribe();
+            }    
+          })
+        })
+      })
+
+      this.sub_updateNums.unsubscribe();
+      this.sub_delete.unsubscribe();
     });
 
-    this.exams$.forEach(exams => {
-      exams.forEach(exam => {
-        this.ex_count++;
-        this.newExam.number = this.ex_count;
-        this.sub_updateNums = this.examsService.updateExam(exam._id!, this.newExam).subscribe({
-          next: () => {
-            console.log(exam);
-            this.sub_updateNums.unsubscribe();
-          }
-        });
-      })
-    })
+    // this.sub_updateNums.unsubscribe();
+    // this.sub_delete.unsubscribe();
+    this.exams$ = this.examsService.getExams().pipe(map(exams => {
+      return exams;
+    }));
   }
 
   timeFormat(totalSeconds: number): string{
@@ -167,5 +216,9 @@ export class ExamsListComponent implements OnInit {
 
   private fetchExams(): void {
     this.exams$ = this.examsService.getExams();
+    this.sub_bs = this.examsService.getExams().subscribe(exams => {
+      this.bs_exams$.next(exams);
+      this.sub_bs.unsubscribe();
+    });
   }
 }
