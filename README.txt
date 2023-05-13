@@ -253,10 +253,10 @@ TODOS:
 05/02:
     > look into save/quit error 
         ** Fixed by unsubscribing after routing (in begin-exam)!
-        -- TODO: clean up subscriptions everywhere and make sure to unsubscribe appropriately
+        -- TODO:DONE?: clean up subscriptions everywhere and make sure to unsubscribe appropriately
 
 05/06:
-    TODO: when deleting an exam, update exam numbers to make sense 
+    DONE: when deleting an exam, update exam numbers to make sense 
     > work on adding sidebar nav for question numbers 
         * basics kinda functional 
             - displays table with correct amount of question numbers
@@ -301,3 +301,13 @@ TODOS:
             * trying to delete, get new list of exams, update number for each exam in new list 
             * new list is including the exam that was deleted.. need to delay? 
             ~ Kinda works, but you have to refresh page for numbers to be updated. Might need to figure out map/pipe?
+            .. tried a few different approaches but still having trouble with refreshing list after update.
+                - I think timing is weird, whenever I try to refresh the list, it tries to apply delete/update again..
+
+05/13
+    > working on updating exam deletion to remap exam numbers 
+        -- GOTTEM!!!!
+            * moved logic to exam.service
+                -- new function "updateExamNums()"
+                -- delete exam -> service.updateExamNums():
+                   -- load new list into tmp_exams$, iterate to update entries, refresh this.exams$ within update

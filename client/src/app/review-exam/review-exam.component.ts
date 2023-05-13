@@ -62,6 +62,7 @@ import { Question } from '../question';
     .cor-space { padding-top: 10px }
     .flag-space { padding-top: 15px }
     .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:25px}
+    .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:25px}
     .flag { color: red; font-size: 40px; display: inline }
     .answers {padding-left: .7rem;}
     th, td {

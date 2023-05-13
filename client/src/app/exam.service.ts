@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, tap } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Exam } from './exam';
 import { Int32 } from 'mongodb';
@@ -11,6 +11,9 @@ import { Int32 } from 'mongodb';
 export class ExamService {
   private url = 'http://localhost:5200';
   private exams$: Subject<Exam[]> = new Subject();
+  newExam: Exam = {
+    number: -1
+  };
 
   constructor(private httpClient: HttpClient) { }
 
@@ -64,6 +67,27 @@ export class ExamService {
   
   updateExam(id: string, exam: Exam): Observable<string> {
     return this.httpClient.put(`${this.url}/exams/${id}`, exam, { responseType: 'text' });
+  }
+
+  updateExamNums(): Subject<Exam[]> {
+    var ex_count = 0
+    var tmp_exams$ = new Subject<Exam[]>();
+    this.httpClient.get<Exam[]>(`${this.url}/exams`).subscribe(exams => {
+      tmp_exams$.next(exams);
+    });
+
+    tmp_exams$.forEach(exams => {
+      exams.forEach(exam =>{
+        ex_count++;
+        this.newExam.number = ex_count;
+        this.updateExam(exam._id!, this.newExam).subscribe({next:() => {
+          // console.log(res)
+          this.refreshExams();
+          // console.log(this.exams$);
+        }})
+      })
+    });
+    return this.exams$;
   }
   
   deleteExam(id: string): Observable<string> {

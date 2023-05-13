@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Question } from './question';
 import { access } from 'fs';
 
@@ -75,7 +75,6 @@ export class QuestionService {
         }
       }
       this.qList$.next(buildQ$);
-      
      })
     return this.qList$;
   }

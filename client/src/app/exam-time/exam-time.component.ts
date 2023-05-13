@@ -214,10 +214,10 @@ export class ExamTimeComponent implements OnInit {
   blnSidenav = false;
 
   sub_init = new Subscription();
-  
+  sub_update = new Subscription();
+  timerSub: Subscription = new Subscription();
 
   timeRemaining$: Observable<number> = new Observable<number>();
-  timerSub: Subscription = new Subscription();
   extimer = 0;
 
   constructor(
@@ -238,7 +238,7 @@ export class ExamTimeComponent implements OnInit {
       this.screenW = window.innerWidth;
     }
   
-    this.sub_init = this.examService.getExam(id !).subscribe((exam) => {
+    this.examService.getExam(id !).subscribe((exam) => {
       this.exam$.next(exam);
       this.setTimer(exam.time !);
       this.examQs$.next(exam.questions !);
@@ -251,7 +251,6 @@ export class ExamTimeComponent implements OnInit {
       this.qNum$.next(this.examQs$.value.findIndex(q => q._id == this.exam$.value.current)+1 !);
       this.resetAnswer();
       
-      this.sub_init.unsubscribe();
       // console.log(this.examQs$.value);
       // console.log(this.currQ);
       // console.log(this.qNum$.value);
