@@ -39,17 +39,20 @@ import { Question } from '../question';
         <td>{{i+1}}. {{q.question}}</td>
         <td>
           <div class="answers">
-            <div class="row" [ngStyle]="{'color':q.answer != 'A' && q.userAnswer == 'A' ? 'red' : q.answer == 'A' ? 'green' : '' }">
+            <div class="row" *ngIf="q.userAnswer != 'A' && q.userAnswer != 'B' && q.userAnswer != 'C' && q.userAnswer != 'D'">
+            <i style="color:red;font-weight:420">No Response!</i>
+            </div>
+            <div class="row" [ngStyle]="q.answer != 'A' && q.userAnswer == 'A' ? {'color':'red','font-weight': '420'} : q.answer == 'A' ? {'color':'green','font-weight': '420'} : {'':''}">
               A. {{q.optionA}}
             </div>
-            <div class="row" [ngStyle]="{'color':q.answer != 'B' && q.userAnswer == 'B' ? 'red' : q.answer == 'B' ? 'green' : '' }">
-              B. {{q.optionB}}
+            <div class="row" [ngStyle]="q.answer != 'B' && q.userAnswer == 'B' ? {'color':'red','font-weight': '420'} : q.answer == 'B' ? {'color':'green','font-weight': '420'} : {'':''}">
+            B. {{q.optionB}}
             </div>
-            <div class="row" [ngStyle]="{'color':q.answer != 'C' && q.userAnswer == 'C' ? 'red' : q.answer == 'C' ? 'green' : '' }">
-              C. {{q.optionC}}
+            <div class="row" [ngStyle]="q.answer != 'C' && q.userAnswer == 'C' ? {'color':'red','font-weight': '420'} : q.answer == 'C' ? {'color':'green','font-weight': '420'} : {'':''}">
+            C. {{q.optionC}}
             </div>
-            <div class="row" [ngStyle]="{'color':q.answer != 'D' && q.userAnswer == 'D' ? 'red' : q.answer == 'D' ? 'green' : '' }">
-              D. {{q.optionD}}
+            <div class="row" [ngStyle]="q.answer != 'D' && q.userAnswer == 'D' ? {'color':'red','font-weight': '420'} : q.answer == 'D' ? {'color':'green','font-weight': '420'} : {'':''}">
+            D. {{q.optionD}}
             </div>
           </div>
         </td>

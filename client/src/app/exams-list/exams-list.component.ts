@@ -16,6 +16,7 @@ import { map } from 'rxjs/operators';
           <th>Exam</th>
           <th>Score</th>
           <th>Time</th>
+          <th>Details</th>
           <!--th>Current Question</th-->
           <th>Action</th>
       </tr>
@@ -27,6 +28,7 @@ import { map } from 'rxjs/operators';
           <td class="num">{{exam.number}}</td>
           <td class="score">{{exam.score}}</td>
           <td class="time">{{timeFormat($any(exam)?.time)}}
+          <td class="details">{{$any(exam.options)?.details? 'On' : 'Off'}}
           <!--td>{{exam.current}}</td-->
           <td class="actions">
              <button class="btn btn-primary me-1" *ngIf="$any(exam)?.time > 0" [routerLink]="['/exam-time/', exam._id]">Continue</button>
@@ -53,7 +55,7 @@ th, td {
 }
 
 table {
-  width: 420px;
+  width: 470px;
 }
 td.num{
   width: 50px;
@@ -64,8 +66,11 @@ td.score{
 td.time{
   width: 80px;
 }
+td.details{
+  width: 50px;
+}
 td.actions{
-  width: 210px;
+  width: 260px;
 }
 
 /* if the browser window is at least 1000px-s wide: */
@@ -82,8 +87,11 @@ td.actions{
   td.time{
     width: 19%;
   }
+  td.details{
+    width: 13%;
+  }
   td.actions{
-    width: 50%;
+    width: 38%;
   }
 }
 

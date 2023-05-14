@@ -41,9 +41,9 @@ import { Option } from '../option';
           <button *ngIf="currFlag" class="hide-btn" (click)="flagQ()"><i class="bi bi-flag-fill tFlag" ></i></button>
         </h2>
         <div class="col">
-          <h3>
+          <h1>
             {{ timeRemaining$ | async | date:'mm:ss' }}      
-          </h3>
+          </h1>
         </div>
       </div>
 

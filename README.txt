@@ -263,7 +263,7 @@ TODOS:
             - clicking on a number will save current progress and jump to specified question number
             - Optional TODO: remove scrollbar 
             > include icon(?) to show whether answered or not, flagged
-        * hides sidenav if screen is too small (TODO: include way to toggle)
+        * hides sidenav if screen is too small (DONE: include way to toggle)
     - Reposition start exam button to be directly under table 
     - update angular and add angular/material
 
@@ -311,3 +311,9 @@ TODOS:
                 -- new function "updateExamNums()"
                 -- delete exam -> service.updateExamNums():
                    -- load new list into tmp_exams$, iterate to update entries, refresh this.exams$ within update
+
+    > update exams list to show details on/off 
+        ** ez clap 
+
+    > update review component
+        ** increase thickness of [in]correct answers, added "No Response"
