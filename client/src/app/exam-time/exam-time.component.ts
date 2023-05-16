@@ -31,7 +31,7 @@ import { Option } from '../option';
       </mat-nav-list>
     </mat-sidenav>
     
-    <mat-sidenav-content style="padding-left:32px">
+    <mat-sidenav-content style="padding-left:32px;margin-right:32px">
       <div>
         <button (click)="sidenavToggle()" *ngIf="screenW<=800" class="hide-btn">
           <i class="bi bi-list sn-tog"></i>
@@ -53,8 +53,8 @@ import { Option } from '../option';
             <p>{{currQ$.value.question}}</p>  
           </div>
         </div>
-        <ng-container *ngIf="currQ$.value.image">
-          <div>display image here </div>
+        <ng-container *ngIf="currQ$.value.image != ''" class="q-img">
+          <div>currQ$.value.image</div>
         </ng-container>
       </div>
 
@@ -153,6 +153,7 @@ import { Option } from '../option';
   .correct { color:green; font-size: 20px; -webkit-text-stroke-width: 2px; }
   .exp-incorrect { color:red; font-size: 20px; }
   .exp-correct { color:green; font-size: 20px; }
+  .q-img { margin-top: 16px; margin-bottom: 16px}
   .sn-tog{
     position: absolute;
     top:0;

@@ -18,8 +18,8 @@ import { Option } from '../option';
           <form>
             <label for="formControlRange">Number of Questions: </label>
             <div>
-              <input type="range" value="20" min="1" max="40" oninput="this.nextElementSibling.value = this.value" (change)="getQuestionCount($event)">
-              <output>20</output>
+              <input type="range" value="100" min="1" max="200" oninput="this.nextElementSibling.value = this.value" (change)="getQuestionCount($event)">
+              <output>100</output>
             </div>
           </form>
         </div>
@@ -70,7 +70,7 @@ export class OptionsComponent implements OnInit {
   // num_qCount = 20;
   // ctr_qCount: FormControl = new FormControl(this.num_qCount);
   //obj_option: Option = new Option(20, false);
-  obj_option: Option = { qCount: 20, details: false};
+  obj_option: Option = { qCount: 100, details: false};
   ctr_option: FormControl = new FormControl(this.obj_option);
   
   constructor(

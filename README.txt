@@ -317,3 +317,7 @@ TODOS:
 
     > update review component
         ** increase thickness of [in]correct answers, added "No Response"
+
+05/16
+    > update exam-time to display images (TODO: currently all missing)
+    > update review-exam to display explanation

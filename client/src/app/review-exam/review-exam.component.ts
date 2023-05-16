@@ -16,8 +16,9 @@ import { Question } from '../question';
     <colgroup>
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 5%;">
-      <col span="1" style="width: 50%;">
       <col span="1" style="width: 40%;">
+      <col span="1" style="width: 30%;">
+      <col span="1" style="width: 20%;">
     </colgroup>
     <thead>
       <tr>
@@ -25,6 +26,7 @@ import { Question } from '../question';
           <th>Correct</th>
           <th>Question</th>
           <th>Options</th>
+          <th>Explanation</th>
       </tr>
     </thead>
     <tbody>
@@ -56,6 +58,9 @@ import { Question } from '../question';
             </div>
           </div>
         </td>
+        <td>
+          <div>{{q.explanation}}</div>
+        </td>
       </tr>
     </tbody>
   `,
@@ -67,7 +72,7 @@ import { Question } from '../question';
     .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:25px}
     .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:25px}
     .flag { color: red; font-size: 40px; display: inline }
-    .answers {padding-left: .7rem;}
+    .answers {padding-left: .7rem;padding-right: .5rem;}
     th, td {
       padding-left: .5rem;
       border: 2px solid black;
