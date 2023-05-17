@@ -8,7 +8,7 @@ export interface Question {
     optionB: string; // option B
     optionC: string; // option C
     optionD: string; // option D
-    answer: "A" | "B" | "C" | "D"; // correct answer
+    answer: "A" | "B" | "C" | "D" | ""; // correct answer
     userAnswer: "A" | "B" | "C" | "D"; // user-submitted answer
     explanation: string; // expalanation of answer
     //topic: string;

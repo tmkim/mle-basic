@@ -6,7 +6,7 @@ export interface Question {
     optionB?: string; 
     optionC?: string; 
     optionD?: string; 
-    answer?: "A" | "B" | "C" | "D";
+    answer?: "A" | "B" | "C" | "D" | "";
     userAnswer?: "A" | "B" | "C" | "D";
     explanation?: string;
     //topic?: string;

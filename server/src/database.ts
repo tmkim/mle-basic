@@ -154,7 +154,8 @@ async function applySchemaValidation(db: mongodb.Db) {
                         "A",
                         "B",
                         "C",
-                        "D"
+                        "D",
+                        ""
                     ],
                     description: "'answer' is required and must use one of the listed options"
                 },
