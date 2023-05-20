@@ -64,35 +64,36 @@ import { Option } from '../option';
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" 
               [(ngModel)]="answerRadio" [disabled]="['B','C','D'].includes(currQ$.value.userAnswer!)" value="A">
             <label class="form-check-label" for="flexRadioDefault1">
-              {{currQ$.value.optionA}}
+              A. {{currQ$.value.optionA}}
             </label>
           </div>
           <div class="row-2">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" 
               [(ngModel)]="answerRadio" [disabled]="['A','C','D'].includes(currQ$.value.userAnswer!)" value="B">
             <label class="form-check-label" for="flexRadioDefault2">
-              {{currQ$.value.optionB}}
+              B. {{currQ$.value.optionB}}
             </label>
           </div>
           <div class="row-3">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" 
             [(ngModel)]="answerRadio" [disabled]="['A','B','D'].includes(currQ$.value.userAnswer!)" value="C">
             <label class="form-check-label" for="flexRadioDefault3">
-              {{currQ$.value.optionC}}
+              C. {{currQ$.value.optionC}}
             </label>
           </div>
           <div class="row-4">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" 
             [(ngModel)]="answerRadio" [disabled]="['A','B','C'].includes(currQ$.value.userAnswer!)" value="D">
             <label class="form-check-label" for="flexRadioDefault4">
-              {{currQ$.value.optionD}}
+              D. {{currQ$.value.optionD}}
             </label>
           </div>
         </div>
 
         <ng-container *ngIf="showExplain">
           <div style="margin-top:20px">
-            <i class="exp-incorrect" *ngIf="arr_incorrect$.value.includes(currQ$.value._id)">Incorrect!</i>
+
+            <i class="exp-incorrect" *ngIf="arr_incorrect$.value.includes(currQ$.value._id)">Incorrect! --> *{{currQ$.value.answer}}*</i>
             <i class="exp-correct" *ngIf="arr_correct$.value.includes(currQ$.value._id)">Correct!</i>
           </div>
           <div>{{currQ$.value.explanation}}</div>
