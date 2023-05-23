@@ -182,7 +182,8 @@ async function applySchemaValidation(db: mongodb.Db) {
        validator: examSchema
     }).catch(async (error: mongodb.MongoServerError) => {
        if (error.codeName === 'NamespaceNotFound') {
-           await db.createCollection("exams", {validator: examSchema});
+            console.log('nope e')
+            await db.createCollection("exams", {validator: examSchema});
        }
     });
     
@@ -191,6 +192,7 @@ async function applySchemaValidation(db: mongodb.Db) {
        validator: questionSchema
     }).catch(async (error: mongodb.MongoServerError) => {
        if (error.codeName === 'NamespaceNotFound') {
+            console.log('nope q')
            await db.createCollection("questions", {validator: questionSchema});
        }
     });
