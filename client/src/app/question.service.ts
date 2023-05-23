@@ -8,7 +8,7 @@ import { access } from 'fs';
   providedIn: 'root'
 })
 export class QuestionService {
-  private url = 'http://mle-basic-server.vercel.app:5200';
+  private url = 'https://mle-basic-server.vercel.app';
   private questions$: Subject<Question[]> = new Subject();
   private qList$: Subject<Question[]> = new Subject();
 

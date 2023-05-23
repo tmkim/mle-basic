@@ -9,7 +9,7 @@ import { Int32 } from 'mongodb';
   providedIn: 'root'
 })
 export class ExamService {
-  private url = 'http://mle-basic-server.vercel.app:5200';
+  private url = 'https://mle-basic-server.vercel.app';
   private exams$: Subject<Exam[]> = new Subject();
   newExam: Exam = {
     number: -1
