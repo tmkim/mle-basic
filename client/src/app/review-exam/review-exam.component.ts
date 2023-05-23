@@ -16,9 +16,8 @@ import { Question } from '../question';
     <colgroup>
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 5%;">
+      <col span="1" style="width: 50%;">
       <col span="1" style="width: 40%;">
-      <col span="1" style="width: 30%;">
-      <col span="1" style="width: 20%;">
     </colgroup>
     <thead>
       <tr>
@@ -26,17 +25,17 @@ import { Question } from '../question';
           <th>Correct</th>
           <th>Question</th>
           <th>Options</th>
-          <th>Explanation</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let q of examQs | async; let i = index">
+      <ng-container *ngFor="let q of examQs | async; let i = index">
+      <tr>
         <td>
           <div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i></div>
         </td>
         <td>
           <div class="cor-space" *ngIf="q.userAnswer == q.answer"><i class="bi bi-check-lg correct"></i></div>
-          <div class="incorrect" *ngIf="q.userAnswer != q.answer">&nbsp;X</div>
+          <div class="incorrect" *ngIf="q.userAnswer != q.answer">X</div>
         </td>
         <td>{{i+1}}. {{q.question}}</td>
         <td>
@@ -58,20 +57,22 @@ import { Question } from '../question';
             </div>
           </div>
         </td>
-        <td>
+      </tr>
+      <tr>
+        <td colspan="4">
           <div>{{q.explanation}}</div>
         </td>
       </tr>
+      </ng-container>
     </tbody>
   `,
   styles: [
     `@import "~bootstrap-icons/font/bootstrap-icons.css";
-    .correct { color:green; font-size: 50px; -webkit-text-stroke-width: 3px; }
-    .cor-space { padding-top: 10px }
-    .flag-space { padding-top: 15px }
-    .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:25px}
-    .incorrect { color:red; font-size: 42px; -webkit-text-stroke-width: 3px; padding-top:25px}
-    .flag { color: red; font-size: 40px; display: inline }
+    .correct { color:green; font-size: 30px; -webkit-text-stroke-width: 3px; }
+    .cor-space { padding-top: 20px; padding-left:10px }
+    .flag-space { padding-top: 20px; padding-left:5px }
+    .incorrect { color:red; font-size: 32px; -webkit-text-stroke-width: 3px; padding-top:25px; padding-left:15px}
+    .flag { color: red; font-size: 30px; display: inline;}
     .answers {padding-left: .7rem;padding-right: .5rem;}
     th, td {
       padding-left: .5rem;
