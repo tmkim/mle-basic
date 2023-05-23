@@ -330,3 +330,9 @@ TODOS:
     > Update exam-time to include answer in details if incorrect, and add labels to answer options 
 
     TODO : host online? images? 
+
+
+05/23
+    > Working on hosting with Vercel 
+    -- client hosting looks good
+    ** having trouble with hosting / connecting to server/database properly
