@@ -336,3 +336,10 @@ TODOS:
     > Working on hosting with Vercel 
     -- client hosting looks good
     ** having trouble with hosting / connecting to server/database properly
+
+05/25
+    ** WAHUUUU **
+    > successfully hosting app on website! https://mle-basic-client.vercel.app/
+    TODO : 
+        - clean up options page //DONE
+        - delete exam requires refresh 
