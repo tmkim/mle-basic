@@ -3,7 +3,7 @@ import { Question } from "./question";
 
 export interface Exam {
     _id?: string;
-    number?: number; //0 if most recent, else in order
+    number?: number;
     //qCount?: number;
     score?: string; // "[correct answers]/[total questions]"
     questions?: Array<Question>; // list of questions used in test in order (as presented in exam)

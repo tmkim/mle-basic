@@ -87,6 +87,10 @@ export class ExamService {
         }})
       })
     });
+    this.refreshExams();
+      //     if(!this.exams$)
+      // this.exams$ = tmp_exams$;
+
     return this.exams$;
   }
   

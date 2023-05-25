@@ -340,6 +340,7 @@ TODOS:
 05/25
     ** WAHUUUU **
     > successfully hosting app on website! https://mle-basic-client.vercel.app/
-    TODO : 
-        - clean up options page //DONE
-        - delete exam requires refresh 
+    DONE : 
+        - clean up options page
+        - clean up exam deletion + add confirmation
+        - clean up console.log()s

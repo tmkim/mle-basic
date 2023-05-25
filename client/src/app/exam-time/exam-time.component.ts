@@ -336,7 +336,7 @@ export class ExamTimeComponent implements OnInit {
     
     this.checkExplain();
     this.resetAnswer();
-    console.log(ind)
+    //console.log(ind)
   }
 
   // button only available if details are on
@@ -375,7 +375,7 @@ export class ExamTimeComponent implements OnInit {
     this.examService.updateExam(this.exam$.value._id || '', this.currExam)
     .subscribe({
       next: () =>{
-        console.log('exam saved/quit');
+        //console.log('exam saved/quit');
         this.router.navigate([`/exams/`]);
       },
       error: (e) => {
@@ -394,12 +394,12 @@ export class ExamTimeComponent implements OnInit {
     this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
     this.calculateScore();
     this.currExam.time = 0;
-    console.log(this.currExam);
+    //console.log(this.currExam);
 
     this.examService.updateExam(this.exam$.value._id || '', this.currExam)
       .subscribe({
       next: () =>{
-        console.log('exam submitted');
+        //console.log('exam submitted');
         this.router.navigate([`/review/${this.exam$.value._id}`]);
       },
       error: (e) => {
@@ -454,7 +454,7 @@ export class ExamTimeComponent implements OnInit {
     this.examService.updateExam(this.exam$.value._id || '', this.currExam)
       .subscribe({
       next: () =>{
-        console.log('exam progress saved');
+        console.log('Exam progress saved');
       },
       error: (e) => {
         alert("failed to update exam");
@@ -462,9 +462,9 @@ export class ExamTimeComponent implements OnInit {
       }
     })
 
-    console.log(this.currQ$);
-    console.log(this.qNum$.value);
-    console.log(this.currExam.answers);
+    // console.log(this.currQ$);
+    // console.log(this.qNum$.value);
+    // console.log(this.currExam.answers);
   }
 
   checkExplain(){
@@ -473,12 +473,12 @@ export class ExamTimeComponent implements OnInit {
       if(['A','B','C','D'].includes(this.currQ$.value.userAnswer!)){
         this.showExplain = true;
         this.timepause();
-        console.log('check explain true');
+        // console.log('check explain true');
       }
       else{
         this.showExplain = false;
-        console.log('check explain false');
-        console.log(this.currQ$.value.userAnswer);
+        // console.log('check explain false');
+        // console.log(this.currQ$.value.userAnswer);
         // if timer is paused, unpause
         if(this.pausetimer){ 
           this.setTimer(this.extimer);

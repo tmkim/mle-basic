@@ -58,7 +58,6 @@ export class BeginExamComponent {
     this.newExam.options = exam.options;
 
     this.subscription_geq = this.questionService.getExamQuestions(exam.options.qCount).subscribe(qList => {
-      console.log("beg");
       this.examQs$.next(qList);
       this.newExam.questions = this.examQs$.value;
       this.newExam.current = this.newExam.questions[0]._id;
@@ -66,7 +65,6 @@ export class BeginExamComponent {
       //get # of exams before updating 
       this.subscription_ge = this.examService.getExams().subscribe({
         next: (data) => {
-          console.log("begz");
           this.newExam.number = data.length;
           this.subscription_ue = this.examService.updateExam(exam._id || '', this.newExam)
             .subscribe({

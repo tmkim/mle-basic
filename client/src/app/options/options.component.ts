@@ -79,7 +79,7 @@ export class OptionsComponent implements OnInit {
   ngOnInit(): void{
     this.examService.getEmptyExam().subscribe({
       next: (emptyExam) => {
-        console.log(emptyExam);
+        //console.log(emptyExam);
         this.bs_exam$.next(emptyExam);
 
         this.fg_optionsForm = this.fb.group({
@@ -90,7 +90,7 @@ export class OptionsComponent implements OnInit {
         console.log(`${e.error} -> Create new empty exam`)
         this.examService.createEmptyExam().subscribe({
           next: () => {
-            console.log('added');
+            //console.log('added');
             this.examService.getEmptyExam().subscribe({
               next: (emptyExam) => {
                 this.bs_exam$.next(emptyExam);        

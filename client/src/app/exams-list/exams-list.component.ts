@@ -33,7 +33,7 @@ import { map } from 'rxjs/operators';
           <td class="actions">
              <button class="btn btn-primary me-1" *ngIf="$any(exam)?.time > 0" [routerLink]="['/exam-time/', exam._id]">Continue</button>
              <button class="btn btn-primary me-1" *ngIf="exam.time == 0" [routerLink]="['/review/', exam._id]">Review</button>
-             <button class="btn btn-danger" (click)="deleteExam(exam._id || '')">Delete</button>
+             <button class="btn btn-danger" (click)="deleteExam(exam._id!, exam.number!)">Delete</button>
           </td>
         </ng-container>
       </tr>
@@ -114,17 +114,17 @@ export class ExamsListComponent implements OnInit {
     this.fetchExams();
   }
 
-  deleteExam(id: string): void {
+  deleteExam(id: string, num: number): void {
     this.ex_count = 0;
 
-    // if(confirm("Are you sure you want to delete Exam number "+num+"?")) {
+    if(confirm("Are you sure you want to delete Exam number "+num+"?")) {
       this.examsService.deleteExam(id).subscribe({
         next: () => {
           console.log(`Exam Deleted: ${id}`);
           this.exams$ = this.examsService.updateExamNums()
         }
       })
-    // }
+    }
 
   }
 
