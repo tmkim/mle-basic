@@ -42,14 +42,11 @@ import { Option } from '../option';
         <div class="col-5">
           <div>
             <div class="form-check form-switch">
-              <button class="btn btn-primary mt-3" type="submit">Begin</button>
+              <button class="btn btn-primary mt-3" type="submit" [disabled]="bs_exam$.value._id != """>Begin</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div>
-      {{bs_exam$.value._id}}
     </div>
   </form>
 `,

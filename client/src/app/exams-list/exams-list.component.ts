@@ -122,6 +122,7 @@ export class ExamsListComponent implements OnInit {
         next: () => {
           console.log(`Exam Deleted: ${id}`);
           this.exams$ = this.examsService.updateExamNums()
+          location.reload()
         }
       })
     // }      
