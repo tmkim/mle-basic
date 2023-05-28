@@ -42,7 +42,7 @@ import { Option } from '../option';
         </h2>
         <div class="col">
           <h1>
-            {{ timeRemaining$ | async | date:'hh:mm:ss' }}      
+            {{ timeRemaining$ | async | date:'h:mm:ss' }}      
           </h1>
         </div>
       </div>
