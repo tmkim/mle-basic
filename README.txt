@@ -349,8 +349,11 @@ TODOS:
     -- add toggle button to Review (show all questions vs only flagged questions)
     > start working on Flagged functionality 
         -- option to prioritize previously flagged questions when making exam 
+        ** made good(?) progress but running into CORS issue with testing 
+            ** not sure if related to Flagged update or not D:
     > DONE : figure out how to use environment variables in client 
         -- ng generate environments (init client/src/environments)
         -- update environment.ts, environment.development.ts
         -- ng build --configuration=development
     -- some import cleanup
+    
