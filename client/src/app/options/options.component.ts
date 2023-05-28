@@ -73,7 +73,7 @@ export class OptionsComponent implements OnInit {
   obs_newExam: Observable<Exam> = new Observable();
   
   fg_optionsForm: FormGroup = new FormGroup({});
-  obj_option: Option = { qCount: 100, details: false};
+  obj_option: Option = { qCount: 100, details: false, flagPrio: false};
   ctr_option: FormControl = new FormControl(this.obj_option);
   
   constructor(
