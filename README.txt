@@ -351,6 +351,7 @@ TODOS:
         -- option to prioritize previously flagged questions when making exam 
         ** made good(?) progress but running into CORS issue with testing 
             ** not sure if related to Flagged update or not D:
+            >> tested flagged on vercel, no CORS issue, need to review local config.
     > DONE : figure out how to use environment variables in client 
         -- ng generate environments (init client/src/environments)
         -- update environment.ts, environment.development.ts
