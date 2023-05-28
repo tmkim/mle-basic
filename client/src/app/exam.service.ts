@@ -4,12 +4,15 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Exam } from './exam';
 import { Int32 } from 'mongodb';
+import { environment } from './../environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExamService {
-  private url = 'https://mle-basic-server.vercel.app';
+  private url = environment.api_url;
+  // private url = 'http://localhost:5200';
+  // private url = 'https://mle-basic-server.vercel.app';
   private exams$: Subject<Exam[]> = new Subject();
   newExam: Exam = {
     number: -1
