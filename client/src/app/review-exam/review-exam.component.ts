@@ -10,6 +10,8 @@ import { Question } from '../question';
   template: `
   <h2>
     <button class="btn btn-primary mt-3" [routerLink]="['/exams/']">Home</button>
+    <button class="btn btn-primary mt-3 btn_toggleF" *ngIf="!showFlag" (click)="toggleFlag()">Flagged</button>
+    <button class="btn btn-primary mt-3 btn_toggleT" *ngIf="showFlag" (click)="toggleFlag()">Flagged</button>
     <div class="score">Final Score: {{exam.value.score}}</div> 
   </h2>
   <table class="table table-striped table-bordered" border="2px solid black">
@@ -28,42 +30,84 @@ import { Question } from '../question';
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let q of examQs | async; let i = index">
-      <tr>
-        <td>
-          <div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i></div>
-        </td>
-        <td>
-          <div class="cor-space" *ngIf="q.userAnswer == q.answer"><i class="bi bi-check-lg correct"></i></div>
-          <div class="incorrect" *ngIf="q.userAnswer != q.answer">X</div>
-        </td>
-        <td>{{i+1}}. {{q.question}}</td>
-        <td>
-          <div class="answers">
-            <div class="row" *ngIf="q.userAnswer != 'A' && q.userAnswer != 'B' && q.userAnswer != 'C' && q.userAnswer != 'D'">
-            <i style="color:red;font-weight:420">No Response!</i>
-            </div>
-            <div class="row" [ngStyle]="q.answer != 'A' && q.userAnswer == 'A' ? {'color':'red','font-weight': '420'} : q.answer == 'A' ? {'color':'green','font-weight': '420'} : {'':''}">
-              A. {{q.optionA}}
-            </div>
-            <div class="row" [ngStyle]="q.answer != 'B' && q.userAnswer == 'B' ? {'color':'red','font-weight': '420'} : q.answer == 'B' ? {'color':'green','font-weight': '420'} : {'':''}">
-            B. {{q.optionB}}
-            </div>
-            <div class="row" [ngStyle]="q.answer != 'C' && q.userAnswer == 'C' ? {'color':'red','font-weight': '420'} : q.answer == 'C' ? {'color':'green','font-weight': '420'} : {'':''}">
-            C. {{q.optionC}}
-            </div>
-            <div class="row" [ngStyle]="q.answer != 'D' && q.userAnswer == 'D' ? {'color':'red','font-weight': '420'} : q.answer == 'D' ? {'color':'green','font-weight': '420'} : {'':''}">
-            D. {{q.optionD}}
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="4">
-          <div>{{q.explanation}}</div>
-        </td>
-      </tr>
+      <ng-container *ngIf="!showFlag; else noFlag">
+        <ng-container *ngFor="let q of examQs | async; let i = index">
+          <tr>
+            <td>
+              <div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i></div>
+            </td>
+            <td>
+              <div class="cor-space" *ngIf="q.userAnswer == q.answer"><i class="bi bi-check-lg correct"></i></div>
+              <div class="incorrect" *ngIf="q.userAnswer != q.answer">X</div>
+            </td>
+            <td>{{i+1}}. {{q.question}}</td>
+            <td>
+              <div class="answers">
+                <div class="row" *ngIf="q.userAnswer != 'A' && q.userAnswer != 'B' && q.userAnswer != 'C' && q.userAnswer != 'D'">
+                <i style="color:red;font-weight:420">No Response!</i>
+                </div>
+                <div class="row" [ngStyle]="q.answer != 'A' && q.userAnswer == 'A' ? {'color':'red','font-weight': '420'} : q.answer == 'A' ? {'color':'green','font-weight': '420'} : {'':''}">
+                  A. {{q.optionA}}
+                </div>
+                <div class="row" [ngStyle]="q.answer != 'B' && q.userAnswer == 'B' ? {'color':'red','font-weight': '420'} : q.answer == 'B' ? {'color':'green','font-weight': '420'} : {'':''}">
+                B. {{q.optionB}}
+                </div>
+                <div class="row" [ngStyle]="q.answer != 'C' && q.userAnswer == 'C' ? {'color':'red','font-weight': '420'} : q.answer == 'C' ? {'color':'green','font-weight': '420'} : {'':''}">
+                C. {{q.optionC}}
+                </div>
+                <div class="row" [ngStyle]="q.answer != 'D' && q.userAnswer == 'D' ? {'color':'red','font-weight': '420'} : q.answer == 'D' ? {'color':'green','font-weight': '420'} : {'':''}">
+                D. {{q.optionD}}
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4">
+              <div>{{q.explanation}}</div>
+            </td>
+          </tr>
+        </ng-container>
       </ng-container>
+      <ng-template #noFlag>
+        <ng-container *ngFor="let q of examQs | async; let i = index">
+          <ng-container *ngIf="arr_flaggedQs$.value.includes(q._id)">
+            <tr>
+              <td>
+                <div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i></div>
+              </td>
+              <td>
+                <div class="cor-space" *ngIf="q.userAnswer == q.answer"><i class="bi bi-check-lg correct"></i></div>
+                <div class="incorrect" *ngIf="q.userAnswer != q.answer">X</div>
+              </td>
+              <td>{{i+1}}. {{q.question}}</td>
+              <td>
+                <div class="answers">
+                  <div class="row" *ngIf="q.userAnswer != 'A' && q.userAnswer != 'B' && q.userAnswer != 'C' && q.userAnswer != 'D'">
+                  <i style="color:red;font-weight:420">No Response!</i>
+                  </div>
+                  <div class="row" [ngStyle]="q.answer != 'A' && q.userAnswer == 'A' ? {'color':'red','font-weight': '420'} : q.answer == 'A' ? {'color':'green','font-weight': '420'} : {'':''}">
+                    A. {{q.optionA}}
+                  </div>
+                  <div class="row" [ngStyle]="q.answer != 'B' && q.userAnswer == 'B' ? {'color':'red','font-weight': '420'} : q.answer == 'B' ? {'color':'green','font-weight': '420'} : {'':''}">
+                  B. {{q.optionB}}
+                  </div>
+                  <div class="row" [ngStyle]="q.answer != 'C' && q.userAnswer == 'C' ? {'color':'red','font-weight': '420'} : q.answer == 'C' ? {'color':'green','font-weight': '420'} : {'':''}">
+                  C. {{q.optionC}}
+                  </div>
+                  <div class="row" [ngStyle]="q.answer != 'D' && q.userAnswer == 'D' ? {'color':'red','font-weight': '420'} : q.answer == 'D' ? {'color':'green','font-weight': '420'} : {'':''}">
+                  D. {{q.optionD}}
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <div>{{q.explanation}}</div>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </ng-template>
     </tbody>
   `,
   styles: [
@@ -73,7 +117,9 @@ import { Question } from '../question';
     .flag-space { padding-top: 20px; padding-left:5px }
     .incorrect { color:red; font-size: 32px; -webkit-text-stroke-width: 3px; padding-top:25px; padding-left:15px}
     .flag { color: red; font-size: 30px; display: inline;}
-    .answers {padding-left: .7rem;padding-right: .5rem;}
+    .answers {padding-left: .7rem; padding-right: .5rem;}
+    .btn_toggleF {margin-left: 10px; background-color:red}
+    .btn_toggleT {margin-left: 10px; background-color:green}
     th, td {
       padding-left: .5rem;
       border: 2px solid black;
@@ -100,7 +146,8 @@ export class ReviewExamComponent {
   examQs: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
   incorrect: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
   arr_flaggedQs$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
-
+  showFlag = false;
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -119,6 +166,9 @@ export class ReviewExamComponent {
       this.arr_flaggedQs$.next(exam.flagged !);
       this.incorrect.next(exam.incorrect !);
     });
-    
+  }
+
+  toggleFlag(){
+    this.showFlag = !this.showFlag
   }
 }
