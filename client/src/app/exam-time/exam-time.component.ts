@@ -42,7 +42,7 @@ import { Option } from '../option';
         </h2>
         <div class="col">
           <h1>
-            {{ timeRemaining$ | async | date:'h:mm:ss' }}      
+            {{ timeRemaining$ | async | date:'h:mm:ss':'UTC' }}      
           </h1>
         </div>
       </div>
@@ -262,6 +262,7 @@ export class ExamTimeComponent implements OnInit {
 
   setTimer(time: number){
     var seconds = time;
+    console.log(seconds)
     
     this.timeRemaining$ = timer(0, 1000).pipe(
       map(n => (seconds - n) * 1000),
