@@ -1,6 +1,7 @@
 import * as mongodb from "mongodb";
 import { Question } from "./question";
 import { Exam } from "./exam";
+import { Flagged } from "./flagged";
 
 export const examColl:{
     exams?: mongodb.Collection<Exam>;
@@ -8,6 +9,10 @@ export const examColl:{
 
 export const questionColl:{
     questions?: mongodb.Collection<Question>;
+} = {};
+
+export const flaggedColl:{
+    flagged?: mongodb.Collection<Flagged>;
 } = {};
 
 export async function connectToDatabase(uri: string) {
@@ -21,7 +26,11 @@ export async function connectToDatabase(uri: string) {
     examColl.exams = examsCollection;
 
     const questionsCollection = db.collection<Question>("questions");
-    questionColl.questions = questionsCollection;}
+    questionColl.questions = questionsCollection;
+
+    const flaggedCollection = db.collection<Flagged>("flagged");
+    flaggedColl.flagged = flaggedCollection;
+}
 
 async function applySchemaValidation(db: mongodb.Db) {
     const examSchema = {
@@ -110,7 +119,11 @@ async function applySchemaValidation(db: mongodb.Db) {
                             details: {
                                 bsonType: "bool",
                                 description: "details is a boolean that represents whether an expalanation will be showed after each question or not",
-                            }
+                            },
+                            flagPrio: {
+                                bsonType: "bool",
+                                description: "flagPrio is a boolean that represents whether the exam will prioritize flagged questions during creation",
+                            },
                         }
                     //}
                 },
@@ -176,13 +189,26 @@ async function applySchemaValidation(db: mongodb.Db) {
             },
         },
     };
+    const flaggedSchema = {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["q_id"],
+            additionalProperties: false,
+            properties: {
+                _id: {},
+                q_id: {
+                    bsonType: "string",
+                    description: "'q_id' is required and is a string"
+                },
+            },
+        },
+    };
 
     await db.command({
         collMod: "exams",
        validator: examSchema
     }).catch(async (error: mongodb.MongoServerError) => {
        if (error.codeName === 'NamespaceNotFound') {
-            console.log('nope e')
             await db.createCollection("exams", {validator: examSchema});
        }
     });
@@ -192,8 +218,16 @@ async function applySchemaValidation(db: mongodb.Db) {
        validator: questionSchema
     }).catch(async (error: mongodb.MongoServerError) => {
        if (error.codeName === 'NamespaceNotFound') {
-            console.log('nope q')
            await db.createCollection("questions", {validator: questionSchema});
+       }
+    });
+
+    await db.command({
+        collMod: "flagged",
+       validator: flaggedSchema
+    }).catch(async (error: mongodb.MongoServerError) => {
+       if (error.codeName === 'NamespaceNotFound') {
+           await db.createCollection("flagged", {validator: flaggedSchema});
        }
     });
 }

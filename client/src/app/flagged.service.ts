@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Flagged } from './flagged';
+import { environment } from './../environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlaggedService {
-//   private url = 'http://localhost:5200';
-  private url = 'https://mle-basic-server.vercel.app';
+  private url = environment.api_url;
   private questions$: Subject<Flagged[]> = new Subject();
 
   constructor(private httpClient: HttpClient) { }

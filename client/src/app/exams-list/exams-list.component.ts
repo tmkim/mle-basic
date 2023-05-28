@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
-import { Console } from 'console';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exams-list',

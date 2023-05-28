@@ -348,7 +348,9 @@ TODOS:
 05/28
     -- add toggle button to Review (show all questions vs only flagged questions)
     > start working on Flagged functionality 
-    > TODO : figure out how to use environment variables in client 
+        -- option to prioritize previously flagged questions when making exam 
+    > DONE : figure out how to use environment variables in client 
         -- ng generate environments (init client/src/environments)
         -- update environment.ts, environment.development.ts
         -- ng build --configuration=development
+    -- some import cleanup

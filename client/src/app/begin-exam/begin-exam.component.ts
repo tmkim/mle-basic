@@ -1,11 +1,11 @@
-import { Component, Optional } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, map } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { Question } from '../question';
+import { Flagged } from '../flagged';
 import { QuestionService } from '../question.service';
-import { Option } from '../option';
 
 @Component({
   selector: 'app-begin-exam',
@@ -33,6 +33,7 @@ export class BeginExamComponent {
 
   exams$: Observable<Exam[]> = new Observable();
   examQs$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
+  flagQs$: BehaviorSubject<Flagged[]> = new BehaviorSubject<Flagged[]>([]);
   num_seconds = 0;
   num_exams = 0;
   subscription_ge = new Subscription;

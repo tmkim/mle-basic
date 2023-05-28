@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Exam } from './exam';
-import { Int32 } from 'mongodb';
 import { environment } from './../environments/environment'
 
 @Injectable({
@@ -11,8 +9,6 @@ import { environment } from './../environments/environment'
 })
 export class ExamService {
   private url = environment.api_url;
-  // private url = 'http://localhost:5200';
-  // private url = 'https://mle-basic-server.vercel.app';
   private exams$: Subject<Exam[]> = new Subject();
   newExam: Exam = {
     number: -1
@@ -24,7 +20,7 @@ export class ExamService {
     this.httpClient.get<Exam[]>(`${this.url}/exams`)
      .subscribe(exams => {
       this.exams$.next(exams);
-    });
+    }); 
   }
   getExams(): Subject<Exam[]> {
     this.refreshExams();
