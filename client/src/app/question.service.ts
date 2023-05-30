@@ -87,7 +87,7 @@ export class QuestionService {
   //     })
   //   })
   //   return this.qList$;
-  }
+  // }
 
   getQuestion(id: string): Observable<Question> {
     return this.httpClient.get<Question>(`${this.url}/questions/${id}`);
