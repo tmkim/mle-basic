@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    api_url: 'https://mle-basic-server.vercel.app'
+    api_url: 'http://localhost:5200'
 };

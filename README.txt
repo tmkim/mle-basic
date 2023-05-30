@@ -358,3 +358,6 @@ TODOS:
         -- ng build --configuration=development
     -- some import cleanup
     
+05/30
+    -- derp figured out CORS issue 
+        >> update server PORT to 5200 since that's what I'm trying to connect to 

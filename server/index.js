@@ -19,7 +19,7 @@ app.use("/exams", examRouter);
 app.use("/questions", questionRouter);
 app.use("/flagged", flaggedRouter);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5200;
 
 const server = http.createServer(app);
 
