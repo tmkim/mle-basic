@@ -69,7 +69,10 @@ flaggedRouter.get("/:id", async (req, res) => {
  
  flaggedRouter.delete("/:id", async (req, res) => {
     try {
+        console.log('deleting')
         const id = req?.params?.id;
+        console.log(`deleting: ${id}`)
+        console.log(`deleting: ${new mongodb.ObjectId(id)}`)
         const query = { _id: new mongodb.ObjectId(id) };
         const result = await flaggedColl.flagged.deleteOne(query);
   

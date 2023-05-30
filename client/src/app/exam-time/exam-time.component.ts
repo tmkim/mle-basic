@@ -6,6 +6,7 @@ import { Exam } from '../exam';
 import { Question } from '../question';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExamService } from '../exam.service';
+import { FlaggedService } from '../flagged.service';
 import { Option } from '../option';
 
 // import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
@@ -225,7 +226,8 @@ export class ExamTimeComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private examService: ExamService
+    private examService: ExamService,
+    private flaggedService: FlaggedService
   ) {}
 
   ngOnInit() {
@@ -496,14 +498,18 @@ export class ExamTimeComponent implements OnInit {
 
   flagQ(){
     this.currFlag = !this.currFlag
+    var q_id = this.examQs$.value[this.qNum$.value-1]._id;
     if(this.currFlag){
-      this.arr_flaggedQs$.value.push(this.examQs$.value[this.qNum$.value-1]._id);
+      this.arr_flaggedQs$.value.push(q_id);
+      this.flaggedService.createFlagged(q_id!).subscribe();
     }else{
-      var ind = this.arr_flaggedQs$.value.indexOf(this.examQs$.value[this.qNum$.value-1]._id)
+      var ind = this.arr_flaggedQs$.value.indexOf(q_id)
       if(ind != -1){
         this.arr_flaggedQs$.value.splice(ind,1);
       }
+      this.flaggedService.deleteFlagged(q_id!).subscribe();
     }
+
     this.saveExamProgress();
   }
 

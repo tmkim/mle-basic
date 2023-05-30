@@ -29,64 +29,64 @@ export class QuestionService {
     return this.questions$;
   }
 
-  getExamQuestions(qCount: number): Subject<Question[]>{
-    var buildQ$: Question[] = [];
-    var rngCheck: any[] = [];
-    var rng = 0;
-    this.httpClient.get<Question[]>(`${this.url}/questions/`)
-     .subscribe(questions => {      
-      while(rngCheck.length < qCount){
-        rng = Math.floor(Math.random() * (questions.length));
-        if(!rngCheck.includes(rng)){
-          rngCheck.push(rng);
-          buildQ$.push(questions[rng]);
-        }
-      }
-      this.qList$.next(buildQ$);
-     })
-    return this.qList$;
-  }
-
   // getExamQuestions(qCount: number): Subject<Question[]>{
   //   var buildQ$: Question[] = [];
   //   var rngCheck: any[] = [];
   //   var rng = 0;
-
-  //   this.flaggedService.getFlagged().subscribe(fList => {
-  //     if (fList.length < qCount){
-  //       while (rngCheck.length < fList.length){
-  //         rng = Math.floor(Math.random() * (fList.length));
-  //         if(!rngCheck.includes(rng)){
-  //           rngCheck.push(rng);
-  //           buildQ$.push(fList[rng]);
-  //         }
+  //   this.httpClient.get<Question[]>(`${this.url}/questions/`)
+  //    .subscribe(questions => {      
+  //     while(rngCheck.length < qCount){
+  //       rng = Math.floor(Math.random() * (questions.length));
+  //       if(!rngCheck.includes(rng)){
+  //         rngCheck.push(rng);
+  //         buildQ$.push(questions[rng]);
   //       }
   //     }
-  //     else{
-  //       while (rngCheck.length < qCount){
-  //         rng = Math.floor(Math.random() * (fList.length));
-  //         if(!rngCheck.includes(rng)){
-  //           rngCheck.push(rng);
-  //           buildQ$.push(fList[rng]);
-  //         }
-  //       }
-  //     }
-
-  //     qCount = qCount - buildQ$.length
-
-  //     this.httpClient.get<Question[]>(`${this.url}/questions/`)
-  //     .subscribe(questions => {      
-  //      while(rngCheck.length < qCount){
-  //        rng = Math.floor(Math.random() * (questions.length));
-  //        if(!rngCheck.includes(rng)){
-  //          rngCheck.push(rng);
-  //          buildQ$.push(questions[rng]);
-  //        }
-  //      }
-  //      this.qList$.next(buildQ$);
-  //     })
-  //   })
+  //     this.qList$.next(buildQ$);
+  //    })
   //   return this.qList$;
+  // }
+
+  getExamQuestions(qCount: number): Subject<Question[]>{
+    var buildQ$: Question[] = [];
+    var rngCheck: any[] = [];
+    var rng = 0;
+
+    this.flaggedService.getFlagged().subscribe(fList => {
+      if (fList.length < qCount){
+        while (rngCheck.length < fList.length){
+          rng = Math.floor(Math.random() * (fList.length));
+          if(!rngCheck.includes(rng)){
+            rngCheck.push(rng);
+            buildQ$.push(fList[rng]);
+          }
+        }
+      }
+      else{
+        while (rngCheck.length < qCount){
+          rng = Math.floor(Math.random() * (fList.length));
+          if(!rngCheck.includes(rng)){
+            rngCheck.push(rng);
+            buildQ$.push(fList[rng]);
+          }
+        }
+      }
+
+      qCount = qCount - buildQ$.length
+
+      this.httpClient.get<Question[]>(`${this.url}/questions/`)
+      .subscribe(questions => {      
+       while(rngCheck.length < qCount){
+         rng = Math.floor(Math.random() * (questions.length));
+         if(!rngCheck.includes(rng)){
+           rngCheck.push(rng);
+           buildQ$.push(questions[rng]);
+         }
+       }
+       this.qList$.next(buildQ$);
+      })
+    })
+    return this.qList$;
   }
 
   getQuestion(id: string): Observable<Question> {

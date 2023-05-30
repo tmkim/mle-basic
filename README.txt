@@ -359,5 +359,22 @@ TODOS:
     -- some import cleanup
     
 05/30
-    -- derp figured out CORS issue 
+    -- derp figured out CORS issue (maybe?)
         >> update server PORT to 5200 since that's what I'm trying to connect to 
+        ... no more CORS issue but can't access DB?
+        -- derp it's because I had a '/' at end of URL in client env
+    - fix images in exam-time
+
+    >> work on flag priority logic
+        -- "flagged" table contains list of flagged question IDs 
+        -- when populating quiz, use flagged table first (randomize)
+            > if more flagged than qCount, all questions will be from flagged 
+            > if less flagged than qCount, fill as many flagged as possible, then pick from others 
+            ** flagged Qs added to rngCheck so there are no duplicates
+        -- update flagged table ???
+            1. set "flagged" in question table -> occasionally go through Q table to populate flagged (would require delete all, search all, populate)
+            2. check list of flags at end of each exam, don't add duplicates (not sure of good way to remove flags)
+            3. add/remove flag to table as it occurs (should be ok if used properly but not sure this is optimal)
+                >> should also check flagged list when making exam to make sure already-flagged items show as flagged
+                ** adding flag works, issue with deleting
+                 >> might need to look into updating how object IDs are stored/posted
