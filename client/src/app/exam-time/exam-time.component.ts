@@ -7,8 +7,8 @@ import { Question } from '../question';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExamService } from '../exam.service';
 import { FlaggedService } from '../flagged.service';
+import { QuestionService } from '../question.service';
 import { Option } from '../option';
-import { ObjectId } from 'bson';
 
 // import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
 
@@ -228,7 +228,8 @@ export class ExamTimeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private examService: ExamService,
-    private flaggedService: FlaggedService
+    private flaggedService: FlaggedService,
+    private questionService: QuestionService
   ) {}
 
   ngOnInit() {
@@ -253,6 +254,7 @@ export class ExamTimeComponent implements OnInit {
       this.arr_correct$.next(exam.correct !);
       this.arr_flaggedQs$.next(exam.flagged !);
       this.currQ$.next(this.examQs$.value.find(q => q._id == this.exam$.value.current) !);
+      this.currFlag = this.currQ$.value.flag || false;
       this.qNum$.next(this.examQs$.value.findIndex(q => q._id == this.exam$.value.current)+1 !);
       this.resetAnswer();
       
@@ -498,17 +500,21 @@ export class ExamTimeComponent implements OnInit {
   }
 
   flagQ(){
+
     this.currFlag = !this.currFlag
+    var qFlag: Question = {flag: this.currFlag};
     var q_id = this.examQs$.value[this.qNum$.value-1]._id;
     if(this.currFlag){
       this.arr_flaggedQs$.value.push(q_id);
       this.flaggedService.createFlagged(q_id!).subscribe();
+      this.questionService.updateQuestion(q_id!, qFlag).subscribe();
     }else{
       var ind = this.arr_flaggedQs$.value.indexOf(q_id)
       if(ind != -1){
         this.arr_flaggedQs$.value.splice(ind,1);
       }
       this.flaggedService.deleteFlagged(q_id!).subscribe();
+      this.questionService.updateQuestion(q_id!, qFlag).subscribe();
     }
 
     this.saveExamProgress();

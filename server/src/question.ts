@@ -1,7 +1,7 @@
-import * as mongodb from "mongodb";
+// import * as mongodb from "mongodb";
 
 export interface Question {
-    _id?: mongodb.ObjectId;
+    _id?: string;
     question: string; // question text
     image: string; // corresponding image link if applicable
     optionA: string; // option A
@@ -11,6 +11,7 @@ export interface Question {
     answer: "A" | "B" | "C" | "D" | "#"; // correct answer
     userAnswer: "A" | "B" | "C" | "D"; // user-submitted answer
     explanation: string; // expalanation of answer
+    flag?: boolean;
     //topic: string;
     //difficulty: "1" | "2" | "3" | "4" | "5"
 }

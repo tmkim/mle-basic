@@ -384,3 +384,9 @@ TODOS:
         -- flags are added with automatic id
         -- delete searches for q_id to get _id, then deletes
         >> save flags so they can be persistent 
+            -- add "flag" to database object 
+            -- add "flag" to client object 
+            -- read/save "flag" on client init 
+            -- update "flag" on flag()
+            .. use flag instead of flag array 
+                -- keep flag array logic for now, just update usage in Review 

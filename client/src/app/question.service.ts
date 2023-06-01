@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Question } from './question';
+import { Option } from './option';
 import { environment } from './../environments/environment'
 import { FlaggedService } from './flagged.service';
 
@@ -47,36 +48,60 @@ export class QuestionService {
   //   return this.qList$;
   // }
 
-  getExamQuestions(qCount: number): Subject<Question[]>{
+  getExamQuestions(qOption: Option): Subject<Question[]>{
+    var qCount = qOption.qCount
+    const qPrio = qOption.flagPrio
     var buildQ$: Question[] = [];
     var rngCheck: any[] = [];
     var rng = 0;
 
-    this.flaggedService.getFlagged().subscribe(fList => {
-      if (fList.length < qCount){
-        while (rngCheck.length < fList.length){
-          rng = Math.floor(Math.random() * (fList.length));
-          if(!rngCheck.includes(rng)){
-            rngCheck.push(rng);
-            buildQ$.push(fList[rng]);
+    if (qPrio){
+      this.flaggedService.getFlagged().subscribe(fList => {
+        if (fList.length < qCount!){
+          while (rngCheck.length < fList.length){
+            rng = Math.floor(Math.random() * (fList.length));
+            if(!rngCheck.includes(rng)){
+              rngCheck.push(rng);
+              // buildQ$.push(fList[rng]);
+              this.getQuestion(fList[rng].q_id!).subscribe(q => {
+                buildQ$.push(q);
+              })
+            }
           }
         }
-      }
-      else{
-        while (rngCheck.length < qCount){
-          rng = Math.floor(Math.random() * (fList.length));
-          if(!rngCheck.includes(rng)){
-            rngCheck.push(rng);
-            buildQ$.push(fList[rng]);
+        else{
+          while (rngCheck.length < qCount!){
+            rng = Math.floor(Math.random() * (fList.length));
+            if(!rngCheck.includes(rng)){
+              rngCheck.push(rng);
+              // buildQ$.push(fList[rng]);
+              this.getQuestion(fList[rng].q_id!).subscribe(q => {
+                buildQ$.push(q);
+              })
+            }
           }
         }
-      }
-
-      qCount = qCount - buildQ$.length
-
+  
+        qCount = qCount! - buildQ$.length
+  
+        this.httpClient.get<Question[]>(`${this.url}/questions/`)
+        .subscribe(questions => {      
+         while(rngCheck.length < qCount!){
+           rng = Math.floor(Math.random() * (questions.length));
+           if(!rngCheck.includes(rng)){
+             rngCheck.push(rng);
+             buildQ$.push(questions[rng]);
+           }
+         }
+         this.qList$.next(buildQ$);
+        })
+      })
+      return this.qList$;
+    }
+    else{
       this.httpClient.get<Question[]>(`${this.url}/questions/`)
       .subscribe(questions => {      
-       while(rngCheck.length < qCount){
+       while(rngCheck.length < qCount!){
          rng = Math.floor(Math.random() * (questions.length));
          if(!rngCheck.includes(rng)){
            rngCheck.push(rng);
@@ -85,8 +110,8 @@ export class QuestionService {
        }
        this.qList$.next(buildQ$);
       })
-    })
-    return this.qList$;
+      return this.qList$;
+    }
   }
 
   getQuestion(id: string): Observable<Question> {

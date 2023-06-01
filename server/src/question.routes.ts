@@ -17,7 +17,7 @@ questionRouter.get("/", async (_req, res) => {
 questionRouter.get("/:id", async (req, res) => {
     try {
         const id = req?.params?.id;
-        const query = { _id: new mongodb.ObjectId(id) };
+        const query = { _id: id };
         const question = await questionColl.questions.findOne(query);
   
         if (question) {
@@ -51,7 +51,7 @@ questionRouter.get("/:id", async (req, res) => {
     try {
         const id = req?.params?.id;
         const question = req.body;
-        const query = { _id: new mongodb.ObjectId(id) };
+        const query = { _id: id};
         const result = await questionColl.questions.updateOne(query, { $set: question });
   
         if (result && result.matchedCount) {
@@ -70,7 +70,7 @@ questionRouter.get("/:id", async (req, res) => {
  questionRouter.delete("/:id", async (req, res) => {
     try {
         const id = req?.params?.id;
-        const query = { _id: new mongodb.ObjectId(id) };
+        const query = { _id: id };
         const result = await questionColl.questions.deleteOne(query);
   
         if (result && result.deletedCount) {

@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { Question } from '../question';
-import { Flagged } from '../flagged';
 import { QuestionService } from '../question.service';
 
 @Component({
@@ -33,7 +32,6 @@ export class BeginExamComponent {
 
   exams$: Observable<Exam[]> = new Observable();
   examQs$: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
-  flagQs$: BehaviorSubject<Flagged[]> = new BehaviorSubject<Flagged[]>([]);
   num_seconds = 0;
   num_exams = 0;
   subscription_ge = new Subscription;
@@ -58,7 +56,12 @@ export class BeginExamComponent {
     this.newExam.time = exam.options.qCount * 72
     this.newExam.options = exam.options;
 
-    this.subscription_geq = this.questionService.getExamQuestions(exam.options.qCount).subscribe(qList => {
+    this.subscription_geq = this.questionService.getExamQuestions(exam.options).subscribe(qList => {
+      qList.forEach(q => {
+        if(q.flag){
+          this.newExam.flagged?.push(q._id!)
+        }
+      })
       this.examQs$.next(qList);
       this.newExam.questions = this.examQs$.value;
       this.newExam.current = this.newExam.questions[0]._id;

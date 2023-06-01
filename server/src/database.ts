@@ -186,6 +186,10 @@ async function applySchemaValidation(db: mongodb.Db) {
                     bsonType: "string",
                     description: "'explanation' is optional and is a string"
                 },
+                flag: {
+                    bsonType: "bool",
+                    description: "'flag' is an optional boolean"
+                }
             },
         },
     };
