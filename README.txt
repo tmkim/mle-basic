@@ -378,3 +378,9 @@ TODOS:
                 >> should also check flagged list when making exam to make sure already-flagged items show as flagged
                 ** adding flag works, issue with deleting
                  >> might need to look into updating how object IDs are stored/posted
+
+06/01
+    >> work on flag priority logic 
+        -- flags are added with automatic id
+        -- delete searches for q_id to get _id, then deletes
+        >> save flags so they can be persistent 

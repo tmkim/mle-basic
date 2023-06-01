@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Flagged } from './flagged';
 import { environment } from './../environments/environment'
+import { ObjectId } from 'mongodb';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class FlaggedService {
   private url = environment.api_url;
   private questions$: Subject<Flagged[]> = new Subject();
   private flaggedQ$: Subject<Flagged> = new Subject();
+  private numFlags = 0;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -18,6 +20,7 @@ export class FlaggedService {
     this.httpClient.get<Flagged[]>(`${this.url}/flagged`)
      .subscribe(questions => {
       this.questions$.next(questions);
+      this.numFlags = questions.length;
     });
   }
 
@@ -27,8 +30,11 @@ export class FlaggedService {
   }
 
   createFlagged(fq_id: string): Observable<string> {
+    // var flag_id = new ObjectId
+
+    this.refreshFlagged()
+
     var question: Flagged = {
-      _id: fq_id,
       q_id: fq_id,
     }
     console.log(question)
@@ -42,4 +48,7 @@ export class FlaggedService {
   deleteFlagged(fq_id: string): Observable<string> {
     return this.httpClient.delete(`${this.url}/flagged/${fq_id}`, { responseType: 'text' });
   }
+
+
+
  }
