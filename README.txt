@@ -390,3 +390,20 @@ TODOS:
             -- update "flag" on flag()
             .. use flag instead of flag array 
                 -- keep flag array logic for now, just update usage in Review 
+                -- might need to keep flag array logic for purpose of displaying flags in exam-time ?
+                -- update exam creation to push flag IDs into flag array on getExamQuestions 
+                !! persistence works! need to fix exam creation a bit tho 
+                >> having issues with deleting flags properly
+                    -- sometimes if I unflag, then go next question, flag remains 
+                    -- sometimes if I complete exam, questions that were unflagged show up in Review as flagged 
+                    .. kinda confused by Review bc based on examQs.q.flag but showing based off exam array Q instead
+                        >> tried removing usage of arrayQ entire but still appears to follow?
+
+06/02
+    >> work on flag perseverence 
+        -- oooh I think the issue with Review is because questions are saved into exam 
+    >> Looks like there's an issue with storing arr_flagged
+        -- works well on continue but not new exam 
+        ** on creation, arr_flagged has extra entry 
+        ** also duplicate question -> so maybe RNG?
+            ==> exam creation fault --> issue with checking whether question is already included?

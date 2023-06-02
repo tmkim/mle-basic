@@ -53,9 +53,36 @@ export class QuestionService {
     const qPrio = qOption.flagPrio
     var buildQ$: Question[] = [];
     var rngCheck: any[] = [];
+    var rng_id: any[] = [];
     var rng = 0;
 
     if (qPrio){
+      // this.flaggedService.getFlagged().subscribe(fList => {
+      //   if (fList.length < qCount!){
+      //     while (rngCheck.length < fList.length){
+      //       rng = Math.floor(Math.random() * (fList.length));
+      //       if(!rngCheck.includes(rng)){
+      //         rngCheck.push(rng);
+      //         // buildQ$.push(fList[rng]);
+      //         this.getQuestion(fList[rng].q_id!).subscribe(q => {
+      //           buildQ$.push(q);
+      //         })
+      //       }
+      //     }
+      //   }
+      //   else{
+      //     while (rngCheck.length < qCount!){
+      //       rng = Math.floor(Math.random() * (fList.length));
+      //       if(!rngCheck.includes(rng)){
+      //         rngCheck.push(rng);
+      //         buildQ$.push(fList[rng]);
+      //         this.getQuestion(fList[rng].q_id!).subscribe(q => {
+      //           buildQ$.push(q);
+      //         })
+      //       }
+      //     }
+      //   }
+
       this.flaggedService.getFlagged().subscribe(fList => {
         if (fList.length < qCount!){
           while (rngCheck.length < fList.length){
@@ -74,10 +101,11 @@ export class QuestionService {
             rng = Math.floor(Math.random() * (fList.length));
             if(!rngCheck.includes(rng)){
               rngCheck.push(rng);
-              // buildQ$.push(fList[rng]);
+              buildQ$.push(fList[rng]);
               this.getQuestion(fList[rng].q_id!).subscribe(q => {
                 buildQ$.push(q);
-              })
+                rng_id.push(q._id)
+            })
             }
           }
         }
@@ -88,8 +116,9 @@ export class QuestionService {
         .subscribe(questions => {      
          while(rngCheck.length < qCount!){
            rng = Math.floor(Math.random() * (questions.length));
-           if(!rngCheck.includes(rng)){
+           if(!rngCheck.includes(rng) && !rng_id.includes(questions[rng]._id)){
              rngCheck.push(rng);
+             rng_id.push(questions[rng]._id)
              buildQ$.push(questions[rng]);
            }
          }

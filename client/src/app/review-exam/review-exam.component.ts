@@ -30,7 +30,7 @@ import { Question } from '../question';
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngIf="!showFlag; else noFlag">
+      <ng-container *ngIf="!showFlag; else onlyFlag">
         <ng-container *ngFor="let q of examQs | async; let i = index">
           <tr>
             <td>
@@ -69,7 +69,7 @@ import { Question } from '../question';
           </tr>
         </ng-container>
       </ng-container>
-      <ng-template #noFlag>
+      <ng-template #onlyFlag>
         <ng-container *ngFor="let q of examQs | async; let i = index">
           <!--ng-container *ngIf="arr_flaggedQs$.value.includes(q._id)"-->
           <ng-container *ngIf="q.flag">

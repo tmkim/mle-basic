@@ -27,7 +27,7 @@ import { Option } from '../option';
           <div mat-line style="color:black;">{{i+1}}
           <span class="incorrect" *ngIf="arr_incorrect$.value.includes(q._id)">X&nbsp;</span>
           <i class="bi bi-check-lg correct" *ngIf="arr_correct$.value.includes(q._id)">&nbsp;</i>
-          <i class="bi bi-flag-fill" style="color:red" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i>
+          <i class="bi bi-flag-fill" style="color:red" *ngIf="q.flag"></i>
           </div>
         </mat-list-item>
       </mat-nav-list>
@@ -58,6 +58,8 @@ import { Option } from '../option';
         <ng-container *ngIf="currQ$.value.image != ''" class="q-img">
           <div>{{currQ$.value.image}}</div>
         </ng-container>
+        flag: {{currQ$.value.flag}}
+        currflag: {{currFlag}}
       </div>
 
       <div>
@@ -254,7 +256,7 @@ export class ExamTimeComponent implements OnInit {
       this.arr_correct$.next(exam.correct !);
       this.arr_flaggedQs$.next(exam.flagged !);
       this.currQ$.next(this.examQs$.value.find(q => q._id == this.exam$.value.current) !);
-      this.currFlag = this.currQ$.value.flag || false;
+      this.currFlag = this.currQ$.value.flag!;
       this.qNum$.next(this.examQs$.value.findIndex(q => q._id == this.exam$.value.current)+1 !);
       this.resetAnswer();
       
@@ -504,6 +506,7 @@ export class ExamTimeComponent implements OnInit {
     this.currFlag = !this.currFlag
     var qFlag: Question = {flag: this.currFlag};
     var q_id = this.examQs$.value[this.qNum$.value-1]._id;
+    this.examQs$.value[this.qNum$.value-1].flag = this.currFlag;
     if(this.currFlag){
       this.arr_flaggedQs$.value.push(q_id);
       this.flaggedService.createFlagged(q_id!).subscribe();
