@@ -407,3 +407,7 @@ TODOS:
         ** on creation, arr_flagged has extra entry 
         ** also duplicate question -> so maybe RNG?
             ==> exam creation fault --> issue with checking whether question is already included?
+        ** maybe good idea to stop using flagged table and make get() with flag in query ?
+            --> going to keep flagged table, if I upgrade to having users, I can use flagged table to maintain flag lists per user_id
+    ** revert review-exam to use arr_flaggedQs instead of q.flag 
+    >> flagging might be ok? need to fix test creation tho
