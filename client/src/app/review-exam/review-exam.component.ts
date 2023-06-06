@@ -177,13 +177,13 @@ export class ReviewExamComponent {
       //     this.questionService.updateQuestion(q, qFlag).subscribe();
       //   })
       // })
-      var qWeight: Question = {weight: 1};
-      this.examQs.forEach(qs => {
-        qs.forEach(q => {
-          this.questionService.updateQuestion(q._id!, qWeight).subscribe();
 
-        })
-      })
+      // var qWeight: Question = {weight: 1};
+      // this.examQs.forEach(qs => {
+      //   qs.forEach(q => {
+      //     this.questionService.updateQuestion(q._id!, qWeight).subscribe();
+      //   })
+      // })
 
     });
   }

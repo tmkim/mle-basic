@@ -421,8 +421,9 @@ TODOS:
     -- update exam-time to display sidebar flags on q.flag instead of array 
 
     >> next thing to work on - avoid re-using questions until all questions have been used 
-    ... add weight param to questions ?
+    ... add weight param to questions
         -> increment by 1 whenever it is added to an exam
+            >> do not increment if added by flag prio
         -> when creating exam, search by starting at 0 and increment until exam is full 
-        -> only need to update question/service logic
+        *** DONEDONE 
         ++ add weight table when implementing users 
