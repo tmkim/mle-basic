@@ -189,6 +189,10 @@ async function applySchemaValidation(db: mongodb.Db) {
                 flag: {
                     bsonType: "bool",
                     description: "'flag' is an optional boolean"
+                },
+                weight: {
+                    bsonType: "int",
+                    description: "'weight' is an optional integer"
                 }
             },
         },

@@ -55,26 +55,34 @@ export class BeginExamComponent {
   update_exam(exam: any): void{
     this.newExam.time = exam.options.qCount * 72
     this.newExam.options = exam.options;
-    console.log('yes')
 
     this.subscription_geq = this.questionService.getExamQuestions(exam.options).subscribe(qList => {
       qList.forEach(q => {
+        // add flagged questions to exam flagged array
         if(q.flag){
           this.newExam.flagged?.push(q._id!)
-          console.log(q._id);
         }
-        console.log(q._id);
+        // update question weights
+        var qWeight: Question = {weight: q.weight! + 1};
+        if(this.newExam.options?.flagPrio){
+            //do not update weight if question is repeated for flag prio
+            if(!q.flag){
+              this.questionService.updateQuestion(q._id!, qWeight).subscribe();
+          }
+        }
+        else{
+          //if flag priority does not matter, update question weight 
+          this.questionService.updateQuestion(q._id!, qWeight).subscribe();
+        }
       })
       this.examQs$.next(qList);
       this.newExam.questions = this.examQs$.value;
       this.newExam.current = this.newExam.questions[0]._id;
-      console.log('yes')
 
       //get # of exams before updating 
       this.subscription_ge = this.examService.getExams().subscribe({
         next: (data) => {
-      console.log('yes')
-      this.newExam.number = data.length;
+          this.newExam.number = data.length;
           this.subscription_ue = this.examService.updateExam(exam._id || '', this.newExam)
             .subscribe({
               next: () => {
@@ -92,11 +100,5 @@ export class BeginExamComponent {
         }
       );
     })
-
-  // Optional TODO: add logic to grab more intelligently (unasked Qs, incorrect Qs, no repeats, etc) -> in question.services.ts
-
-  /* This uses Subject<Question[]> instead of Question[].. not sure which is better yet
-     this.questionService.getExamQuestions(options[0]).subscribe(res =>
-     this.arr_questions.push(res));*/
   }
 }

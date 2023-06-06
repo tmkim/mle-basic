@@ -170,6 +170,21 @@ export class ReviewExamComponent {
       this.examQs.next(exam.questions !);
       this.arr_flaggedQs$.next(exam.flagged !);
       this.incorrect.next(exam.incorrect !);
+
+      // var qFlag: Question = {flag: true};
+      // this.arr_flaggedQs$.forEach(qL => {
+      //   qL.forEach(q => {
+      //     this.questionService.updateQuestion(q, qFlag).subscribe();
+      //   })
+      // })
+      var qWeight: Question = {weight: 1};
+      this.examQs.forEach(qs => {
+        qs.forEach(q => {
+          this.questionService.updateQuestion(q._id!, qWeight).subscribe();
+
+        })
+      })
+
     });
   }
 

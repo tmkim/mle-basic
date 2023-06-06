@@ -10,6 +10,7 @@ export interface Question {
     userAnswer?: "A" | "B" | "C" | "D";
     explanation?: string;
     flag?: boolean;
+    weight?: number;
     //topic?: string;
     //difficulty?: "1" | "2" | "3" | "4" | "5"
 }

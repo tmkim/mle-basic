@@ -12,6 +12,7 @@ export interface Question {
     userAnswer: "A" | "B" | "C" | "D"; // user-submitted answer
     explanation: string; // expalanation of answer
     flag?: boolean;
+    weight?: number;
     //topic: string;
     //difficulty: "1" | "2" | "3" | "4" | "5"
 }

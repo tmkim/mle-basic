@@ -38,9 +38,10 @@ export class QuestionService {
     const qPrio = qOption.flagPrio
     var q_ids: any[] = [];
     var buildQ$: Question[] = [];
-    var rngCheck: any[] = [];
     var rng = 0;
     var flag_qs: Question[] = [];
+    var weight = 0;
+    var filter_qs: Question[] = [];
 
     if (qPrio){
       // BELOW WORKS!!! above tries to use flagged table (for future use)
@@ -55,31 +56,67 @@ export class QuestionService {
 
           //fill list until len(checklist) == question count
           //omit questions where id exists on checklist
-          while(q_ids.length < qCount!){
-            rng = Math.floor(Math.random() * (questions.length));
-            if(!q_ids.includes(questions[rng]._id)){
-              q_ids.push(questions[rng]._id);
-              buildQ$.push(questions[rng]);
+          // while(q_ids.length < qCount!){
+          //   rng = Math.floor(Math.random() * (questions.length));
+          //   if(!q_ids.includes(questions[rng]._id)){
+          //     q_ids.push(questions[rng]._id);
+          //     buildQ$.push(questions[rng]);
+          //   }
+          // }
+
+            var tmp_filter_qs = questions.filter(q => q.flag == false);
+            filter_qs = tmp_filter_qs.filter(q => q.weight == weight);
+            while(q_ids.length < qCount!){
+              if(filter_qs.length < 1){
+                weight += 1;
+                filter_qs = tmp_filter_qs.filter(q => q.weight == weight);
+              }
+              rng = Math.floor(Math.random() * (filter_qs.length));
+              if(!q_ids.includes(filter_qs[rng]._id)){
+                q_ids.push(filter_qs[rng]._id);
+                buildQ$.push(filter_qs[rng]);
+                filter_qs.splice(rng,1)
+              }
             }
-          }
+          /*
+            filter_qs filters questions by weight (start at weight = 0)
+            RNG based on filter_qs length
+            if question is not in q_ids yet, add to list, remove question from filter list
+            ** only remove flag=true from filter list when using flag prio
+            if filter list runs out, increase weight by 1 and reset list
+          */
+
           this.qList$.next(buildQ$);
         })
-      return this.qList$;
     }
     else{
       this.httpClient.get<Question[]>(`${this.url}/questions/`)
       .subscribe(questions => {      
-       while(rngCheck.length < qCount!){
-         rng = Math.floor(Math.random() * (questions.length));
-         if(!rngCheck.includes(rng)){
-           rngCheck.push(rng);
-           buildQ$.push(questions[rng]);
-         }
-       }
+        filter_qs = questions.filter(q => q.weight == weight);
+        while(q_ids.length < qCount!){
+          if(filter_qs.length < 1){
+            weight += 1;
+            filter_qs = questions.filter(q => q.weight == weight);
+          }
+          rng = Math.floor(Math.random() * (filter_qs.length));
+          if(!q_ids.includes(filter_qs[rng]._id)){
+            q_ids.push(filter_qs[rng]._id);
+            buildQ$.push(filter_qs[rng]);
+            filter_qs.splice(rng,1)
+          }
+        }
+
+      //  while(rngCheck.length < qCount!){
+      //    rng = Math.floor(Math.random() * (questions.length));
+      //    if(!rngCheck.includes(rng)){
+      //      rngCheck.push(rng);
+      //      buildQ$.push(questions[rng]);
+      //    }
+      //  }
        this.qList$.next(buildQ$);
       })
-      return this.qList$;
     }
+    return this.qList$;
   }
   
   createQuestion(question: Question): Observable<string> {
