@@ -30,25 +30,6 @@ export class QuestionService {
     return this.questions$;
   }
 
-  // getExamQuestions(qCount: number): Subject<Question[]>{
-  //   var buildQ$: Question[] = [];
-  //   var rngCheck: any[] = [];
-  //   var rng = 0;
-  //   this.httpClient.get<Question[]>(`${this.url}/questions/`)
-  //    .subscribe(questions => {      
-  //     while(rngCheck.length < qCount){
-  //       rng = Math.floor(Math.random() * (questions.length));
-  //       if(!rngCheck.includes(rng)){
-  //         rngCheck.push(rng);
-  //         buildQ$.push(questions[rng]);
-  //       }
-  //     }
-  //     this.qList$.next(buildQ$);
-  //    })
-  //   return this.qList$;
-  // }
-
-
   getQuestion(id: string): Observable<Question> {
     return this.httpClient.get<Question>(`${this.url}/questions/${id}`);
   }
@@ -58,9 +39,7 @@ export class QuestionService {
     var q_ids: any[] = [];
     var buildQ$: Question[] = [];
     var rngCheck: any[] = [];
-    var rng_id: any[] = [];
     var rng = 0;
-    var sub_get = new Subscription()
     var flag_qs: Question[] = [];
 
     if (qPrio){
