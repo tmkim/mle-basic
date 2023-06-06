@@ -329,7 +329,7 @@ TODOS:
     > DONE : update review to display explanations better
     > Update exam-time to include answer in details if incorrect, and add labels to answer options 
 
-    TODO : host online? images? 
+    TODO : host online (DONE)? images? 
 
 
 05/23
