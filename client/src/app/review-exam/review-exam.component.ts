@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
+import { QuestionService } from '../question.service';
 import { Question } from '../question';
 
 @Component({
@@ -154,7 +155,8 @@ export class ReviewExamComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private examService: ExamService
+    private examService: ExamService,
+    private questionService: QuestionService
   ) {}
 
   ngOnInit(){
@@ -168,6 +170,15 @@ export class ReviewExamComponent {
       this.examQs.next(exam.questions !);
       this.arr_flaggedQs$.next(exam.flagged !);
       this.incorrect.next(exam.incorrect !);
+
+
+      var qFlag: Question = {flag: true};
+      this.arr_flaggedQs$.forEach(qL => {
+        qL.forEach(q => {
+          this.questionService.updateQuestion(q, qFlag).subscribe();
+        })
+      })
+
     });
   }
 
