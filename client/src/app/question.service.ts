@@ -55,65 +55,36 @@ export class QuestionService {
   getExamQuestions(qOption: Option): Subject<Question[]>{
     var qCount = qOption.qCount
     const qPrio = qOption.flagPrio
+    var q_ids: any[] = [];
     var buildQ$: Question[] = [];
     var rngCheck: any[] = [];
     var rng_id: any[] = [];
     var rng = 0;
     var sub_get = new Subscription()
+    var flag_qs: Question[] = [];
 
     if (qPrio){
-      // this.flaggedService.getFlagged().subscribe(fList => {
-      //   if (fList.length < qCount!){
-      //     while (rngCheck.length < fList.length){
-      //       rng = Math.floor(Math.random() * (fList.length));
-      //       if(!rngCheck.includes(rng)){
-      //         rngCheck.push(rng);
-      //         // buildQ$.push(fList[rng]);
-      //         this.getQuestion(fList[rng].q_id!).subscribe(q => {
-      //           buildQ$.push(q);
-      //         })
-      //       }
-      //     }
-      //   }
-      //   else{
-      //     while (rngCheck.length < qCount!){
-      //       rng = Math.floor(Math.random() * (fList.length));
-      //       if(!rngCheck.includes(rng)){
-      //         rngCheck.push(rng);
-      //         buildQ$.push(fList[rng]);
-      //         this.getQuestion(fList[rng].q_id!).subscribe(q => {
-      //           buildQ$.push(q);
-      //         })
-      //       }
-      //     }
-      //   }
-
-      this.flaggedService.getFlagged().subscribe(fList => {
-        while (buildQ$.length < fList.length){
-            // buildQ$.push(fList[rng]);
-            sub_get = this.getQuestion(fList[rng].q_id!).subscribe(q => {
-              buildQ$.push(q);
-              sub_get.unsubscribe();
-          })
-        }
-        console.log(buildQ$);
-        qCount = qCount! - buildQ$.length
+      // BELOW WORKS!!! above tries to use flagged table (for future use)
         this.httpClient.get<Question[]>(`${this.url}/questions/`)
         .subscribe(questions => {      
-         while(rngCheck.length < qCount!){
-           rng = Math.floor(Math.random() * (questions.length));
-           if(!rngCheck.includes(rng) && !rng_id.includes(questions[rng]._id)){
-             rngCheck.push(rng);
-             rng_id.push(questions[rng]._id)
-             buildQ$.push(questions[rng]);
-           }
-          //  console.log(buildQ$)
-          //  console.log(rngCheck)
-          //  console.log('---------')
-         }
-         this.qList$.next(buildQ$);
+          //search list of Qs for flag, push id onto list + checklist
+          flag_qs = questions.filter(q => q.flag == true);
+          flag_qs.forEach(q => {
+            buildQ$.push(q);
+            q_ids.push(q._id)
+          })
+
+          //fill list until len(checklist) == question count
+          //omit questions where id exists on checklist
+          while(q_ids.length < qCount!){
+            rng = Math.floor(Math.random() * (questions.length));
+            if(!q_ids.includes(questions[rng]._id)){
+              q_ids.push(questions[rng]._id);
+              buildQ$.push(questions[rng]);
+            }
+          }
+          this.qList$.next(buildQ$);
         })
-      })
       return this.qList$;
     }
     else{
