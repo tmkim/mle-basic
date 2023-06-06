@@ -411,3 +411,11 @@ TODOS:
             --> going to keep flagged table, if I upgrade to having users, I can use flagged table to maintain flag lists per user_id
     ** revert review-exam to use arr_flaggedQs instead of q.flag 
     >> flagging might be ok? need to fix test creation tho
+
+06/06
+    >> work on test creation (prevent duplicates when using flag prio)
+    -- fixed test creation to work with flag priority
+        >> uses q.flag instead of flagged array, so will have to update when implementing users 
+    -- cleaned up some debugging
+    -- update review-time to display flags on q.flag instead of array 
+    -- update exam-time to display sidebar flags on q.flag instead of array 
