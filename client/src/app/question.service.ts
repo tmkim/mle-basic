@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { Question } from './question';
+import { Option } from './option';
 import { environment } from './../environments/environment'
 import { FlaggedService } from './flagged.service';
 
@@ -29,68 +30,77 @@ export class QuestionService {
     return this.questions$;
   }
 
-  getExamQuestions(qCount: number): Subject<Question[]>{
-    var buildQ$: Question[] = [];
-    var rngCheck: any[] = [];
-    var rng = 0;
-    this.httpClient.get<Question[]>(`${this.url}/questions/`)
-     .subscribe(questions => {      
-      while(rngCheck.length < qCount){
-        rng = Math.floor(Math.random() * (questions.length));
-        if(!rngCheck.includes(rng)){
-          rngCheck.push(rng);
-          buildQ$.push(questions[rng]);
-        }
-      }
-      this.qList$.next(buildQ$);
-     })
-    return this.qList$;
-  }
-
   // getExamQuestions(qCount: number): Subject<Question[]>{
   //   var buildQ$: Question[] = [];
   //   var rngCheck: any[] = [];
   //   var rng = 0;
-
-  //   this.flaggedService.getFlagged().subscribe(fList => {
-  //     if (fList.length < qCount){
-  //       while (rngCheck.length < fList.length){
-  //         rng = Math.floor(Math.random() * (fList.length));
-  //         if(!rngCheck.includes(rng)){
-  //           rngCheck.push(rng);
-  //           buildQ$.push(fList[rng]);
-  //         }
+  //   this.httpClient.get<Question[]>(`${this.url}/questions/`)
+  //    .subscribe(questions => {      
+  //     while(rngCheck.length < qCount){
+  //       rng = Math.floor(Math.random() * (questions.length));
+  //       if(!rngCheck.includes(rng)){
+  //         rngCheck.push(rng);
+  //         buildQ$.push(questions[rng]);
   //       }
   //     }
-  //     else{
-  //       while (rngCheck.length < qCount){
-  //         rng = Math.floor(Math.random() * (fList.length));
-  //         if(!rngCheck.includes(rng)){
-  //           rngCheck.push(rng);
-  //           buildQ$.push(fList[rng]);
-  //         }
-  //       }
-  //     }
-
-  //     qCount = qCount - buildQ$.length
-
-  //     this.httpClient.get<Question[]>(`${this.url}/questions/`)
-  //     .subscribe(questions => {      
-  //      while(rngCheck.length < qCount){
-  //        rng = Math.floor(Math.random() * (questions.length));
-  //        if(!rngCheck.includes(rng)){
-  //          rngCheck.push(rng);
-  //          buildQ$.push(questions[rng]);
-  //        }
-  //      }
-  //      this.qList$.next(buildQ$);
-  //     })
-  //   })
+  //     this.qList$.next(buildQ$);
+  //    })
   //   return this.qList$;
   // }
 
+
   getQuestion(id: string): Observable<Question> {
     return this.httpClient.get<Question>(`${this.url}/questions/${id}`);
+  }
+  getExamQuestions(qOption: Option): Subject<Question[]>{
+    var qCount = qOption.qCount
+    const qPrio = qOption.flagPrio
+    var q_ids: any[] = [];
+    var buildQ$: Question[] = [];
+    var rngCheck: any[] = [];
+    var rng_id: any[] = [];
+    var rng = 0;
+    var sub_get = new Subscription()
+    var flag_qs: Question[] = [];
+
+    if (qPrio){
+      // BELOW WORKS!!! above tries to use flagged table (for future use)
+        this.httpClient.get<Question[]>(`${this.url}/questions/`)
+        .subscribe(questions => {      
+          //search list of Qs for flag, push id onto list + checklist
+          flag_qs = questions.filter(q => q.flag == true);
+          flag_qs.forEach(q => {
+            buildQ$.push(q);
+            q_ids.push(q._id)
+          })
+
+          //fill list until len(checklist) == question count
+          //omit questions where id exists on checklist
+          while(q_ids.length < qCount!){
+            rng = Math.floor(Math.random() * (questions.length));
+            if(!q_ids.includes(questions[rng]._id)){
+              q_ids.push(questions[rng]._id);
+              buildQ$.push(questions[rng]);
+            }
+          }
+          this.qList$.next(buildQ$);
+        })
+      return this.qList$;
+    }
+    else{
+      this.httpClient.get<Question[]>(`${this.url}/questions/`)
+      .subscribe(questions => {      
+       while(rngCheck.length < qCount!){
+         rng = Math.floor(Math.random() * (questions.length));
+         if(!rngCheck.includes(rng)){
+           rngCheck.push(rng);
+           buildQ$.push(questions[rng]);
+         }
+       }
+       this.qList$.next(buildQ$);
+      })
+      return this.qList$;
+    }
   }
   
   createQuestion(question: Question): Observable<string> {

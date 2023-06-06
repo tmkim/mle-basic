@@ -9,6 +9,7 @@ export interface Question {
     answer?: "A" | "B" | "C" | "D" | "#";
     userAnswer?: "A" | "B" | "C" | "D";
     explanation?: string;
+    flag?: boolean;
     //topic?: string;
     //difficulty?: "1" | "2" | "3" | "4" | "5"
 }

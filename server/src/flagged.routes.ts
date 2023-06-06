@@ -69,16 +69,19 @@ flaggedRouter.get("/:id", async (req, res) => {
  
  flaggedRouter.delete("/:id", async (req, res) => {
     try {
-        const id = req?.params?.id;
-        const query = { _id: new mongodb.ObjectId(id) };
-        const result = await flaggedColl.flagged.deleteOne(query);
+        const f_id = req?.params?.id;
+        const get_query = {q_id:f_id};
+        const flag_id = await flaggedColl.flagged.findOne(get_query)
+
+        const del_query = { _id: flag_id._id };
+        const result = await flaggedColl.flagged.deleteOne(del_query);
   
         if (result && result.deletedCount) {
-            res.status(202).send(`Removed a flagged: ID ${id}`);
+            res.status(202).send(`Removed a flagged: ID ${f_id}`);
         } else if (!result) {
-            res.status(400).send(`Failed to remove a flagged: ID ${id}`);
+            res.status(400).send(`Failed to remove a flagged: ID ${f_id}`);
         } else if (!result.deletedCount) {
-            res.status(404).send(`Failed to find a flagged: ID ${id}`);
+            res.status(404).send(`Failed to find a flagged: ID ${f_id}`);
         }
     } catch (error) {
         console.error(error.message);

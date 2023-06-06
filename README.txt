@@ -359,5 +359,55 @@ TODOS:
     -- some import cleanup
     
 05/30
-    -- derp figured out CORS issue 
+    -- derp figured out CORS issue (maybe?)
         >> update server PORT to 5200 since that's what I'm trying to connect to 
+        ... no more CORS issue but can't access DB?
+        -- derp it's because I had a '/' at end of URL in client env
+    - fix images in exam-time
+
+    >> work on flag priority logic
+        -- "flagged" table contains list of flagged question IDs 
+        -- when populating quiz, use flagged table first (randomize)
+            > if more flagged than qCount, all questions will be from flagged 
+            > if less flagged than qCount, fill as many flagged as possible, then pick from others 
+            ** flagged Qs added to rngCheck so there are no duplicates
+        -- update flagged table ???
+            1. set "flagged" in question table -> occasionally go through Q table to populate flagged (would require delete all, search all, populate)
+            2. check list of flags at end of each exam, don't add duplicates (not sure of good way to remove flags)
+            3. add/remove flag to table as it occurs (should be ok if used properly but not sure this is optimal)
+                >> should also check flagged list when making exam to make sure already-flagged items show as flagged
+                ** adding flag works, issue with deleting
+                 >> might need to look into updating how object IDs are stored/posted
+
+06/01
+    >> work on flag priority logic 
+        -- flags are added with automatic id
+        -- delete searches for q_id to get _id, then deletes
+        >> save flags so they can be persistent 
+            -- add "flag" to database object 
+            -- add "flag" to client object 
+            -- read/save "flag" on client init 
+            -- update "flag" on flag()
+            .. use flag instead of flag array 
+                -- keep flag array logic for now, just update usage in Review 
+                -- might need to keep flag array logic for purpose of displaying flags in exam-time ?
+                -- update exam creation to push flag IDs into flag array on getExamQuestions 
+                !! persistence works! need to fix exam creation a bit tho 
+                >> having issues with deleting flags properly
+                    -- sometimes if I unflag, then go next question, flag remains 
+                    -- sometimes if I complete exam, questions that were unflagged show up in Review as flagged 
+                    .. kinda confused by Review bc based on examQs.q.flag but showing based off exam array Q instead
+                        >> tried removing usage of arrayQ entire but still appears to follow?
+
+06/02
+    >> work on flag perseverence 
+        -- oooh I think the issue with Review is because questions are saved into exam 
+    >> Looks like there's an issue with storing arr_flagged
+        -- works well on continue but not new exam 
+        ** on creation, arr_flagged has extra entry 
+        ** also duplicate question -> so maybe RNG?
+            ==> exam creation fault --> issue with checking whether question is already included?
+        ** maybe good idea to stop using flagged table and make get() with flag in query ?
+            --> going to keep flagged table, if I upgrade to having users, I can use flagged table to maintain flag lists per user_id
+    ** revert review-exam to use arr_flaggedQs instead of q.flag 
+    >> flagging might be ok? need to fix test creation tho

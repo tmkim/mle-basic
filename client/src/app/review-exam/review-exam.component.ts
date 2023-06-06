@@ -30,11 +30,12 @@ import { Question } from '../question';
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngIf="!showFlag; else noFlag">
+      <ng-container *ngIf="!showFlag; else onlyFlag">
         <ng-container *ngFor="let q of examQs | async; let i = index">
           <tr>
             <td>
               <div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i></div>
+              <!--div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="q.flag"></i></div-->
             </td>
             <td>
               <div class="cor-space" *ngIf="q.userAnswer == q.answer"><i class="bi bi-check-lg correct"></i></div>
@@ -68,12 +69,14 @@ import { Question } from '../question';
           </tr>
         </ng-container>
       </ng-container>
-      <ng-template #noFlag>
+      <ng-template #onlyFlag>
         <ng-container *ngFor="let q of examQs | async; let i = index">
           <ng-container *ngIf="arr_flaggedQs$.value.includes(q._id)">
+          <!--ng-container *ngIf="q.flag"-->
             <tr>
               <td>
                 <div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i></div>
+                <!--div class="flag-space"><i class="bi bi-flag-fill flag" *ngIf="q.flag"></i></div-->
               </td>
               <td>
                 <div class="cor-space" *ngIf="q.userAnswer == q.answer"><i class="bi bi-check-lg correct"></i></div>
