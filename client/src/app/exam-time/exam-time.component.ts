@@ -27,7 +27,8 @@ import { Option } from '../option';
           <div mat-line style="color:black;">{{i+1}}
           <span class="incorrect" *ngIf="arr_incorrect$.value.includes(q._id)">X&nbsp;</span>
           <i class="bi bi-check-lg correct" *ngIf="arr_correct$.value.includes(q._id)">&nbsp;</i>
-          <i class="bi bi-flag-fill" style="color:red" *ngIf="q.flag"></i>
+          <i class="bi bi-flag-fill" style="color:red" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i>
+          <!--i class="bi bi-flag-fill" style="color:red" *ngIf="q.flag"></i-->
           </div>
         </mat-list-item>
       </mat-nav-list>
@@ -58,8 +59,6 @@ import { Option } from '../option';
         <ng-container *ngIf="currQ$.value.image != ''" class="q-img">
           <div>{{currQ$.value.image}}</div>
         </ng-container>
-        flag: {{currQ$.value.flag}}
-        currflag: {{currFlag}}
       </div>
 
       <div>
