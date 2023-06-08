@@ -42,7 +42,12 @@ import { Question } from '../question';
               <div class="cor-space" *ngIf="q.userAnswer == q.answer"><i class="bi bi-check-lg correct"></i></div>
               <div class="incorrect" *ngIf="q.userAnswer != q.answer">X</div>
             </td>
-            <td>{{i+1}}. {{q.question}}</td>
+            <td>
+              <div>{{i+1}}. {{q.question}}</div>
+              <ng-container *ngIf="q.image != ''" class="q-img">
+                <img class="images" style="margin-bottom: 15px" src={{q.image}}/>
+              </ng-container>
+            </td>
             <td>
               <div class="answers">
                 <div class="row" *ngIf="q.userAnswer != 'A' && q.userAnswer != 'B' && q.userAnswer != 'C' && q.userAnswer != 'D'">

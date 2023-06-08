@@ -427,3 +427,11 @@ TODOS:
         -> when creating exam, search by starting at 0 and increment until exam is full 
         *** DONEDONE 
         ++ add weight table when implementing users 
+
+06/07
+    >> look into image hosting 
+    -- upload images to github (img/***)
+    -- update database with raw image address
+    -- make temporary test-patch to prioritize questions with images 
+        ^ cleaned up 
+    *** images available in exam and review!

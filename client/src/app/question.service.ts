@@ -54,16 +54,6 @@ export class QuestionService {
             q_ids.push(q._id)
           })
 
-          //fill list until len(checklist) == question count
-          //omit questions where id exists on checklist
-          // while(q_ids.length < qCount!){
-          //   rng = Math.floor(Math.random() * (questions.length));
-          //   if(!q_ids.includes(questions[rng]._id)){
-          //     q_ids.push(questions[rng]._id);
-          //     buildQ$.push(questions[rng]);
-          //   }
-          // }
-
             var tmp_filter_qs = questions.filter(q => q.flag == false);
             filter_qs = tmp_filter_qs.filter(q => q.weight == weight);
             while(q_ids.length < qCount!){
@@ -78,14 +68,6 @@ export class QuestionService {
                 filter_qs.splice(rng,1)
               }
             }
-          /*
-            filter_qs filters questions by weight (start at weight = 0)
-            RNG based on filter_qs length
-            if question is not in q_ids yet, add to list, remove question from filter list
-            ** only remove flag=true from filter list when using flag prio
-            if filter list runs out, increase weight by 1 and reset list
-          */
-
           this.qList$.next(buildQ$);
         })
     }
@@ -93,20 +75,20 @@ export class QuestionService {
       this.httpClient.get<Question[]>(`${this.url}/questions/`)
       .subscribe(questions => {      
 
-        var tmp_filter_qs = questions.filter(q => q.image != '');
-        while(q_ids.length < qCount!){
-          if(tmp_filter_qs.length < 1){
-            weight += 1;
-            tmp_filter_qs = questions.filter(q => q.weight == weight);
-          }
-          rng = Math.floor(Math.random() * (tmp_filter_qs.length));
-          if(!q_ids.includes(tmp_filter_qs[rng]._id)){
-            q_ids.push(tmp_filter_qs[rng]._id);
-            buildQ$.push(tmp_filter_qs[rng]);
-            tmp_filter_qs.splice(rng,1)
-          }
-        }
-
+        // ********* testing images *************
+        // var tmp_filter_qs = questions.filter(q => q.image != '');
+        // while(q_ids.length < qCount!){
+        //   if(tmp_filter_qs.length < 1){
+        //     weight += 1;
+        //     tmp_filter_qs = questions.filter(q => q.weight == weight);
+        //   }
+        //   rng = Math.floor(Math.random() * (tmp_filter_qs.length));
+        //   if(!q_ids.includes(tmp_filter_qs[rng]._id)){
+        //     q_ids.push(tmp_filter_qs[rng]._id);
+        //     buildQ$.push(tmp_filter_qs[rng]);
+        //     tmp_filter_qs.splice(rng,1)
+        //   }
+        // }
 
         filter_qs = questions.filter(q => q.weight == weight);
         while(q_ids.length < qCount!){
@@ -122,13 +104,6 @@ export class QuestionService {
           }
         }
 
-      //  while(rngCheck.length < qCount!){
-      //    rng = Math.floor(Math.random() * (questions.length));
-      //    if(!rngCheck.includes(rng)){
-      //      rngCheck.push(rng);
-      //      buildQ$.push(questions[rng]);
-      //    }
-      //  }
        this.qList$.next(buildQ$);
       })
     }

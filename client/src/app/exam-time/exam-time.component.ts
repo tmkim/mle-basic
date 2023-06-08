@@ -57,7 +57,7 @@ import { Option } from '../option';
           </div>
         </div>
         <ng-container *ngIf="currQ$.value.image != ''" class="q-img">
-          <img  class="images" src={{currQ$.value.image}}/>
+          <img class="images" style="margin-bottom: 15px" src={{currQ$.value.image}}/>
         </ng-container>
       </div>
 
