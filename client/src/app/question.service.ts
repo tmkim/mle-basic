@@ -92,6 +92,22 @@ export class QuestionService {
     else{
       this.httpClient.get<Question[]>(`${this.url}/questions/`)
       .subscribe(questions => {      
+
+        var tmp_filter_qs = questions.filter(q => q.image != '');
+        while(q_ids.length < qCount!){
+          if(tmp_filter_qs.length < 1){
+            weight += 1;
+            tmp_filter_qs = questions.filter(q => q.weight == weight);
+          }
+          rng = Math.floor(Math.random() * (tmp_filter_qs.length));
+          if(!q_ids.includes(tmp_filter_qs[rng]._id)){
+            q_ids.push(tmp_filter_qs[rng]._id);
+            buildQ$.push(tmp_filter_qs[rng]);
+            tmp_filter_qs.splice(rng,1)
+          }
+        }
+
+
         filter_qs = questions.filter(q => q.weight == weight);
         while(q_ids.length < qCount!){
           if(filter_qs.length < 1){
