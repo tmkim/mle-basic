@@ -14,7 +14,7 @@ import { Option } from '../option';
         <div class="col"></div>
         <div class="col-8">
           <form>
-            <label for="formControlRange">Number of Questions: </label>
+            <label for="formControlRange">Number of questions: </label>
             <div>
               <input type="range" value="100" min="1" max="200" oninput="this.nextElementSibling.value = this.value" (change)="getQuestionCount($event)">
               <output>100</output>
@@ -50,6 +50,18 @@ import { Option } from '../option';
       </div>
       <div class="row justify-content-center">
         <div class="col"></div>
+        <div class="col-8">
+          <form>
+            <label for="formControlRange">Time per question: </label>
+            <div>
+              <input type="range" value="72" min="1" max="144" oninput="this.nextElementSibling.value = this.value" (change)="getTimePerQ($event)">
+              <output>72</output>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col"></div>
         <div class="col-5">
           <div>
             <div class="form-check form-switch">
@@ -73,7 +85,7 @@ export class OptionsComponent implements OnInit {
   obs_newExam: Observable<Exam> = new Observable();
   
   fg_optionsForm: FormGroup = new FormGroup({});
-  obj_option: Option = { qCount: 100, details: false, flagPrio: false};
+  obj_option: Option = { qCount: 100, details: false, flagPrio: false, timePerQ: 72};
   ctr_option: FormControl = new FormControl(this.obj_option);
   
   constructor(
@@ -117,6 +129,10 @@ export class OptionsComponent implements OnInit {
 
   getQuestionCount(event:any): void{
     this.obj_option.qCount = Number(event.target.value);
+  }
+  
+  getTimePerQ(event:any): void{
+    this.obj_option.timePerQ = Number(event.target.value);
   }
 
   toggleDetails(): void{

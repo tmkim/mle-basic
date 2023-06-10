@@ -53,7 +53,7 @@ export class BeginExamComponent {
 
   // randomly grabs qCount questions from questions database
   update_exam(exam: any): void{
-    this.newExam.time = exam.options.qCount * 72
+    this.newExam.time = exam.options.qCount * exam.options.timePerQ
     this.newExam.options = exam.options;
 
     this.subscription_geq = this.questionService.getExamQuestions(exam.options).subscribe(qList => {

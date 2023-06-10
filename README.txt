@@ -214,8 +214,8 @@ Basic exam app for tw mle (no users)
         - redirect to "review" page 
         - set timer = 0
         - set list of incorrect answers (if details, should already be set -> skip)
-    -- set up image display for questions (optional TODO: image hosting)
-
+    -- set up image display for questions (DONE: image hosting)
+        >> upload images to github -> image address link
     -- start setting up "Review" component 
         - displays all questions and possible answers 
             > display whether user got it right/wrong 
@@ -227,11 +227,11 @@ Basic exam app for tw mle (no users)
         > correct answer for each question always highlighted in green 
         > if user submit incorrect, highlight red 
 
-TODOS:
+DONE:
     - scrollable question number list (DONE-ish)
     - flaggable questions + flag list (DONE)
     - "Details on" workflow (DONE)
-    - image hosting
+    - image hosting (DONE - on github)
 
 04/28:
     > Update Review component 
@@ -319,7 +319,7 @@ TODOS:
         ** increase thickness of [in]correct answers, added "No Response"
 
 05/16
-    > update exam-time to display images (TODO: currently all missing)
+    > update exam-time to display images (DONE: currently all missing)
     > update review-exam to display explanation
 
 05/17
@@ -329,7 +329,7 @@ TODOS:
     > DONE : update review to display explanations better
     > Update exam-time to include answer in details if incorrect, and add labels to answer options 
 
-    TODO : host online (DONE)? images? 
+    DONE : host online (DONE)? images? 
 
 
 05/23
@@ -428,10 +428,48 @@ TODOS:
         *** DONEDONE 
         ++ add weight table when implementing users 
 
-06/07
+06/08
     >> look into image hosting 
     -- upload images to github (img/***)
     -- update database with raw image address
     -- make temporary test-patch to prioritize questions with images 
         ^ cleaned up 
     *** images available in exam and review!
+
+    ------ thoughts on future development?
+        > clean up
+        > optimization 
+        > code review 
+        > users (separate project)
+        
+06/10
+    >> look into removing scroll bars from side nav 
+        -- moved exam-time css to src/style.css
+            ** should I update all the style.css to go there? will have to make sure no overlap tho 
+            -- moved to exam-time/exam-time.component.scss
+            -- works on Chrome, not Firefox :(
+        -- working in Firefox !!
+            .. add tag to sidenav in html
+            .. use Renderer2.setStyle in ngAfterViewInit
+        ~ DONEDONE ~
+
+    >> add option to set time per question 
+        .. update server/ database.ts 
+        .. update client/ option.ts, options.component, begin-exam.component
+        ~ DONEDONE ~
+
+    ** fix for weighted questions
+        .. changed "if" to "while" for making sure filter_qs is not empty
+
+    *** BUG ALERT *** AOUSE ***
+    -- Baby start new exam with details
+        -> click DONEDONE after submit all answers 
+        -> click flag button 
+        -> click HOME button (? maybe ?)
+        -> load home page, restart exam right away
+
+        ** need try reproduce aouse lmao
+        -- hard to reproduce :((
+            Likely issue with accessing database 
+            Potentially has to do with subscription timing?
+            

@@ -124,6 +124,10 @@ async function applySchemaValidation(db: mongodb.Db) {
                                 bsonType: "bool",
                                 description: "flagPrio is a boolean that represents whether the exam will prioritize flagged questions during creation",
                             },
+                            timePerQ: {
+                                bsonType: "int",
+                                description: "timePerQ is used to calculate the total time allowed for the exam"
+                            },
                         }
                     //}
                 },

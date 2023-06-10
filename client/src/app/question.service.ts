@@ -57,7 +57,7 @@ export class QuestionService {
             var tmp_filter_qs = questions.filter(q => q.flag == false);
             filter_qs = tmp_filter_qs.filter(q => q.weight == weight);
             while(q_ids.length < qCount!){
-              if(filter_qs.length < 1){
+              while(filter_qs.length < 1){
                 weight += 1;
                 filter_qs = tmp_filter_qs.filter(q => q.weight == weight);
               }
@@ -89,10 +89,9 @@ export class QuestionService {
         //     tmp_filter_qs.splice(rng,1)
         //   }
         // }
-
         filter_qs = questions.filter(q => q.weight == weight);
         while(q_ids.length < qCount!){
-          if(filter_qs.length < 1){
+          while(filter_qs.length < 1){
             weight += 1;
             filter_qs = questions.filter(q => q.weight == weight);
           }

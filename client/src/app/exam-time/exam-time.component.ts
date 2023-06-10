@@ -10,20 +10,23 @@ import { FlaggedService } from '../flagged.service';
 import { QuestionService } from '../question.service';
 import { Option } from '../option';
 
+import { AfterViewInit, Renderer2, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
+
 // import { CountdownConfig, CountdownEvent } from 'ngx-countdown';
 
 @Component({
   selector: 'app-exam-time',
   template: `
   <mat-sidenav-container class="side-container">
-    <mat-sidenav mode="side" [opened]="screenW>800 || blnSidenav" disableClosed="true">
+    <mat-sidenav #sidenav mode="side" [opened]="screenW>800 || blnSidenav" disableClosed="true">
       <!--table class="table-striped side-nav-table">
         <tr *ngFor="let q of examQs$ | async; let i = index" style="height: 52px">
         <td>{{i+1}}</td>
         </tr>
       </table-->
       <mat-nav-list class="side-nav-table">
-      <mat-list-item class="side-nav-items" routerLink="." *ngFor="let q of examQs$ | async; let i = index" (click)="goQuestion(i)">
+        <mat-list-item class="side-nav-items" routerLink="." *ngFor="let q of examQs$ | async; let i = index" (click)="goQuestion(i)">
           <div mat-line style="color:black;">{{i+1}}
           <span class="incorrect" *ngIf="arr_incorrect$.value.includes(q._id)">X&nbsp;</span>
           <i class="bi bi-check-lg correct" *ngIf="arr_correct$.value.includes(q._id)">&nbsp;</i>
@@ -140,66 +143,12 @@ import { Option } from '../option';
   </mat-sidenav-container>
   `,
   styles: [`
-  @import "~bootstrap-icons/font/bootstrap-icons.css";
-
-  .side-container {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    color: black;
-  }
-  .tFlag { font-size: 25px; color:red; -webkit-text-stroke-width: 2px; }
-  .fFlag { font-size: 25px; color:red; -webkit-text-stroke-width: 2px; }
-  .incorrect { color:red; font-size: 15px; -webkit-text-stroke-width: 2px; }
-  .correct { color:green; font-size: 20px; -webkit-text-stroke-width: 2px; }
-  .exp-incorrect { color:red; font-size: 20px; }
-  .exp-correct { color:green; font-size: 20px; }
-  .q-img { margin-top: 16px; margin-bottom: 16px}
-  .sn-tog{
-    position: absolute;
-    top:0;
-    left:0;
-    font-size: 40px; 
-    -webkit-text-stroke-width: 2px;
-  }
-  .hide-btn{
-    background:none;
-    border:none
-  }
-  .side-nav-table{
-    width: 120px;
-  }
-  table td{
-    padding-top:5px;
-    padding-bottom:5px;
-    padding-left: 7px;
-    border-top: 1px solid white;
-    border-bottom: 1px solid white;
-  }
-  table tr:first-child td {
-    border-top: 0;
-  }
-  table tr:last-child td {
-    border-bottom: 0;
-  }
-  mat-nav-list mat-list-item{
-    padding-top:5px;
-    padding-bottom:5px;
-    padding-left: 7px;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-  }
-  .side-nav-items{
-    background:rgb(200,200,200);
-
-  }
+    @import "~bootstrap-icons/font/bootstrap-icons.css";
   `
-  ]
+  ],
+  styleUrls: ['./exam-time.component.scss']
 })
-export class ExamTimeComponent implements OnInit {
+export class ExamTimeComponent implements OnInit, AfterViewInit {
 
   qNum$: BehaviorSubject<number> = new BehaviorSubject(1);
   exam$: BehaviorSubject<Exam> = new BehaviorSubject({});
@@ -230,7 +179,8 @@ export class ExamTimeComponent implements OnInit {
     private router: Router,
     private examService: ExamService,
     private flaggedService: FlaggedService,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit() {
@@ -264,6 +214,13 @@ export class ExamTimeComponent implements OnInit {
       // console.log(this.qNum$.value);
       // this.checkExplain();
     });
+  }
+  @ViewChild('sidenav')
+  sidenav!: MatSidenav
+
+  ngAfterViewInit(): void {
+
+    this.renderer.setStyle(this.sidenav._content.nativeElement,  'scrollbar-width', 'none')
   }
 
   setTimer(time: number){
