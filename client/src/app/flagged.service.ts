@@ -37,7 +37,7 @@ export class FlaggedService {
     var question: Flagged = {
       q_id: fq_id,
     }
-    console.log(question)
+    // console.log(question)
     return this.httpClient.post(`${this.url}/flagged`, question, { responseType: 'text' });
   }
   

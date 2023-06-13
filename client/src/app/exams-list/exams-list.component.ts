@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 
@@ -96,11 +96,12 @@ td.actions{
 `]
 })
 
-export class ExamsListComponent implements OnInit {
+export class ExamsListComponent implements OnInit, OnDestroy {
   exams$: Observable<Exam[]> = new Observable();
   tmp_exams$: Observable<Exam[]> = new Observable();
   // num = 1;
   ex_count = 0;
+  subscription_de = new Subscription();
 
   newExam: Exam = {
     number: -1
@@ -112,11 +113,16 @@ export class ExamsListComponent implements OnInit {
     this.fetchExams();
   }
 
+  ngOnDestroy(): void {
+    console.log('exams-list unsubscribe')
+    this.subscription_de.unsubscribe()
+  }
+
   deleteExam(id: string, num: number): void {
     this.ex_count = 0;
 
     if(confirm("Are you sure you want to delete Exam number "+num+"?")) {
-      this.examsService.deleteExam(id).subscribe({
+      this.subscription_de = this.examsService.deleteExam(id).subscribe({
         next: () => {
           console.log(`Exam Deleted: ${id}`);
           this.exams$ = this.examsService.updateExamNums()

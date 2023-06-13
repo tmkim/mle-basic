@@ -459,7 +459,12 @@ DONE:
         ~ DONEDONE ~
 
     ** fix for weighted questions
-        .. changed "if" to "while" for making sure filter_qs is not empty
+        .. update "if" to "while" for making sure filter_qs is not empty
+        ~ DONEDONE ~
+
+    ** fix for time display -> under 1hr shows as 12
+        .. update to 24hr display
+        ~ DONEDONE ~
 
     *** BUG ALERT *** AOUSE ***
     -- Baby start new exam with details
@@ -472,4 +477,26 @@ DONE:
         -- hard to reproduce :((
             Likely issue with accessing database 
             Potentially has to do with subscription timing?
-            
+
+06/11
+    -- clean up flag array usage 
+        .. keep maintenance, just don't use it for other logic
+            (will use later when I add users)
+    -- look into bug alert 
+        ** not able to reproduce bug :(
+            likely rare(?) memory leak issue -- look into cleaning up subscriptions
+
+06/13
+    -- clean up subscriptions 
+        >> intantiate subscription objects, unsubscribe in ngOnDestroy
+        -- add ngOnDestroy to following: (any instance of update, create, or delete)
+            client/
+                begin-exam.component.ts
+                exam-time.component.ts 
+                exam.service.ts 
+                exams-list.component.ts
+                options.component.ts
+    -- ** BUG ** 
+        >> if you delete an exam while an empty exam exists, empty exam is re-numbered and added to exams list 
+            ** filter get() so empty exam is not included?
+        -- FIXED !! 

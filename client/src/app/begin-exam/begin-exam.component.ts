@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Exam } from '../exam';
@@ -15,7 +15,7 @@ import { QuestionService } from '../question.service';
   styles: [
   ]
 })
-export class BeginExamComponent {
+export class BeginExamComponent implements OnInit, OnDestroy {
 
   newExam: Exam = {
     number: -1,
@@ -37,6 +37,7 @@ export class BeginExamComponent {
   subscription_ge = new Subscription;
   subscription_geq = new Subscription;
   subscription_ue = new Subscription;
+  subscription_uq = new Subscription;
 
   constructor(
     private router: Router,
@@ -45,6 +46,14 @@ export class BeginExamComponent {
   ){}
 
   ngOnInit(): void{
+  }
+
+  ngOnDestroy(): void{
+    console.log('begin-exam unsubscribe')
+    this.subscription_geq.unsubscribe()
+    this.subscription_ge.unsubscribe()
+    this.subscription_ue.unsubscribe()
+    this.subscription_uq.unsubscribe()
   }
 
   beginExam(exam: Exam): void{
@@ -67,12 +76,12 @@ export class BeginExamComponent {
         if(this.newExam.options?.flagPrio){
             //do not update weight if question is repeated for flag prio
             if(!q.flag){
-              this.questionService.updateQuestion(q._id!, qWeight).subscribe();
+              this.subscription_uq = this.questionService.updateQuestion(q._id!, qWeight).subscribe();
           }
         }
         else{
           //if flag priority does not matter, update question weight 
-          this.questionService.updateQuestion(q._id!, qWeight).subscribe();
+          this.subscription_uq = this.questionService.updateQuestion(q._id!, qWeight).subscribe();
         }
       })
       this.examQs$.next(qList);
@@ -87,9 +96,6 @@ export class BeginExamComponent {
             .subscribe({
               next: () => {
                 this.router.navigate(['/exam-time/', exam._id]);
-                this.subscription_geq.unsubscribe()
-                this.subscription_ge.unsubscribe()
-                this.subscription_ue.unsubscribe()
               },
               error: (e) => {
                 alert(`Failed to update exam: ${exam._id}`);

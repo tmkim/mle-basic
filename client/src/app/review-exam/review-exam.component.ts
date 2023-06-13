@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { Exam } from '../exam';
@@ -149,7 +149,7 @@ import { Question } from '../question';
    `
   ]
 })
-export class ReviewExamComponent {
+export class ReviewExamComponent implements OnInit {
 
   exam: BehaviorSubject<Exam> = new BehaviorSubject({});
   examQs: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);

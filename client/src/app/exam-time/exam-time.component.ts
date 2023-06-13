@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs';
@@ -48,7 +48,7 @@ import { MatSidenav } from '@angular/material/sidenav';
         </h2>
         <div class="col">
           <h1>
-            {{ timeRemaining$ | async | date:'h:mm:ss':'UTC' }}      
+            {{ timeRemaining$ | async | date:'H:mm:ss':'UTC' }}      
           </h1>
         </div>
       </div>
@@ -148,7 +148,7 @@ import { MatSidenav } from '@angular/material/sidenav';
   ],
   styleUrls: ['./exam-time.component.scss']
 })
-export class ExamTimeComponent implements OnInit, AfterViewInit {
+export class ExamTimeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   qNum$: BehaviorSubject<number> = new BehaviorSubject(1);
   exam$: BehaviorSubject<Exam> = new BehaviorSubject({});
@@ -167,8 +167,10 @@ export class ExamTimeComponent implements OnInit, AfterViewInit {
   currFlag = false;
   blnSidenav = false;
 
-  sub_init = new Subscription();
-  sub_update = new Subscription();
+  subscription_uq = new Subscription();
+  subscription_df = new Subscription();
+  subscription_cf = new Subscription();
+  subscription_ue = new Subscription();
   timerSub: Subscription = new Subscription();
 
   timeRemaining$: Observable<number> = new Observable<number>();
@@ -215,6 +217,15 @@ export class ExamTimeComponent implements OnInit, AfterViewInit {
       // this.checkExplain();
     });
   }
+
+  ngOnDestroy(): void{
+    console.log('exam-time unsubscribe')
+    this.subscription_uq.unsubscribe()
+    this.subscription_df.unsubscribe()
+    this.subscription_cf.unsubscribe()
+    this.subscription_ue.unsubscribe()
+  }
+
   @ViewChild('sidenav')
   sidenav!: MatSidenav
 
@@ -225,7 +236,7 @@ export class ExamTimeComponent implements OnInit, AfterViewInit {
 
   setTimer(time: number){
     var seconds = time;
-    console.log(seconds)
+    // console.log(seconds)
     
     this.timeRemaining$ = timer(0, 1000).pipe(
       map(n => (seconds - n) * 1000),
@@ -336,7 +347,7 @@ export class ExamTimeComponent implements OnInit, AfterViewInit {
     this.currExam.time = this.extimer;
     //TODO: on finish exam - this.currExam.score
       
-    this.examService.updateExam(this.exam$.value._id || '', this.currExam)
+    this.subscription_ue = this.examService.updateExam(this.exam$.value._id || '', this.currExam)
     .subscribe({
       next: () =>{
         //console.log('exam saved/quit');
@@ -360,7 +371,7 @@ export class ExamTimeComponent implements OnInit, AfterViewInit {
     this.currExam.time = 0;
     //console.log(this.currExam);
 
-    this.examService.updateExam(this.exam$.value._id || '', this.currExam)
+    this.subscription_ue = this.examService.updateExam(this.exam$.value._id || '', this.currExam)
       .subscribe({
       next: () =>{
         //console.log('exam submitted');
@@ -398,7 +409,8 @@ export class ExamTimeComponent implements OnInit, AfterViewInit {
     }else{
       this.answerRadio = '';
     }
-    if(this.arr_flaggedQs$.value.includes(this.examQs$.value[this.qNum$.value-1]._id)){
+    // if(this.arr_flaggedQs$.value.includes(this.examQs$.value[this.qNum$.value-1]._id)){
+    if(this.examQs$.value[this.qNum$.value-1].flag){
       this.currFlag = true;
     }else{
       this.currFlag = false;
@@ -415,10 +427,10 @@ export class ExamTimeComponent implements OnInit, AfterViewInit {
     this.currExam.correct = this.arr_correct$.value;
     this.currExam.time = this.extimer;
     //TODO: on finish exam - this.currExam.score
-    this.examService.updateExam(this.exam$.value._id || '', this.currExam)
+    this.subscription_ue = this.examService.updateExam(this.exam$.value._id || '', this.currExam)
       .subscribe({
       next: () =>{
-        console.log('Exam progress saved');
+        // console.log('Exam progress saved');
       },
       error: (e) => {
         alert("failed to update exam");
@@ -465,15 +477,15 @@ export class ExamTimeComponent implements OnInit, AfterViewInit {
     this.examQs$.value[this.qNum$.value-1].flag = this.currFlag;
     if(this.currFlag){
       this.arr_flaggedQs$.value.push(q_id);
-      this.flaggedService.createFlagged(q_id!).subscribe();
-      this.questionService.updateQuestion(q_id!, qFlag).subscribe();
+      this.subscription_cf = this.flaggedService.createFlagged(q_id!).subscribe();
+      this.subscription_uq = this.questionService.updateQuestion(q_id!, qFlag).subscribe();
     }else{
       var ind = this.arr_flaggedQs$.value.indexOf(q_id)
       if(ind != -1){
         this.arr_flaggedQs$.value.splice(ind,1);
       }
-      this.flaggedService.deleteFlagged(q_id!).subscribe();
-      this.questionService.updateQuestion(q_id!, qFlag).subscribe();
+      this.subscription_df = this.flaggedService.deleteFlagged(q_id!).subscribe();
+      this.subscription_uq = this.questionService.updateQuestion(q_id!, qFlag).subscribe();
     }
 
     this.saveExamProgress();

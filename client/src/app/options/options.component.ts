@@ -1,6 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, of } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { Option } from '../option';
@@ -76,7 +76,7 @@ import { Option } from '../option';
   styles: [
   ]
 })
-export class OptionsComponent implements OnInit {
+export class OptionsComponent implements OnInit, OnDestroy {
   @Output()
   formSubmitted = new EventEmitter<Exam>();
 
@@ -87,6 +87,8 @@ export class OptionsComponent implements OnInit {
   fg_optionsForm: FormGroup = new FormGroup({});
   obj_option: Option = { qCount: 100, details: false, flagPrio: false, timePerQ: 72};
   ctr_option: FormControl = new FormControl(this.obj_option);
+
+  subscription_ce = new Subscription();
   
   constructor(
     private examService: ExamService,
@@ -106,7 +108,7 @@ export class OptionsComponent implements OnInit {
       },
       error: (e) => {
         console.log(`${e.error} -> Create new empty exam`)
-        this.examService.createEmptyExam().subscribe({
+        this.subscription_ce = this.examService.createEmptyExam().subscribe({
           next: () => {
             //console.log('added');
             this.examService.getEmptyExam().subscribe({
@@ -125,6 +127,11 @@ export class OptionsComponent implements OnInit {
       },
       complete: () => console.log('Empty Exam available')
     });
+  }
+
+  ngOnDestroy(): void {
+    console.log('options unsubscribe')
+    this.subscription_ce.unsubscribe()
   }
 
   getQuestionCount(event:any): void{
