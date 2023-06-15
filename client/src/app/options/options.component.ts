@@ -17,7 +17,7 @@ import { Option } from '../option';
             <label for="formControlRange">Number of questions: </label>
             <div>
               <input type="range" value="100" min="1" max="200" oninput="this.nextElementSibling.value = this.value" (change)="getQuestionCount($event)">
-              <output>100</output>
+              <output style="padding-left: 10px">100</output>
             </div>
           </form>
         </div>
@@ -55,7 +55,7 @@ import { Option } from '../option';
             <label for="formControlRange">Time per question: </label>
             <div>
               <input type="range" value="72" min="1" max="144" oninput="this.nextElementSibling.value = this.value" (change)="getTimePerQ($event)">
-              <output>72</output>
+              <output style="padding-left: 10px">72</output><span>&nbsp;seconds</span>
             </div>
           </form>
         </div>

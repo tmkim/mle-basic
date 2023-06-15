@@ -15,7 +15,6 @@ import { ExamService } from '../exam.service';
           <th>Score</th>
           <th>Time</th>
           <th>Details</th>
-          <!--th>Current Question</th-->
           <th>Action</th>
       </tr>
   </thead>
@@ -27,7 +26,6 @@ import { ExamService } from '../exam.service';
           <td class="score">{{exam.score}}</td>
           <td class="time">{{timeFormat($any(exam)?.time)}}
           <td class="details">{{$any(exam.options)?.details? 'On' : 'Off'}}
-          <!--td>{{exam.current}}</td-->
           <td class="actions">
              <button class="btn btn-primary me-1" *ngIf="$any(exam)?.time > 0" [routerLink]="['/exam-time/', exam._id]">Continue</button>
              <button class="btn btn-primary me-1" *ngIf="exam.time == 0" [routerLink]="['/review/', exam._id]">Review</button>
