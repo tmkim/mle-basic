@@ -70,7 +70,8 @@ import { Question } from '../question';
           </tr>
           <tr>
             <td colspan="4">
-              <div>{{q.explanation}}</div>
+                <div class="q_source">{{getSource(q._id!)}}</div>
+                <div>{{q.explanation}}</div>
             </td>
           </tr>
         </ng-container>
@@ -111,6 +112,7 @@ import { Question } from '../question';
             </tr>
             <tr>
               <td colspan="4">
+                <div class="q_source">{{getSource(q._id!)}}</div>
                 <div>{{q.explanation}}</div>
               </td>
             </tr>
@@ -129,6 +131,7 @@ import { Question } from '../question';
     .answers {padding-left: .7rem; padding-right: .5rem;}
     .btn_toggleF {margin-left: 10px; background-color:red}
     .btn_toggleT {margin-left: 10px; background-color:green}
+    .q_source {font-weight:420; margin-bottom:5px}
     th, td {
       padding-left: .5rem;
       border: 2px solid black;
@@ -156,6 +159,7 @@ export class ReviewExamComponent implements OnInit {
   incorrect: BehaviorSubject<String[]> = new BehaviorSubject<String[]>([]);
   arr_flaggedQs$: BehaviorSubject<Array<any>> = new BehaviorSubject(new Array);
   showFlag = false;
+  
   
   constructor(
     private route: ActivatedRoute,
@@ -195,5 +199,22 @@ export class ReviewExamComponent implements OnInit {
 
   toggleFlag(){
     this.showFlag = !this.showFlag
+  }
+
+  getSource(id: string): string{
+    var question = id.substring(5)
+    var dict_exams : { [key: string]: any } = 
+                    { 
+                      e1111a:'111-1醫學(一)',
+                      e1111b:'111-1醫學(二)',
+                      e1112a:'111-2醫學(一)',
+                      e1112b:'111-2醫學(二)',
+                      e1121a:'112-1醫學(一)',
+                      e1121b:'112-1醫學(二)',
+                    }
+    var ek = `e${(id.substring(0,5))}`
+    var exam = dict_exams[ek]
+
+    return `Exam: ${exam} / Question: ${question}`
   }
 }

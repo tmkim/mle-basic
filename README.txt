@@ -43,6 +43,8 @@ Components/Features -
         - displays all questions, answers, and explanations 
         - "Flagged" button to hide non-flagged questions 
         - "Home" button to return to exam list 
+        - display exam and question number where question is taken from 
+            > based on question ID number 
 
 To set up practice for a different exam, point to a different DB 
     - Mongo DB tables + schema will be applied upon running server 
