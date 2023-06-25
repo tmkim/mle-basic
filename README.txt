@@ -1,6 +1,6 @@
 Basic exam app for tw mle (no users)
 
-** Initial development complete (current: v1.1.5) **
+** Initial development complete (current: v1.1.6) **
 -- will be updating for bugs and UI updates -- 
 
 Online site - mle-basic-client.vercel.app/
