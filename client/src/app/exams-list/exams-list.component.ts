@@ -11,6 +11,7 @@ import { ExamService } from '../exam.service';
   <table class="table table-striped table-bordered center">
   <thead>
       <tr>
+          <th>Key</th>
           <th>Exam</th>
           <th>Score</th>
           <th>Time</th>
@@ -22,6 +23,7 @@ import { ExamService } from '../exam.service';
   <tbody>
       <tr *ngFor="let exam of exams$ | async">
       <ng-container *ngIf="$any(exam)?.number > 0">
+          <td class="eK">{{exam.examKey}}</td>
           <td class="num">{{exam.number}}</td>
           <td class="score">{{exam.score}}</td>
           <td class="time">{{timeFormat($any(exam)?.time)}}
@@ -51,7 +53,10 @@ th, td {
 }
 
 table {
-  width: 470px;
+  width: 520px;
+}
+td.eK{
+  width: 50px;
 }
 td.num{
   width: 50px;

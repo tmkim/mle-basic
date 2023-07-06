@@ -7,8 +7,8 @@ questionRouter.use(express.json());
  
 questionRouter.get("/", async (_req, res) => {
    try {
-       const employees = await questionColl.questions.find({}).toArray();
-       res.status(200).send(employees);
+       const questions = await questionColl.questions.find({}).toArray();
+       res.status(200).send(questions);
    } catch (error) {
        res.status(500).send(error.message);
    }
@@ -30,6 +30,24 @@ questionRouter.get("/:id", async (req, res) => {
         res.status(404).send(`Failed to find a question: ID ${req?.params?.id}`);
     }
  });
+
+//  questionRouter.get("/:examKey", async (req, res) => {
+//     try {
+//         const eK = req?.params?.examKey;
+//         const query = {};
+//         console.log(query)
+//         const question = await questionColl.questions.find(query).toArray;
+  
+//         if (question) {
+//             res.status(200).send(question);
+//         } else {
+//             res.status(404).send(`Failed to find questions with exam Key: ${eK}`);
+//         }
+  
+//     } catch (error) {
+//         res.status(404).send(`Failed to find any questions with exam key: ${req?.params?.examKey}`);
+//     }
+//  });
 
  questionRouter.post("/", async (req, res) => {
     try {

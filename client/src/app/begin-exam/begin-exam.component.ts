@@ -18,6 +18,7 @@ import { QuestionService } from '../question.service';
 export class BeginExamComponent implements OnInit, OnDestroy {
 
   newExam: Exam = {
+    examKey: '',
     number: -1,
     score: '',
     answers: new Array<String>,
@@ -57,6 +58,8 @@ export class BeginExamComponent implements OnInit, OnDestroy {
   }
 
   beginExam(exam: Exam): void{
+    console.log(exam)
+    exam.examKey = exam.options?.examKey
     this.update_exam(exam);
   }
 
@@ -64,6 +67,7 @@ export class BeginExamComponent implements OnInit, OnDestroy {
   update_exam(exam: any): void{
     this.newExam.time = exam.options.qCount * exam.options.timePerQ
     this.newExam.options = exam.options;
+    this.newExam.examKey = exam.examKey;
 
     this.subscription_geq = this.questionService.getExamQuestions(exam.options).subscribe(qList => {
       qList.forEach(q => {

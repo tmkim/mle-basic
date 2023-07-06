@@ -3,6 +3,7 @@ import { Question } from "./question";
 
 export interface Exam {
     _id?: mongodb.ObjectId;
+    examKey: string; // indicates which exam type this exam is for
     number: number; //-1 if EmptyExam, else ascending
     score: string; // "[correct answers]/[total questions]"
     answers: Array<any>; // Map of answers provided

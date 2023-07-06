@@ -1,5 +1,6 @@
 export interface Question {
     _id?: string;
+    examKey?: string;
     question?: string;
     image?: string;
     optionA?: string; 

@@ -3,6 +3,7 @@ import { Question } from "./question";
 
 export interface Exam {
     _id?: string;
+    examKey?: string;
     number?: number;
     //qCount?: number;
     score?: string; // "[correct answers]/[total questions]"
