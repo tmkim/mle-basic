@@ -508,7 +508,20 @@ DONE:
     -- Ability to specify which exam to pull questions from 
         ** add exam-key to question table 
             > filter questions by exam-key 
-        > add radio button to options
-        ** add exam-key to exam table
+        ** add radio button to options (+ functionality)
+        ** add exam-key to exam table (exam.examKey && exam.options.examKey)
         > show in exams-list 
-        > update client/ option.ts, exam.ts, question.ts 
+        ** update client/ option.ts, exam.ts, question.ts 
+        ** update server/ exam.ts, question.ts, database.ts 
+        ** update server/ question.routes.ts
+    *** exam keys work, but not confident in effiency ***
+        -> "get" all questions, then filter in question.service.getExamQuestions()
+            - maybe better to do filter in "get" ? but having trouble figuring that out.
+            - might be good as is, need to do more testing 
+
+07/08
+    ** fix router to filter in get() query rather than after (question service)
+        -- need to use quotes around both field name and value ({"field":"value"}) // don't need quotes around value if number?
+    ** run tests with different exam keys, make sure correct questions are being used 
+        -- SUCCESS 
+    

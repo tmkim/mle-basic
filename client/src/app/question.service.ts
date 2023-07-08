@@ -53,18 +53,16 @@ export class QuestionService {
     var q_ids: any[] = [];
     var buildQ$: Question[] = [];
     var rng = 0;
-    var ek_qs: Question[] = [];
     var flag_qs: Question[] = [];
     var weight = 0;
     var filter_qs: Question[] = [];
 
     if (qPrio){
       // BELOW WORKS!!! above tries to use flagged table (for future use)
-        this.httpClient.get<Question[]>(`${this.url}/questions/`)
+        this.httpClient.get<Question[]>(`${this.url}/questions/${eK}`)
         .subscribe(questions => {      
           //search list of Qs for flag, push id onto list + checklist
-          ek_qs = questions.filter(q => q.examKey == eK)
-          flag_qs = ek_qs.filter(q => q.flag == true);
+          flag_qs = questions.filter(q => q.flag == true);
           flag_qs.forEach(q => {
             buildQ$.push(q);
             q_ids.push(q._id)
@@ -88,7 +86,8 @@ export class QuestionService {
         })
     }
     else{
-      this.httpClient.get<Question[]>(`${this.url}/questions/`)
+      this.httpClient.get<Question[]>(`${this.url}/questions/${eK}`)
+      // this.httpClient.get<Question[]>(`${this.url}/questions/`)
       .subscribe(questions => {      
 
         // ********* testing images *************
@@ -105,8 +104,7 @@ export class QuestionService {
         //     tmp_filter_qs.splice(rng,1)
         //   }
         // }
-        ek_qs = questions.filter(q => q.examKey == eK)
-        filter_qs = ek_qs.filter(q => q.weight == weight);
+        filter_qs = questions.filter(q => q.weight == weight);
         while(q_ids.length < qCount!){
           while(filter_qs.length < 1){
             weight += 1;
