@@ -14,7 +14,7 @@ import { Option } from '../option';
         <div class="col"></div>
         <div class="col-8">
           <input class="form-check-input" type="radio" name="examKeyRadio" id="examKey1" 
-                 (oninput)="setExamKey()" (change)="setExamKey()" value="twmle1"
+                 (oninput)="setExamKey()" (change)="setExamKey()" value="twmle1A"
                  [(ngModel)]="examKeyRadio" [ngModelOptions]="{standalone: true}">
           <label class="form-check-label" for="examKey1">
             &nbsp;Taiwan MLE 1
