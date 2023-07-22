@@ -28,6 +28,7 @@ import { MatSidenav } from '@angular/material/sidenav';
       <mat-nav-list class="side-nav-table">
         <mat-list-item class="side-nav-items" routerLink="." *ngFor="let q of examQs$ | async; let i = index" (click)="goQuestion(i)">
           <div mat-line style="color:black;">{{i+1}}
+          <i class="bi bi-dot answered" *ngIf="['A','B','C','D'].includes(arr_Answers$.value[i])">&nbsp;</i>
           <span class="incorrect" *ngIf="arr_incorrect$.value.includes(q._id)">X&nbsp;</span>
           <i class="bi bi-check-lg correct" *ngIf="arr_correct$.value.includes(q._id)">&nbsp;</i>
           <!--i class="bi bi-flag-fill" style="color:red" *ngIf="arr_flaggedQs$.value.includes(q._id)"></i-->
@@ -282,7 +283,6 @@ export class ExamTimeComponent implements OnInit, AfterViewInit, OnDestroy {
   nextQ(){
     this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
     this.qNum$.next(this.qNum$.value + 1);
-
     // select next question to be displayed
     // this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
     // this.currQ.next(this.examQs$.value[this.num-1]);
