@@ -504,9 +504,6 @@ DONE:
 06/24 (v1.1.6)
     -- update Review to include source of question
 
-<<<<<<< HEAD
-    
-=======
 07/06 (v1.2.0)
     -- Ability to specify which exam to pull questions from 
         ** add exam-key to question table 
@@ -536,7 +533,6 @@ DONE:
         > Biba was doing a practice test -> save/quit to pause -> front page loaded, then restarted quiz and reset progress 
             .. I should add a way to save it separately so progress isn't overwritten?
             
->>>>>>> examKey
 07/22
     (v1.2.2)
     -- add indicator to show that an answer has been chosen for the question
