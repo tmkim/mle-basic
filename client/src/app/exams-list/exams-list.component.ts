@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
-
+import { QuestionService } from '../question.service';
+import { Question } from '../question';
 @Component({
   selector: 'app-exams-list',
   template: `
@@ -11,6 +12,7 @@ import { ExamService } from '../exam.service';
   <table class="table table-striped table-bordered center">
   <thead>
       <tr>
+          <th>Key</th>
           <th>Exam</th>
           <th>Score</th>
           <th>Time</th>
@@ -22,6 +24,7 @@ import { ExamService } from '../exam.service';
   <tbody>
       <tr *ngFor="let exam of exams$ | async">
       <ng-container *ngIf="$any(exam)?.number > 0">
+          <td class="eK">{{exam.examKey}}</td>
           <td class="num">{{exam.number}}</td>
           <td class="score">{{exam.score}}</td>
           <td class="time">{{timeFormat($any(exam)?.time)}}
@@ -37,6 +40,7 @@ import { ExamService } from '../exam.service';
 </table>
 <table class="center">
 <button class="btn btn-primary mt-3" [routerLink]="['/new-exam']">Start a New Exam</button>
+<button class="btn btn-primary mt-3" (click)="refreshQs()" style="margin-left: 200px">Refresh Questions</button>
 </table>
 `,
 styles:[`
@@ -51,7 +55,10 @@ th, td {
 }
 
 table {
-  width: 470px;
+  width: 520px;
+}
+td.eK{
+  width: 50px;
 }
 td.num{
   width: 50px;
@@ -97,15 +104,25 @@ td.actions{
 export class ExamsListComponent implements OnInit, OnDestroy {
   exams$: Observable<Exam[]> = new Observable();
   tmp_exams$: Observable<Exam[]> = new Observable();
+
+  questions$: Subject<Question[]> = new Subject();
+  qUpdate: Question = {
+    examKey: 'twmle1A'
+  }
+
   // num = 1;
   ex_count = 0;
   subscription_de = new Subscription();
+  subscription_qu = new Subscription();
 
   newExam: Exam = {
     number: -1
   };
 
-  constructor(private examsService: ExamService) { }
+  constructor(
+    private examsService: ExamService,
+    private questionService: QuestionService
+    ) { }
 
   ngOnInit(): void {
     this.fetchExams();
@@ -114,6 +131,7 @@ export class ExamsListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('exams-list unsubscribe')
     this.subscription_de.unsubscribe()
+    this.subscription_qu.unsubscribe()
   }
 
   deleteExam(id: string, num: number): void {
@@ -127,6 +145,16 @@ export class ExamsListComponent implements OnInit, OnDestroy {
         }
       })
     }
+  }
+
+  refreshQs(): void{
+    this.questionService.getQuestions().subscribe( qs => {
+      qs.forEach(q => {
+        console.log(q)
+        this.subscription_qu = this.questionService.updateQuestion(q._id!, this.qUpdate).subscribe();
+      })
+    console.log("refresh complete")
+  })
 
   }
 

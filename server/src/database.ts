@@ -40,6 +40,10 @@ async function applySchemaValidation(db: mongodb.Db) {
             additionalProperties: false,
             properties: {
                 _id: {},
+                examKey: {
+                    bsonType: "string",
+                    description: "'examKey' is required and is a string"
+                },
                 number: {
                     bsonType: "int",
                     description: "'number' is required and is an int"
@@ -112,6 +116,10 @@ async function applySchemaValidation(db: mongodb.Db) {
                         additionalProperties: false,
                         description: "options must contain the following fields",
                         properties: {
+                            examKey: {
+                                bsonType: "string",
+                                description: "'examKey' is required and is a string"
+                            },
                             qCount: {
                                 bsonType: "int",
                                 description: "qCount is a number that represents how many questions are in the exam"
@@ -142,6 +150,10 @@ async function applySchemaValidation(db: mongodb.Db) {
             additionalProperties: false,
             properties: {
                 _id: {},
+                examKey: {
+                    bsonType: "string",
+                    description: "'examKey' is required and is a string"
+                },
                 question: {
                     bsonType: "string",
                     description: "'question' is required and is a string"

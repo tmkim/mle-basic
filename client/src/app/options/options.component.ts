@@ -9,7 +9,24 @@ import { Option } from '../option';
   selector: 'app-options',
   template: `
   <form class="options" autocomplete="off" [formGroup]="fg_optionsForm" (ngSubmit)="submitForm()">
-    <div class="container">
+    <div class="container" >
+      <div class="row justify-content-center" style="margin-bottom: 10px">
+        <div class="col"></div>
+        <div class="col-8">
+          <input class="form-check-input" type="radio" name="examKeyRadio" id="examKey1" 
+                 (oninput)="setExamKey()" (change)="setExamKey()" value="twmle1"
+                 [(ngModel)]="examKeyRadio" [ngModelOptions]="{standalone: true}">
+          <label class="form-check-label" for="examKey1">
+            &nbsp;Taiwan MLE 1
+          </label>
+          <input class="form-check-input" type="radio" name="examKeyRadio" id="examKey2" style="margin-left:10px" 
+                 (oninput)="setExamKey()" (change)="setExamKey()" value="twmle2" disabled="true"
+                 [(ngModel)]="examKeyRadio" [ngModelOptions]="{standalone: true}">
+          <label class="form-check-label" for="examKey2">
+            &nbsp;Taiwan MLE 2
+          </label>
+        </div>
+      </div>
       <div class="row justify-content-center">
         <div class="col"></div>
         <div class="col-8">
@@ -85,10 +102,12 @@ export class OptionsComponent implements OnInit, OnDestroy {
   obs_newExam: Observable<Exam> = new Observable();
   
   fg_optionsForm: FormGroup = new FormGroup({});
-  obj_option: Option = { qCount: 100, details: false, flagPrio: false, timePerQ: 72};
+  obj_option: Option = { examKey: 'twmle1', qCount: 100, details: false, flagPrio: false, timePerQ: 72};
   ctr_option: FormControl = new FormControl(this.obj_option);
 
   subscription_ce = new Subscription();
+
+  examKeyRadio = ''
   
   constructor(
     private examService: ExamService,
@@ -97,6 +116,7 @@ export class OptionsComponent implements OnInit, OnDestroy {
   //constructor(private fb: FormBuilder){}
 
   ngOnInit(): void{
+    this.examKeyRadio = "twmle1"
     this.examService.getEmptyExam().subscribe({
       next: (emptyExam) => {
         //console.log(emptyExam);
@@ -148,6 +168,11 @@ export class OptionsComponent implements OnInit, OnDestroy {
 
   toggleFlagPrio(): void{
     this.obj_option.flagPrio = !this.obj_option.flagPrio; 
+  }
+
+  setExamKey(): void{
+    this.obj_option.examKey = this.examKeyRadio
+    console.log(this.obj_option.examKey)
   }
 
   submitForm(): void{

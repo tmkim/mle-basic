@@ -2,6 +2,7 @@
 
 export interface Question {
     _id?: string;
+    examKey: string; //indicates which exam type this question is for
     question: string; // question text
     image: string; // corresponding image link if applicable
     optionA: string; // option A

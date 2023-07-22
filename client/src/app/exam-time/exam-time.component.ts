@@ -283,7 +283,6 @@ export class ExamTimeComponent implements OnInit, AfterViewInit, OnDestroy {
   nextQ(){
     this.arr_Answers$.value[this.qNum$.value-1] = this.answerRadio;
     this.qNum$.next(this.qNum$.value + 1);
-
     // select next question to be displayed
     // this.currQ.next(this.examQs$.value.find(q => q._id == this.exam.value.current) !);
     // this.currQ.next(this.examQs$.value[this.num-1]);

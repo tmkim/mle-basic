@@ -7,27 +7,46 @@ questionRouter.use(express.json());
  
 questionRouter.get("/", async (_req, res) => {
    try {
-       const employees = await questionColl.questions.find({}).toArray();
-       res.status(200).send(employees);
+       const questions = await questionColl.questions.find({}).toArray();
+       res.status(200).send(questions);
    } catch (error) {
        res.status(500).send(error.message);
    }
 });
 
-questionRouter.get("/:id", async (req, res) => {
-    try {
-        const id = req?.params?.id;
-        const query = { _id: id };
-        const question = await questionColl.questions.findOne(query);
+// questionRouter.get("/:id", async (req, res) => {
+//     try {
+//         const id = req?.params?.id;
+//         const query = { _id: id };
+//         const question = await questionColl.questions.findOne(query);
   
-        if (question) {
-            res.status(200).send(question);
+//         if (question) {
+//             res.status(200).send(question);
+//         } else {
+//             res.status(404).send(`Failed to find a question: ID ${id}`);
+//         }
+  
+//     } catch (error) {
+//         res.status(404).send(`Failed to find a question: ID ${req?.params?.id}`);
+//     }
+//  });
+
+ questionRouter.get("/:examKey", async (req, res) => {
+    try {
+        const eK = req?.params?.examKey;
+        const query = {"examKey":eK};
+        // console.log(query)
+        const questions = await questionColl.questions.find(query).toArray();
+        // console.log(questions)
+  
+        if (questions) {
+            res.status(200).send(questions);
         } else {
-            res.status(404).send(`Failed to find a question: ID ${id}`);
+            res.status(404).send(`Failed to find questions with exam Key: ${eK}`);
         }
   
     } catch (error) {
-        res.status(404).send(`Failed to find a question: ID ${req?.params?.id}`);
+        res.status(404).send(`Failed to find any questions with exam key: ${req?.params?.examKey}`);
     }
  });
 

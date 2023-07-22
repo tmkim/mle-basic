@@ -30,10 +30,24 @@ export class QuestionService {
     return this.questions$;
   }
 
-  getQuestion(id: string): Observable<Question> {
-    return this.httpClient.get<Question>(`${this.url}/questions/${id}`);
+  // getQuestion(id: string): Observable<Question> {
+  //   return this.httpClient.get<Question>(`${this.url}/questions/${id}`);
+  // }
+
+  private refreshQsByEK(ek: string) {
+    this.httpClient.get<Question[]>(`${this.url}/questions/${ek}`)
+    .subscribe(questions => {
+      this.questions$.next(questions);
+    });
   }
+
+  getQsByExamKey(ek: string): Subject<Question[]> {
+    this.refreshQsByEK(ek)
+    return this.questions$;
+  }
+
   getExamQuestions(qOption: Option): Subject<Question[]>{
+    var eK = qOption.examKey
     var qCount = qOption.qCount
     const qPrio = qOption.flagPrio
     var q_ids: any[] = [];
@@ -45,7 +59,7 @@ export class QuestionService {
 
     if (qPrio){
       // BELOW WORKS!!! above tries to use flagged table (for future use)
-        this.httpClient.get<Question[]>(`${this.url}/questions/`)
+        this.httpClient.get<Question[]>(`${this.url}/questions/${eK}`)
         .subscribe(questions => {      
           //search list of Qs for flag, push id onto list + checklist
           flag_qs = questions.filter(q => q.flag == true);
@@ -72,7 +86,8 @@ export class QuestionService {
         })
     }
     else{
-      this.httpClient.get<Question[]>(`${this.url}/questions/`)
+      this.httpClient.get<Question[]>(`${this.url}/questions/${eK}`)
+      // this.httpClient.get<Question[]>(`${this.url}/questions/`)
       .subscribe(questions => {      
 
         // ********* testing images *************
