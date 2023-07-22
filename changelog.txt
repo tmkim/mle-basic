@@ -503,3 +503,9 @@ DONE:
 
 06/24 (v1.1.6)
     -- update Review to include source of question
+
+    
+07/22
+    (v1.2.2)
+    -- add indicator to show that an answer has been chosen for the question
+        ** update to exam-time [component, scss] 
