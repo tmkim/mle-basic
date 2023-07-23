@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription, of } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { Option } from '../option';
@@ -102,7 +103,7 @@ export class OptionsComponent implements OnInit, OnDestroy {
   obs_newExam: Observable<Exam> = new Observable();
   
   fg_optionsForm: FormGroup = new FormGroup({});
-  obj_option: Option = { examKey: 'twmle1', qCount: 100, details: false, flagPrio: false, timePerQ: 72};
+  obj_option: Option = { examKey: 'twmle1A', qCount: 100, details: false, flagPrio: false, timePerQ: 72};
   ctr_option: FormControl = new FormControl(this.obj_option);
 
   subscription_ce = new Subscription();
@@ -116,8 +117,8 @@ export class OptionsComponent implements OnInit, OnDestroy {
   //constructor(private fb: FormBuilder){}
 
   ngOnInit(): void{
-    this.examKeyRadio = "twmle1"
-    this.examService.getEmptyExam().subscribe({
+    this.examKeyRadio = "twmle1A"
+    this.examService.getEmptyExam().pipe(take(1)).subscribe({
       next: (emptyExam) => {
         //console.log(emptyExam);
         this.bs_exam$.next(emptyExam);
@@ -128,10 +129,10 @@ export class OptionsComponent implements OnInit, OnDestroy {
       },
       error: (e) => {
         console.log(`${e.error} -> Create new empty exam`)
-        this.subscription_ce = this.examService.createEmptyExam().subscribe({
+        this.subscription_ce = this.examService.createEmptyExam().pipe(take(1)).subscribe({
           next: () => {
             //console.log('added');
-            this.examService.getEmptyExam().subscribe({
+            this.examService.getEmptyExam().pipe(take(1)).subscribe({
               next: (emptyExam) => {
                 this.bs_exam$.next(emptyExam);        
                 this.fg_optionsForm = this.fb.group({

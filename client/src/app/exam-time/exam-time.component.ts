@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs';
 import { Exam } from '../exam';
@@ -198,7 +198,7 @@ export class ExamTimeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.screenW = window.innerWidth;
     }
   
-    this.examService.getExam(id !).subscribe((exam) => {
+    this.examService.getExam(id !).pipe(take(1)).subscribe((exam) => {
       this.exam$.next(exam);
       this.setTimer(exam.time !);
       this.examQs$.next(exam.questions !);
@@ -348,7 +348,7 @@ export class ExamTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     //TODO: on finish exam - this.currExam.score
       
     this.subscription_ue = this.examService.updateExam(this.exam$.value._id || '', this.currExam)
-    .subscribe({
+    .pipe(take(1)).subscribe({
       next: () =>{
         //console.log('exam saved/quit');
         this.router.navigate([`/exams/`]);
@@ -372,7 +372,7 @@ export class ExamTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     //console.log(this.currExam);
 
     this.subscription_ue = this.examService.updateExam(this.exam$.value._id || '', this.currExam)
-      .subscribe({
+      .pipe(take(1)).subscribe({
       next: () =>{
         //console.log('exam submitted');
         this.router.navigate([`/review/${this.exam$.value._id}`]);
@@ -428,7 +428,7 @@ export class ExamTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.currExam.time = this.extimer;
     //TODO: on finish exam - this.currExam.score
     this.subscription_ue = this.examService.updateExam(this.exam$.value._id || '', this.currExam)
-      .subscribe({
+      .pipe(take(1)).subscribe({
       next: () =>{
         // console.log('Exam progress saved');
       },
@@ -477,15 +477,15 @@ export class ExamTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.examQs$.value[this.qNum$.value-1].flag = this.currFlag;
     if(this.currFlag){
       this.arr_flaggedQs$.value.push(q_id);
-      this.subscription_cf = this.flaggedService.createFlagged(q_id!).subscribe();
-      this.subscription_uq = this.questionService.updateQuestion(q_id!, qFlag).subscribe();
+      this.subscription_cf = this.flaggedService.createFlagged(q_id!).pipe(take(1)).subscribe();
+      this.subscription_uq = this.questionService.updateQuestion(q_id!, qFlag).pipe(take(1)).subscribe();
     }else{
       var ind = this.arr_flaggedQs$.value.indexOf(q_id)
       if(ind != -1){
         this.arr_flaggedQs$.value.splice(ind,1);
       }
-      this.subscription_df = this.flaggedService.deleteFlagged(q_id!).subscribe();
-      this.subscription_uq = this.questionService.updateQuestion(q_id!, qFlag).subscribe();
+      this.subscription_df = this.flaggedService.deleteFlagged(q_id!).pipe(take(1)).subscribe();
+      this.subscription_uq = this.questionService.updateQuestion(q_id!, qFlag).pipe(take(1)).subscribe();
     }
 
     this.saveExamProgress();

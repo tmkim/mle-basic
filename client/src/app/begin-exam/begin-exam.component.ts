@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { Question } from '../question';
@@ -69,7 +70,7 @@ export class BeginExamComponent implements OnInit, OnDestroy {
     this.newExam.options = exam.options;
     this.newExam.examKey = exam.examKey;
 
-    this.subscription_geq = this.questionService.getExamQuestions(exam.options).subscribe(qList => {
+    this.subscription_geq = this.questionService.getExamQuestions(exam.options).pipe(take(1)).subscribe(qList => {
       qList.forEach(q => {
         // add flagged questions to exam flagged array
         if(q.flag){
@@ -80,12 +81,12 @@ export class BeginExamComponent implements OnInit, OnDestroy {
         if(this.newExam.options?.flagPrio){
             //do not update weight if question is repeated for flag prio
             if(!q.flag){
-              this.subscription_uq = this.questionService.updateQuestion(q._id!, qWeight).subscribe();
+              this.subscription_uq = this.questionService.updateQuestion(q._id!, qWeight).pipe(take(1)).subscribe();
           }
         }
         else{
           //if flag priority does not matter, update question weight 
-          this.subscription_uq = this.questionService.updateQuestion(q._id!, qWeight).subscribe();
+          this.subscription_uq = this.questionService.updateQuestion(q._id!, qWeight).pipe(take(1)).subscribe();
         }
       })
       this.examQs$.next(qList);
@@ -93,11 +94,11 @@ export class BeginExamComponent implements OnInit, OnDestroy {
       this.newExam.current = this.newExam.questions[0]._id;
 
       //get # of exams before updating 
-      this.subscription_ge = this.examService.getExams().subscribe({
+      this.subscription_ge = this.examService.getExams().pipe(take(1)).subscribe({
         next: (data) => {
           this.newExam.number = data.length;
           this.subscription_ue = this.examService.updateExam(exam._id || '', this.newExam)
-            .subscribe({
+            .pipe(take(1)).subscribe({
               next: () => {
                 this.router.navigate(['/exam-time/', exam._id]);
               },

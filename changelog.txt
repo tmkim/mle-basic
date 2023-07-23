@@ -537,3 +537,20 @@ DONE:
     (v1.2.2)
     -- add indicator to show that an answer has been chosen for the question
         ** update to exam-time [component, scss] 
+
+07/22 p2 
+    ** bug report **
+        > test ended prematurely, did not save all of progress 
+        .. memory leak ? 
+
+        - Updated subscriptions in all of the following to use .pipe(take(1)).subscribe()
+            begin-exam/begin-exam.component.ts
+            exam-time/exam-time.component.ts
+            exam.service.ts
+            exams-list/exams-list.component.ts
+            flagged.service.ts
+            options/options.component.ts
+            question.service.ts
+            review-exam/review-exam.component.ts
+
+        ** basic testing - website appears to function as intended, but this bug is difficult to reproduce, so can't tell if it is fixed or not.

@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { take } from 'rxjs';
 import { Question } from './question';
 import { Option } from './option';
 import { environment } from './../environments/environment'
@@ -21,7 +22,7 @@ export class QuestionService {
 
   private refreshQuestions() {
     this.httpClient.get<Question[]>(`${this.url}/questions`)
-     .subscribe(questions => {
+     .pipe(take(1)).subscribe(questions => {
       this.questions$.next(questions);
     });
   }
@@ -36,7 +37,7 @@ export class QuestionService {
 
   private refreshQsByEK(ek: string) {
     this.httpClient.get<Question[]>(`${this.url}/questions/${ek}`)
-    .subscribe(questions => {
+    .pipe(take(1)).subscribe(questions => {
       this.questions$.next(questions);
     });
   }
@@ -60,7 +61,7 @@ export class QuestionService {
     if (qPrio){
       // BELOW WORKS!!! above tries to use flagged table (for future use)
         this.httpClient.get<Question[]>(`${this.url}/questions/${eK}`)
-        .subscribe(questions => {      
+        .pipe(take(1)).subscribe(questions => {      
           //search list of Qs for flag, push id onto list + checklist
           flag_qs = questions.filter(q => q.flag == true);
           flag_qs.forEach(q => {
@@ -88,7 +89,7 @@ export class QuestionService {
     else{
       this.httpClient.get<Question[]>(`${this.url}/questions/${eK}`)
       // this.httpClient.get<Question[]>(`${this.url}/questions/`)
-      .subscribe(questions => {      
+      .pipe(take(1)).subscribe(questions => {      
 
         // ********* testing images *************
         // var tmp_filter_qs = questions.filter(q => q.image != '');

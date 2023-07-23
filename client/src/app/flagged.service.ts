@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import { take } from 'rxjs';
 import { Flagged } from './flagged';
 import { environment } from './../environments/environment'
 import { ObjectId } from 'mongodb';
@@ -18,7 +19,7 @@ export class FlaggedService {
 
   private refreshFlagged() {
     this.httpClient.get<Flagged[]>(`${this.url}/flagged`)
-     .subscribe(questions => {
+     .pipe(take(1)).subscribe(questions => {
       this.questions$.next(questions);
       this.numFlags = questions.length;
     });

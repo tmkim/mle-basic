@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { take } from 'rxjs';
 import { Exam } from './exam';
 import { environment } from './../environments/environment'
 
@@ -26,7 +27,7 @@ export class ExamService implements OnDestroy {
 
   private refreshExams() {
     this.httpClient.get<Exam[]>(`${this.url}/exams`)
-     .subscribe(exams => {
+     .pipe(take(1)).subscribe(exams => {
       this.exams$.next(exams);
     }); 
   }
@@ -37,7 +38,7 @@ export class ExamService implements OnDestroy {
 
   getNumExams(): Observable<Exam[]>{
     this.httpClient.get<Exam[]>(`${this.url}/exams`)
-    .subscribe(exams => {
+    .pipe(take(1)).subscribe(exams => {
       this.exams$.next(exams);
    });
     return this.exams$;
@@ -79,7 +80,7 @@ export class ExamService implements OnDestroy {
   updateExamNums(): Subject<Exam[]> {
     var ex_count = 0
     var tmp_exams$ = new Subject<Exam[]>();
-    this.httpClient.get<Exam[]>(`${this.url}/exams`).subscribe(exams => {
+    this.httpClient.get<Exam[]>(`${this.url}/exams`).pipe(take(1)).subscribe(exams => {
       tmp_exams$.next(exams.filter(x => x.number! > 0));
     });
 
@@ -87,7 +88,7 @@ export class ExamService implements OnDestroy {
       exams.forEach(exam =>{
         ex_count++;
         this.newExam.number = ex_count;
-        this.subscription_ue = this.updateExam(exam._id!, this.newExam).subscribe({next:() => {
+        this.subscription_ue = this.updateExam(exam._id!, this.newExam).pipe(take(1)).subscribe({next:() => {
           // console.log(res)
           this.refreshExams();
           // console.log(this.exams$);

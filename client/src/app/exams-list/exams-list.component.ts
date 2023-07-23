@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { take } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { QuestionService } from '../question.service';
@@ -138,7 +139,7 @@ export class ExamsListComponent implements OnInit, OnDestroy {
     this.ex_count = 0;
 
     if(confirm("Are you sure you want to delete Exam number "+num+"?")) {
-      this.subscription_de = this.examsService.deleteExam(id).subscribe({
+      this.subscription_de = this.examsService.deleteExam(id).pipe(take(1)).subscribe({
         next: () => {
           console.log(`Exam Deleted: ${id}`);
           this.exams$ = this.examsService.updateExamNums()
@@ -148,10 +149,10 @@ export class ExamsListComponent implements OnInit, OnDestroy {
   }
 
   refreshQs(): void{
-    this.questionService.getQuestions().subscribe( qs => {
+    this.questionService.getQuestions().pipe(take(1)).subscribe( qs => {
       qs.forEach(q => {
         console.log(q)
-        this.subscription_qu = this.questionService.updateQuestion(q._id!, this.qUpdate).subscribe();
+        this.subscription_qu = this.questionService.updateQuestion(q._id!, this.qUpdate).pipe(take(1)).subscribe();
       })
     console.log("refresh complete")
   })

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs';
 import { Exam } from '../exam';
 import { ExamService } from '../exam.service';
 import { QuestionService } from '../question.service';
@@ -174,7 +175,7 @@ export class ReviewExamComponent implements OnInit {
       alert('No id provided');
     }
   
-    this.examService.getExam(id !).subscribe((exam) => {
+    this.examService.getExam(id !).pipe(take(1)).subscribe((exam) => {
       this.exam.next(exam);
       this.examQs.next(exam.questions !);
       this.arr_flaggedQs$.next(exam.flagged !);
