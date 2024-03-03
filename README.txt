@@ -1,9 +1,8 @@
-Basic exam app for tw mle (no users)
+T Planet - mle-basic-client.vercel.app/
+--> Web app for taking practice exams with customizable exam options (no users)
 
 ** Initial development complete (current: v1.1.6) **
 -- will be updating for bugs and UI updates -- 
-
-Online site - mle-basic-client.vercel.app/
 
 Components/Features - 
     * Exam list
